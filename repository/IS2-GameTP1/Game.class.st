@@ -21,11 +21,11 @@ Game class >> createWith: numberOfSquares players: listOfPlayers dices: listOfDi
 
 { #category : #'as yet unclassified' }
 Game >> completeGame [
-	[ self gameContinues ] whileTrue: [ 
-		self whoPlays rollDice: dices.
-		self nextPlayer.
-	 ].
-	"players := self makePostions ."
+	[ self gameContinues ]
+		whileTrue: [ 
+			self play.
+			self nextPlayer 
+		]
 ]
 
 { #category : #'as yet unclassified' }
@@ -46,24 +46,28 @@ Game >> getScoreboard [
 	^ scoreboard .
 ]
 
-{ #category : #sorting }
-Game >> makePostions [
-	"scoreboard := SortedCollection new."
-	scoreboard := self getPlayers options.
-	scoreboard sort: [ :p1 :p2 | p1 getSquare >= p2 getSquare ].
-]
-
 { #category : #'as yet unclassified' }
 Game >> nextPlayer [
 	^players next.
 ]
 
 { #category : #'as yet unclassified' }
+Game >> play [
+	self whoPlays rollDice: dices.
+	self updateScoboard.
+]
+
+{ #category : #'as yet unclassified' }
 Game >> setWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
-	scoreboard :=Array new.
+	scoreboard := listOfPlayers collect: [:player | player].
 	squares := numberOfSquares.
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
+]
+
+{ #category : #sorting }
+Game >> updateScoboard [
+	scoreboard sort: [ :p1 :p2 | p1 getSquare >= p2 getSquare ].
 ]
 
 { #category : #'as yet unclassified' }
