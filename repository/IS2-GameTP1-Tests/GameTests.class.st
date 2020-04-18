@@ -30,6 +30,27 @@ GameTests >> testFinalPosition [
 ]
 
 { #category : #tests }
+GameTests >> testItsOrderedBySquare [
+	|j1 j2 j3 d1 d2 g|
+	j1:= Player create: 'Exequiel'.
+	j2:= Player create: 'Tomas'.
+	j3:= Player create: 'Marcos'.
+	d1:= Die of: 6 rolling: #(2 5 6).
+	d2:=Die of: 6 rolling: #(6 4 1).
+	g:= Game createWith: 24 players:{j1.j2.j3} dices:(d1+d2). 
+	g completeGame .
+	g makePostions .
+	self
+		assert: (g getScoreboard first getSquare) equals: 27;
+		assert: (g getScoreboard first getName ) equals: 'Tomas';
+		assert: (g getScoreboard second getSquare) equals: 24 ;
+		assert: (g getScoreboard second getName )equals: 'Exequiel';
+		assert: (g getScoreboard last getSquare) equals: 14;
+		assert: (g getScoreboard last getName) equals: 'Marcos'.
+		
+]
+
+{ #category : #tests }
 GameTests >> testPlayerRollDices [
 
 	| player dice1 dice2 dices |
@@ -122,4 +143,18 @@ GameTests >> testWinnerRandom [
 
 
 	game winner getName .
+]
+
+{ #category : #tests }
+GameTests >> testWinnerWithScoreboard [
+	"testeo que el ganador sea el que de verdad gano y no otro"
+	|g j1 j2 d1 d2|
+	j1:= Player create: 'Tomas'.
+	j2:= Player create: 'Exequiel'.
+	d1:= Die of: 6 rolling:#(3 4 1).
+	d2:= Die of: 6 rolling:#(2 5 2).
+	g:= Game createWith: 10 players: {j1.j2} dices:(d1+d2). 
+	g completeGame .
+	g makePostions .
+	^self assert: g getScoreboard first getName equals: 'Exequiel'.  
 ]
