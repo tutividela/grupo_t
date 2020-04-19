@@ -7,10 +7,10 @@ Class {
 { #category : #tests }
 GameTests >> testCreateOnePlayer [
 
-	| jugador1 |
-	jugador1  := Player create: 'Tomas'.
+	| player |
+	player  := Player create: 'Tomas'.
 	
-	self assert: (jugador1 getName) equals: 'Tomas'.
+	self assert: (player getName) equals: 'Tomas'.
 ]
 
 { #category : #'as yet unclassified' }
@@ -32,13 +32,18 @@ GameTests >> testFinalPosition [
 { #category : #tests }
 GameTests >> testItsOrderedBySquare [
 	| player1 player2 player3 dice1 dice2 game |
+	
 	player1:= Player create: 'Exequiel'.
 	player2:= Player create: 'Tomas'.
 	player3:= Player create: 'Marcos'.
+	
 	dice1:= Die of: 6 rolling: #(2 5 6).
 	dice2:= Die of: 6 rolling: #(6 4 1).
+	
 	game:= Game createWith: 24 players:{player1 . player2 . player3} dices:(dice1 + dice2). 
+	
 	game completeGame.
+	
 	self
 		assert: (game getScoreboard first getSquare) equals: 27;
 		assert: (game getScoreboard first getName ) equals: 'Tomas';
@@ -79,13 +84,13 @@ GameTests >> testPlayerRollDices02 [
 GameTests >> testPlayerSequeance [
 
 	| player1 player2 players |
-	player1  := Player create: 'Tom‚àö¬∞s'.
+	player1  := Player create: 'Tomas'.
 	player2  := Player create: 'Tuti'.
 
 	players := CircularIterator cyclingOver: {player1 . player2}.
 
 	self
-		assert: (players current getName)  equals: 'Tom‚àö¬∞s'.
+		assert: (players current getName)  equals: 'Tomas'.
 		players next.
 		
 	self 
@@ -113,10 +118,28 @@ GameTests >> testScoreboard [
 	^self assert: game getScoreboard first getName equals: 'Tomas'.  
 ]
 
+{ #category : #tests }
+GameTests >> testScoreboard02 [
+	"testeo que el ganador sea el que de verdad gano y no otro"
+	| game player1 player2 dice1 dice2 |
+	player1 := Player create: 'Tomas'.
+	player2 := Player create: 'Exequiel'.
+	dice1 := Die of: 6 rolling:#(3 4 1).
+	dice2 := Die of: 6 rolling:#(2 5 2).
+	game := Game createWith: 10 players: {player1 . player2} dices:(dice1 + dice2). 
+	
+	game play.
+	game nextPlayer.
+	game play.
+	game nextPlayer.
+	
+	^self assert: game getScoreboard first getName equals: 'Exequiel'.  
+]
+
 { #category : #'as yet unclassified' }
 GameTests >> testWinner [
 	| player1 player2 dice game |
-	player1 := Player create: 'Tom√°s'.
+	player1 := Player create: 'Tomas'.
 	player2 := Player create: 'Tuti'.
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
@@ -126,13 +149,13 @@ GameTests >> testWinner [
 	game completeGame.
 
 
-	self assert: (game winner getName) equals: 'Tom√°s'.
+	self assert: (game winner getName) equals: 'Tomas'.
 ]
 
 { #category : #'as yet unclassified' }
 GameTests >> testWinner02 [
 	| player1 player2 dice1 dice2 game |
-	player1 := Player create: 'Tom√°s'.
+	player1 := Player create: 'Tomas'.
 	player2 := Player create: 'Tuti'.
 
 	dice1 := Die of: 6 rolling: #(2 5 2 5 2).
@@ -149,7 +172,7 @@ GameTests >> testWinner02 [
 { #category : #'as yet unclassified' }
 GameTests >> testWinnerRandom [
 	| player1 player2 dice game |
-	player1  := Player create: 'Tom‚àö¬∞s'.
+	player1  := Player create: 'Tomas'.
 	player2  := Player create: 'Tuti'.
 
 	dice := Die of: 6.
@@ -175,7 +198,6 @@ GameTests >> testWinnerWithScoreboard [
 	game := Game createWith: 10 players: {player1 . player2} dices:(dice1 + dice2). 
 	
 	game completeGame.
-	game updateScoboard.
 	
 	^self assert: game getScoreboard first getName equals: 'Exequiel'.  
 ]
