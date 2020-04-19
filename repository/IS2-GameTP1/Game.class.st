@@ -19,7 +19,7 @@ Game class >> createWith: numberOfSquares players: listOfPlayers dices: listOfDi
 		dicesList: listOfDices 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #game }
 Game >> completeGame [
 	[ self gameContinues ]
 		whileTrue: [ 
@@ -28,36 +28,33 @@ Game >> completeGame [
 		]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #game }
 Game >> gameContinues [
-	| result |
-	result := true.
-	(players options) do: [ :player | (player getSquare > squares ) ifTrue: [result := false] ].
-	^result.
+	^(scoreboard first getSquare) <= squares.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #getter }
 Game >> getPlayers [
 	^players.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #getter }
 Game >> getScoreboard [
 	^ scoreboard .
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
 Game >> nextPlayer [
 	^players next.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
 Game >> play [
 	self whoPlays rollDice: dices.
 	self updateScoboard.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #initialization }
 Game >> setWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
 	scoreboard := listOfPlayers collect: [:player | player].
 	squares := numberOfSquares.
@@ -70,14 +67,12 @@ Game >> updateScoboard [
 	scoreboard sort: [ :p1 :p2 | p1 getSquare >= p2 getSquare ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
 Game >> whoPlays [
 	^players current.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
 Game >> winner [
-	| result |
-	(players options) do: [ :player | (player getSquare > squares ) ifTrue: [result := player] ].
-	^result.
+	^scoreboard first.
 ]

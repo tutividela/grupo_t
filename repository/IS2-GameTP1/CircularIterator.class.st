@@ -50,11 +50,6 @@ CircularIterator >> next [
 	^self current 
 ]
 
-{ #category : #'as yet unclassified' }
-CircularIterator >> options [
-	^ options
-]
-
 { #category : #iterating }
 CircularIterator >> reset [
 
