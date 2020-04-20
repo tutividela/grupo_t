@@ -15,13 +15,13 @@ GameTests >> testFinalPosition [
 		
 	game := Game createWith: 10 players: {player1 . player2} dices: dice1.
 	
-	game completeGame.
+	game complete.
 
 	self assert: (player2 getSquare) equals: 4.
 ]
 
 { #category : #tests }
-GameTests >> testItsOrderedBySquare [
+GameTests >> testFinalScoreboard [
 	| player1 player2 player3 dice1 dice2 game |
 	
 	player1:= Player create: 'Exequiel'.
@@ -33,7 +33,7 @@ GameTests >> testItsOrderedBySquare [
 	
 	game:= Game createWith: 24 players:{player1 . player2 . player3} dices:(dice1 + dice2). 
 	
-	game completeGame.
+	game complete.
 	
 	self
 		assert: (game getScoreboard first getSquare) equals: 27;
@@ -48,8 +48,57 @@ GameTests >> testItsOrderedBySquare [
 ]
 
 { #category : #tests }
-GameTests >> testScoreboard [
-	"testeo que el ganador sea el que de verdad gano y no otro"
+GameTests >> testGameIsOver [
+
+	| game player1 player2 dice1 dice2 |
+	player1 := Player create: 'Tomas'.
+	player2 := Player create: 'Exequiel'.
+	dice1 := Die of: 6 rolling:#(3 4 1).
+	dice2 := Die of: 6 rolling:#(2 5 2).
+	game := Game createWith: 10 players: {player1 . player2} dices:(dice1 + dice2). 
+	
+	game complete.
+	
+	^self assert: game isStillOn equals: false.  
+]
+
+{ #category : #tests }
+GameTests >> testGameIsStillOn [
+
+	| game player1 player2 dice1 dice2 |
+	player1 := Player create: 'Tomas'.
+	player2 := Player create: 'Exequiel'.
+	dice1 := Die of: 6 rolling:#(3 4 1).
+	dice2 := Die of: 6 rolling:#(2 5 2).
+	game := Game createWith: 10 players: {player1 . player2} dices:(dice1 + dice2). 
+	
+	game play.
+	game nextPlayer.
+	game play.
+	game nextPlayer.
+	
+	^self assert: game isStillOn equals: true.  
+]
+
+{ #category : #tests }
+GameTests >> testNextPlayerToPlay [
+
+	| game player1 player2 dice1 dice2 |
+	player1 := Player create: 'Tomas'.
+	player2 := Player create: 'Exequiel'.
+	dice1 := Die of: 6 rolling:#(3 4 1).
+	dice2 := Die of: 6 rolling:#(2 5 2).
+	game := Game createWith: 10 players: {player1 . player2} dices:(dice1 + dice2). 
+	
+	game play.
+	game nextPlayer.
+	
+	^self assert: game whoPlays getName equals: 'Exequiel'.  
+]
+
+{ #category : #tests }
+GameTests >> testScoreboardGameIsInProgress [
+
 	| game player1 player2 dice1 dice2 |
 	player1 := Player create: 'Tomas'.
 	player2 := Player create: 'Exequiel'.
@@ -64,8 +113,8 @@ GameTests >> testScoreboard [
 ]
 
 { #category : #tests }
-GameTests >> testScoreboard02 [
-	"testeo que el ganador sea el que de verdad gano y no otro"
+GameTests >> testScoreboardGameIsInProgress02 [
+	
 	| game player1 player2 dice1 dice2 |
 	player1 := Player create: 'Tomas'.
 	player2 := Player create: 'Exequiel'.
@@ -82,7 +131,7 @@ GameTests >> testScoreboard02 [
 ]
 
 { #category : #tests }
-GameTests >> testWinner [
+GameTests >> testWinnerOneDice [
 	| player1 player2 dice game |
 	player1 := Player create: 'Tomas'.
 	player2 := Player create: 'Tuti'.
@@ -91,27 +140,10 @@ GameTests >> testWinner [
 	
 	game := Game createWith: 10 players: {player1 . player2} dices: dice.
 	
-	game completeGame.
+	game complete.
 
 
 	self assert: (game winner getName) equals: 'Tomas'.
-]
-
-{ #category : #tests }
-GameTests >> testWinner02 [
-	| player1 player2 dice1 dice2 game |
-	player1 := Player create: 'Tomas'.
-	player2 := Player create: 'Tuti'.
-
-	dice1 := Die of: 6 rolling: #(2 5 2 5 2).
-	dice2 := Die of: 4 rolling: #(2 2 2 2 2).
-	
-	game := Game createWith: 20 players: {player1 . player2} dices: (dice1 + dice2).
-	
-	game completeGame.
-
-
-	self assert: (game winner getName) equals: 'Tuti'.
 ]
 
 { #category : #tests }
@@ -124,10 +156,27 @@ GameTests >> testWinnerRandom [
 	
 	game := Game createWith: 10 players: {player1 . player2} dices: dice.
 	
-	game completeGame.
+	game complete.
 
 
 	game winner getName .
+]
+
+{ #category : #tests }
+GameTests >> testWinnerTwoDices [
+	| player1 player2 dice1 dice2 game |
+	player1 := Player create: 'Tomas'.
+	player2 := Player create: 'Tuti'.
+
+	dice1 := Die of: 6 rolling: #(2 5 2 5 2).
+	dice2 := Die of: 4 rolling: #(2 2 2 2 2).
+	
+	game := Game createWith: 20 players: {player1 . player2} dices: (dice1 + dice2).
+	
+	game complete.
+
+
+	self assert: (game winner getName) equals: 'Tuti'.
 ]
 
 { #category : #tests }
@@ -142,7 +191,7 @@ GameTests >> testWinnerWithScoreboard [
 	
 	game := Game createWith: 10 players: {player1 . player2} dices:(dice1 + dice2). 
 	
-	game completeGame.
+	game complete.
 	
-	^self assert: game getScoreboard first getName equals: (game winner getName).  
+	^self assert: game getScoreboard first equals: (game winner).  
 ]

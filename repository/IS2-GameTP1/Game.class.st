@@ -20,27 +20,22 @@ Game class >> createWith: numberOfSquares players: listOfPlayers dices: listOfDi
 ]
 
 { #category : #game }
-Game >> completeGame [
-	[ self gameContinues ]
+Game >> complete [
+	[ self isStillOn ]
 		whileTrue: [ 
 			self play.
 			self nextPlayer 
 		]
 ]
 
-{ #category : #game }
-Game >> gameContinues [
-	^(scoreboard first getSquare) <= squares.
-]
-
-{ #category : #getter }
-Game >> getPlayers [
-	^players.
-]
-
 { #category : #getter }
 Game >> getScoreboard [
 	^ scoreboard .
+]
+
+{ #category : #game }
+Game >> isStillOn [
+	^(scoreboard first getSquare) <= squares.
 ]
 
 { #category : #players }
