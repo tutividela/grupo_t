@@ -21,7 +21,7 @@ CircularIterator class >> cyclingOver: aSequentiableCollection [
 		ifFalse: [ InstanceCreationFailed
 				signal: 'It makes no sense to iterate in a cyclic way an empty collection' ].
 
-	^ self new initializeCyclingOver: aSequentiableCollection asArray
+	^ self new initializeCyclingOver: aSequentiableCollection asArray 
 ]
 
 { #category : #accessing }
@@ -48,11 +48,6 @@ CircularIterator >> next [
 
 	currentIndex := (currentIndex + 1) \\ options size.
 	^self current 
-]
-
-{ #category : #'as yet unclassified' }
-CircularIterator >> options [
-	^ options
 ]
 
 { #category : #iterating }

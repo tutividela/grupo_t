@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'squares',
 		'dices',
-		'players'
+		'players',
+		'scoreboard'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -18,47 +19,55 @@ Game class >> createWith: numberOfSquares players: listOfPlayers dices: listOfDi
 		dicesList: listOfDices 
 ]
 
-{ #category : #'as yet unclassified' }
-Game >> completeGame [
-	[ self gameContinues ] whileTrue: [ 
-		self whoPlays rollDice: dices.
-		self nextPlayer.
-	 ].
+{ #category : #game }
+Game >> complete [
+	[ self isStillOn ]
+		whileTrue: [ 
+			self play.
+			self nextPlayer 
+		]
 ]
 
-{ #category : #'as yet unclassified' }
-Game >> gameContinues [
-	| result |
-	result := true.
-	(players options) do: [ :player | (player getSquare > squares ) ifTrue: [result := false] ].
-	^result.
+{ #category : #getter }
+Game >> getScoreboard [
+	^ scoreboard .
 ]
 
-{ #category : #'as yet unclassified' }
-Game >> getPlayers [
-	^players.
+{ #category : #game }
+Game >> isStillOn [
+	^(scoreboard first getSquare) <= squares.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
 Game >> nextPlayer [
 	^players next.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
+Game >> play [
+	self whoPlays rollDice: dices.
+	self updateScoboard.
+]
+
+{ #category : #initialization }
 Game >> setWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
+	scoreboard := listOfPlayers collect: [:player | player].
 	squares := numberOfSquares.
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #sorting }
+Game >> updateScoboard [
+	scoreboard sort: [ :p1 :p2 | p1 getSquare >= p2 getSquare ].
+]
+
+{ #category : #players }
 Game >> whoPlays [
 	^players current.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #players }
 Game >> winner [
-	| result |
-	(players options) do: [ :player | (player getSquare > squares ) ifTrue: [result := player] ].
-	^result.
+	^scoreboard first.
 ]

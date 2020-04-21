@@ -23,7 +23,7 @@ Player >> getSquare [
 	^square.
 ]
 
-{ #category : #'instance creation' }
+{ #category : #rolling }
 Player >> rollDice: dices [ 
 	|result|
 	result := dices roll.
@@ -31,7 +31,7 @@ Player >> rollDice: dices [
 	^result.
 ]
 
-{ #category : #'instance creation' }
+{ #category : #initialization }
 Player >> withName: aName [ 
 	name:= aName. 
 	square := 0.
