@@ -11,13 +11,13 @@ BaselineOfIngSoft2 >> baseline: spec [
 	spec
 		for: #common
 		do: [ spec
-				package: 'IngSoft2-Model';
-				package: 'IngSoft2-Tests' with: [ spec requires: #('IngSoft2-Model') ].
+				package: 'IS2-GameTP1';
+				package: 'IS2-GameTP1-Tests' with: [ spec requires: #('IS2-GameTP1')] .
 
 			spec
 				group: 'default' with: #('deployment');
-				group: 'deployment' with: #('IngSoft2-Model');
-				group: 'development' with: #('IngSoft2-Tests') ]
+				group: 'deployment' with: #('IS2-GameTP1');
+				group: 'development' with: #('IS2-GameTP1-Tests') ]
 ]
 
 { #category : #accessing }
