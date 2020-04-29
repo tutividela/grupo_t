@@ -10,56 +10,56 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
-Game class >> createWith: numberOfSquares players: listOfPlayers dices: listOfDices [
+{ #category : #'instance creation' }
+Game class >> with: numberOfSquares players: listOfPlayers dices: listOfDices [
 	
 	^self new 
-		setWith: numberOfSquares 
+		initializeWith: numberOfSquares 
 		playersList: listOfPlayers 
 		dicesList: listOfDices 
 ]
 
-{ #category : #game }
-Game >> complete [
-	[ self isStillOn ]
-		whileTrue: [ 
-			self play.
-			self nextPlayer 
-		]
-]
-
-{ #category : #getter }
-Game >> getScoreboard [
-	^ scoreboard .
-]
-
-{ #category : #game }
-Game >> isStillOn [
-	^(scoreboard first getSquare) <= squares.
-]
-
-{ #category : #players }
-Game >> nextPlayer [
-	^players next.
-]
-
-{ #category : #players }
-Game >> play [
-	self whoPlays rollDice: dices.
-	self updateScoboard.
-]
-
 { #category : #initialization }
-Game >> setWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
-	scoreboard := listOfPlayers collect: [:player | player].
+Game >> initializeWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
+	scoreboard := listOfPlayers copy.
 	squares := numberOfSquares.
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
 ]
 
+{ #category : #game }
+Game >> isStillOn [
+	^scoreboard first square <= squares.
+]
+
+{ #category : #private }
+Game >> nextTurn [
+	^players next.
+]
+
+{ #category : #game }
+Game >> playAllTurns [
+	[ self isStillOn ]
+		whileTrue: [ 
+			self playNextTurn.
+		]
+]
+
+{ #category : #game }
+Game >> playNextTurn [
+	self whoPlays roll: dices.
+	self updateScoboard.
+	self nextTurn.
+]
+
+{ #category : #accesing }
+Game >> scoreboard [
+	^ scoreboard copy .
+]
+
 { #category : #sorting }
 Game >> updateScoboard [
-	scoreboard sort: [ :p1 :p2 | p1 getSquare >= p2 getSquare ].
+	scoreboard sort: [ :p1 :p2 | p1 square >= p2 square ].
 ]
 
 { #category : #players }
