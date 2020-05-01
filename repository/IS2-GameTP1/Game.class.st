@@ -47,6 +47,9 @@ Game >> playAllTurns [
 
 { #category : #game }
 Game >> playNextTurn [
+	self isStillOn
+		ifFalse: [ ^ 'se terminó' ].
+		
 	self whoPlays roll: dices.
 	self updateScoboard.
 	self nextTurn.
