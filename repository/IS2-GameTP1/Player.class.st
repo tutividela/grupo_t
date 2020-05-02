@@ -26,13 +26,17 @@ Player >> name [
 
 { #category : #rolling }
 Player >> roll: dices [ 
-	|result|
-	result := dices roll.
-	square := square + result.
-	^result.
+	^ dices roll.
+
 ]
 
 { #category : #accessing }
 Player >> square [
 	^square.
+]
+
+{ #category : #rolling }
+Player >> updateSquare: resultOfRoll [ 
+	square := square + resultOfRoll.
+
 ]

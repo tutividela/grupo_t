@@ -25,7 +25,7 @@ GameTest >> testFinalPosition [
 	
 	game playAllTurns.
 
-	self assert: exequiel square equals: 4.
+	self assert: exequiel square equals: 2.
 ]
 
 { #category : #tests }
@@ -34,19 +34,19 @@ GameTest >> testFinalScoreboard [
 	
 	player3:= Player named: 'Marcos'.
 	
-	dice1:= Die of: 6 rolling: #(2 5 6).
-	dice2:= Die of: 6 rolling: #(6 4 1).
+	dice1:= Die of: 6 rolling: #(5 5 6).
+	dice2:= Die of: 6 rolling: #(5 4 1).
 	
 	game:= Game with: 24 players:{exequiel  . tomas . player3} dices:(dice1 + dice2). 
 	
 	game playAllTurns.
 	
 	self
-		assert: game scoreboard first square equals: 27;
-		assert: game scoreboard first name equals: 'Tomas';
+		assert: game scoreboard first square equals: 24;
+		assert: game scoreboard first name equals: 'Exequiel';
 		
-		assert: game scoreboard second square equals: 24 ;
-		assert: game scoreboard second name equals: 'Exequiel';
+		assert: game scoreboard second square equals: 18;
+		assert: game scoreboard second name equals: 'Tomas';
 		
 		assert: game scoreboard last square equals: 14;
 		assert: game scoreboard last name equals: 'Marcos'.
@@ -108,6 +108,20 @@ GameTest >> testIfTheWinnerIsInFirstPlace [
 	game playAllTurns.
 	
 	self assert: game winner equals: game scoreboard first.  
+]
+
+{ #category : #tests }
+GameTest >> testNoWinnerYet [
+	| dice game |
+	
+	dice := Die of: 6 rolling: #(5 2 5 2 5).
+	
+	game := Game with: 10 players: {tomas . exequiel} dices: dice.
+	
+	self 
+		should: [ game winner ] 
+		raise: Error 
+		description: 'No winner yet'
 ]
 
 { #category : #tests }

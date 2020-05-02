@@ -29,7 +29,7 @@ Game >> initializeWith: numberOfSquares playersList: listOfPlayers dicesList: li
 
 { #category : #game }
 Game >> isStillOn [
-	^scoreboard first square <= squares.
+	^scoreboard first square < squares.
 ]
 
 { #category : #private }
@@ -47,10 +47,14 @@ Game >> playAllTurns [
 
 { #category : #game }
 Game >> playNextTurn [
+	| player rollResult |
 	self isStillOn
-		ifFalse: [ ^ 'se terminó' ].
-		
-	self whoPlays roll: dices.
+		ifFalse: [ ^ 'game over' ].
+	
+	player := self whoPlays .
+	rollResult := player roll: dices.
+	player updateSquare: (player square + rollResult > squares ifTrue: [ squares - player square ] ifFalse: [ rollResult ]).
+	
 	self updateScoboard.
 	self nextTurn.
 ]
@@ -72,5 +76,8 @@ Game >> whoPlays [
 
 { #category : #players }
 Game >> winner [
-	^scoreboard first.
+	^self isStillOn 
+		ifTrue: [ Error signal: 'No winner yet' ]
+		ifFalse: [ scoreboard first ].
+
 ]

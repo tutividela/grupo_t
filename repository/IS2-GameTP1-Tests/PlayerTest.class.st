@@ -13,19 +13,6 @@ PlayerTest >> testCreateAPlayer [
 ]
 
 { #category : #tests }
-PlayerTest >> testNewSquare [
-	| player dices dice1 dice2 |
-	player := Player named: 'Exequiel'.
-	dice1 := Die of: 6.
-	dice2 := Die of: 6.
-	dices := dice1 + dice2.
-	
-	player roll: dices. 
-	
-	self assert: (player square between: 1 and:12 ).
-]
-
-{ #category : #tests }
 PlayerTest >> testPlayerRollDeterministicDices [
 	| player dices dice1 dice2 |
 	
@@ -35,12 +22,12 @@ PlayerTest >> testPlayerRollDeterministicDices [
 	
 	dices:= dice1 + dice2.
 	
-	player roll: dices.
-	self assert: player square equals: 5.
-	player roll: dices. 
-	self assert: player square equals: 12.
-	player roll: dices. 
-	self assert: player square equals: 21.
+	
+	self assert: (player roll: dices) equals: 5.
+
+	self assert: (player roll: dices) equals: 7.
+
+	self assert: (player roll: dices) equals: 9.
 ]
 
 { #category : #tests }
