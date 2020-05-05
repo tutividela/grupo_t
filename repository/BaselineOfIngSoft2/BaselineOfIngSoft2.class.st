@@ -12,7 +12,8 @@ BaselineOfIngSoft2 >> baseline: spec [
 		for: #common
 		do: [ spec
 				package: 'IS2-GameTP1';
-				package: 'IS2-GameTP1-Tests' with: [ spec requires: #('IS2-GameTP1')] .
+				package: 'IS2-Dice-Tests';
+				package: 'IS2-GameTP1-Tests' with: [ spec requires: #('IS2-GameTP1'), #('IS2-Dice-Tests')] .
 
 			spec
 				group: 'default' with: #('deployment');
