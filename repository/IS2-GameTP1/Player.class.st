@@ -8,31 +8,35 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
-Player class >> create: aName [ 
-	^self new withName: aName 
+{ #category : #'instance creation' }
+Player class >> named: aName [ 
+	^self new initializeWithName: aName 
 ]
 
-{ #category : #getter }
-Player >> getName [
+{ #category : #initialization }
+Player >> initializeWithName: aName [ 
+	name:= aName. 
+	square := 0.
+]
+
+{ #category : #accessing }
+Player >> name [
 	^name.
 ]
 
-{ #category : #getter }
-Player >> getSquare [
+{ #category : #rolling }
+Player >> roll: dices [ 
+	^ dices roll.
+
+]
+
+{ #category : #accessing }
+Player >> square [
 	^square.
 ]
 
 { #category : #rolling }
-Player >> rollDice: dices [ 
-	|result|
-	result := dices roll.
-	square := square + result.
-	^result.
-]
+Player >> updateSquare: resultOfRoll [ 
+	square := square + resultOfRoll.
 
-{ #category : #initialization }
-Player >> withName: aName [ 
-	name:= aName. 
-	square := 0.
 ]
