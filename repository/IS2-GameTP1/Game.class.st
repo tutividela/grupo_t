@@ -5,10 +5,22 @@ Class {
 		'squares',
 		'dices',
 		'players',
-		'scoreboard'
+		'scoreboard',
+		'board',
+		'laps'
 	],
 	#category : #'IS2-GameTP1'
 }
+
+{ #category : #'instance creation' }
+Game class >> with: numberOfSquares laps: numberOfLaps players: listOfPlayers dices: listOfDices [
+	
+	^self new 
+		initializeWith: numberOfSquares 
+		lapsToWin: numberOfLaps 
+		playersList: listOfPlayers 
+		dicesList: listOfDices 
+]
 
 { #category : #'instance creation' }
 Game class >> with: numberOfSquares players: listOfPlayers dices: listOfDices [
@@ -17,6 +29,17 @@ Game class >> with: numberOfSquares players: listOfPlayers dices: listOfDices [
 		initializeWith: numberOfSquares 
 		playersList: listOfPlayers 
 		dicesList: listOfDices 
+]
+
+{ #category : #initialization }
+Game >> initializeWith: numberOfSquares lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
+	scoreboard := listOfPlayers copy.
+	squares := numberOfSquares.
+	
+	laps := numberOfLaps.
+	players  := CircularIterator cyclingOver: listOfPlayers.
+	dices := listOfDices.
+	board := Board with: numberOfSquares players: listOfPlayers.
 ]
 
 { #category : #initialization }
@@ -29,7 +52,7 @@ Game >> initializeWith: numberOfSquares playersList: listOfPlayers dicesList: li
 
 { #category : #game }
 Game >> isStillOn [
-	^scoreboard first square < squares.
+	^scoreboard first lapsDone < laps.
 ]
 
 { #category : #private }
@@ -53,7 +76,7 @@ Game >> playNextTurn [
 	
 	player := self whoPlays .
 	rollResult := player roll: dices.
-	player updateSquare: (player square + rollResult > squares ifTrue: [ squares - player square ] ifFalse: [ rollResult ]).
+	board move: player squares: rollResult .
 	
 	self updateScoboard.
 	self nextTurn.
@@ -66,7 +89,7 @@ Game >> scoreboard [
 
 { #category : #sorting }
 Game >> updateScoboard [
-	scoreboard sort: [ :p1 :p2 | p1 square >= p2 square ].
+	scoreboard sort: [ :p1 :p2 | p1 lapsDone >= p2 lapsDone ].
 ]
 
 { #category : #players }

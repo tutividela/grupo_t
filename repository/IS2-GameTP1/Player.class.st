@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'name',
-		'square'
+		'square',
+		'lapsDone'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -17,11 +18,22 @@ Player class >> named: aName [
 Player >> initializeWithName: aName [ 
 	name:= aName. 
 	square := 0.
+	lapsDone := 0.
+]
+
+{ #category : #accessing }
+Player >> lapsDone [
+	^lapsDone.
 ]
 
 { #category : #accessing }
 Player >> name [
 	^name.
+]
+
+{ #category : #accessing }
+Player >> registerLap [
+	lapsDone := lapsDone + 1.
 ]
 
 { #category : #rolling }
