@@ -22,32 +22,14 @@ Game class >> with: numberOfSquares laps: numberOfLaps players: listOfPlayers di
 		dicesList: listOfDices 
 ]
 
-{ #category : #'instance creation' }
-Game class >> with: numberOfSquares players: listOfPlayers dices: listOfDices [
-	
-	^self new 
-		initializeWith: numberOfSquares 
-		playersList: listOfPlayers 
-		dicesList: listOfDices 
-]
-
 { #category : #initialization }
 Game >> initializeWith: numberOfSquares lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
+	players  := CircularIterator cyclingOver: listOfPlayers.
+	dices := listOfDices.
 	scoreboard := listOfPlayers copy.
-	squares := numberOfSquares.
 	
 	laps := numberOfLaps.
-	players  := CircularIterator cyclingOver: listOfPlayers.
-	dices := listOfDices.
 	board := Board with: numberOfSquares players: listOfPlayers.
-]
-
-{ #category : #initialization }
-Game >> initializeWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
-	scoreboard := listOfPlayers copy.
-	squares := numberOfSquares.
-	players  := CircularIterator cyclingOver: listOfPlayers.
-	dices := listOfDices.
 ]
 
 { #category : #game }

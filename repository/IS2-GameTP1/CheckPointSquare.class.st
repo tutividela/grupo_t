@@ -19,13 +19,13 @@ CheckPointSquare class >> with: anEffect players: listOfPlayers [
 ]
 
 { #category : #initialization }
-CheckPointSquare >> addPlayer: aPlayer [
-	players add: aPlayer.
+CheckPointSquare >> checkpoint [
+	^true.
 ]
 
 { #category : #initialization }
-CheckPointSquare >> checkpoint [
-	^true.
+CheckPointSquare >> effect [
+	^effect.
 ]
 
 { #category : #initialization }
@@ -35,11 +35,16 @@ CheckPointSquare >> initializeWith: squareEffect players: listOfPlayers [
 ]
 
 { #category : #initialization }
+CheckPointSquare >> leaves: aPlayer [
+	players remove: aPlayer.
+]
+
+{ #category : #initialization }
 CheckPointSquare >> players [
 	^players.
 ]
 
 { #category : #initialization }
-CheckPointSquare >> removePlayer: aPlayer [
-	players remove: aPlayer.
+CheckPointSquare >> put: aPlayer [
+	players add: aPlayer.
 ]

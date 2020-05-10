@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'name',
-		'square',
 		'lapsDone'
 	],
 	#category : #'IS2-GameTP1'
@@ -17,7 +16,6 @@ Player class >> named: aName [
 { #category : #initialization }
 Player >> initializeWithName: aName [ 
 	name:= aName. 
-	square := 0.
 	lapsDone := 0.
 ]
 
@@ -39,16 +37,5 @@ Player >> registerLap [
 { #category : #rolling }
 Player >> roll: dices [ 
 	^ dices roll.
-
-]
-
-{ #category : #accessing }
-Player >> square [
-	^square.
-]
-
-{ #category : #rolling }
-Player >> updateSquare: resultOfRoll [ 
-	square := square + resultOfRoll.
 
 ]
