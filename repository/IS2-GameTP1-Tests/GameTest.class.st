@@ -21,7 +21,7 @@ GameTest >> testFinalPosition [
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 
-	game := Game with: 10 players: {tomas . exequiel} dices: dice.
+	game := Game with: 10 laps: 2 players: {tomas . exequiel} dices: dice.
 	
 	game playAllTurns.
 

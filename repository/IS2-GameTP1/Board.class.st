@@ -21,17 +21,21 @@ Board >> findPlayer: aPlayer [
 
 { #category : #initialization }
 Board >> initializeWith: nSquares players: listOfPlayers [
-	| array |
+	| collection |
 	
-	array := Array new: nSquares .
-	array at: 1 put: (CheckPointSquare with: NoEffect new players: listOfPlayers) .
+	collection := OrderedCollection new.
+
+	(nSquares * 0.48) asInteger timesRepeat: (collection add: (Square with: NoEffect new)).
+	(nSquares * 0.20) asInteger timesRepeat: (collection add: (Square with: WormHole new)).
+	(nSquares * 0.20) asInteger timesRepeat: (collection add: (Square with: SpeedUp new)).
+	(nSquares * 0.10) asInteger timesRepeat: (collection add: (Square with: MoonWalk new)).
+	(nSquares * 0.20) asInteger timesRepeat: (collection add: (Square with: AtomicBomb new)).
 	
-	"esto hay que arreglarlo: para insertar en el array los Square's con los efectos en las proporciones
-	necesarias y mezclados "	
-	2 to: nSquares do: [:index | array at: index put: (Square with: NoEffect new)].
-
-
-	squares := CircularIterator cyclingOver: array .
+	collection shuffle.
+	
+	collection addFirst: (CheckPointSquare with: NoEffect new players: listOfPlayers).
+	
+	squares := CircularIterator cyclingOver: collection .
 ]
 
 { #category : #'as yet unclassified' }

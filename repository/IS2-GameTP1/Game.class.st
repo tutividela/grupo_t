@@ -13,13 +13,12 @@ Class {
 }
 
 { #category : #'instance creation' }
-Game class >> with: numberOfSquares laps: numberOfLaps players: listOfPlayers dices: listOfDices [
-	
+Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfSquares during: aNumberOfLaps [
 	^self new 
-		initializeWith: numberOfSquares 
-		lapsToWin: numberOfLaps 
-		playersList: listOfPlayers 
-		dicesList: listOfDices 
+		initializeWith: aNumberOfSquares 
+		lapsToWin: aNumberOfLaps 
+		playersList: aSetOfPlayer 
+		dicesList: dices 
 ]
 
 { #category : #initialization }

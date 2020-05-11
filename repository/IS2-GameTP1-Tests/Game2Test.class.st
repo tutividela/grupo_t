@@ -22,7 +22,7 @@ Game2Test >> testGame [
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game with: 6 laps: 2 players: {tomas . exequiel} dices: dice.
+	game := Game playedBy: {tomas . exequiel} throwing: dice onBoardOfLength: 10 during: 2.
 	
 	game playAllTurns.
 
