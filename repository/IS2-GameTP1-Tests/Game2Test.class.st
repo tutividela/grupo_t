@@ -21,7 +21,7 @@ Game2Test >> testGame [
 	| dice game |
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
-	
+	"esto es una prueba"
 	game := Game playedBy: {tomas . exequiel} throwing: dice onBoardOfLength: 10 during: 2.
 	
 	game playAllTurns.
