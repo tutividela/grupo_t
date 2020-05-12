@@ -12,18 +12,27 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
+{ #category : #'as yet unclassified' }
+Game class >> playedBy:aSetOfPlayer throwing:dices onBoardLength:aNumberOfSquares during:aNumberOfLaps [
+	^self new 
+		initializeWith: aNumberOfSquares 
+		lapsToWin: aNumberOfLaps 
+		playersList: aSetOfPlayer 
+		dicesList: dices.
+]
+
 { #category : #'instance creation' }
 Game class >> with: numberOfSquares laps: numberOfLaps players: listOfPlayers dices: listOfDices [
-	
-	^self new 
-		initializeWith: numberOfSquares 
-		lapsToWin: numberOfLaps 
-		playersList: listOfPlayers 
-		dicesList: listOfDices 
+	^self new squares: numberOfSquares  laps:numberOfLaps   players:listOfPlayers   dices:listOfDices . 
+]
+
+{ #category : #accesing }
+Game >> board [
+	^board.
 ]
 
 { #category : #initialization }
-Game >> initializeWith: numberOfSquares lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
+Game >> initializeWith: numberOfSquares lapsToWin: numberOfLaps playersList: listOfPlayers dicesList:listOfDices [ 
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
 	scoreboard := listOfPlayers copy.
@@ -67,6 +76,17 @@ Game >> playNextTurn [
 { #category : #accesing }
 Game >> scoreboard [
 	^ scoreboard copy .
+]
+
+{ #category : #'as yet unclassified' }
+Game >> squares: numberOfSquares laps: numberOfLaps players: listOfPlayers dices:listOfDices [ 
+	players  := CircularIterator cyclingOver: listOfPlayers.
+	dices := listOfDices.
+	scoreboard := listOfPlayers copy.
+	
+	laps := numberOfLaps.
+	board := Board size: numberOfSquares  players:listOfPlayers  .
+	
 ]
 
 { #category : #sorting }

@@ -30,6 +30,11 @@ CircularIterator >> current [
 	^options at: currentIndex + 1
 ]
 
+{ #category : #accessing }
+CircularIterator >> currentIndex [
+	^currentIndex .
+]
+
 { #category : #testing }
 CircularIterator >> includes: anObject [
 
@@ -48,6 +53,12 @@ CircularIterator >> next [
 
 	currentIndex := (currentIndex + 1) \\ options size.
 	^self current 
+]
+
+{ #category : #accessing }
+CircularIterator >> previous [ 	
+	currentIndex := currentIndex - 1.
+	currentIndex < 0 ifTrue: [ currentIndex := (options size ) + currentIndex  ].
 ]
 
 { #category : #iterating }

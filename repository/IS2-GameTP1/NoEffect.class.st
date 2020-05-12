@@ -8,3 +8,7 @@ Class {
 NoEffect >> doEffectOver: squares [
 	
 ]
+
+{ #category : #'as yet unclassified' }
+NoEffect >> doEffectOver:squares to:aPlayer [
+]
