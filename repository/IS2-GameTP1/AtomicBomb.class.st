@@ -1,11 +1,13 @@
 Class {
 	#name : #AtomicBomb,
 	#superclass : #Object,
-	#instVars : [
-		'players'
-	],
 	#category : #'IS2-GameTP1'
 }
+
+{ #category : #'as yet unclassified' }
+AtomicBomb >> doEffectOver: squares [
+	
+]
 
 { #category : #'as yet unclassified' }
 AtomicBomb >> doEffectOver:squares to:aPlayer [

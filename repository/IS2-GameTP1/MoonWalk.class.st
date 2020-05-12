@@ -5,5 +5,10 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
+MoonWalk >> doEffectOver: squares [
+	
+]
+
+{ #category : #'as yet unclassified' }
 MoonWalk >> doEffectOver: squares to: aPayers [ 
 ]
