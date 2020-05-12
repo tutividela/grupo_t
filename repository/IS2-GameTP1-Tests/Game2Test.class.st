@@ -19,7 +19,7 @@ Game2Test >> setUp [
 { #category : #tests }
 Game2Test >> testGame [
 	| dice game |
-
+"bla bla ba lblaaa"
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
 	game := Game playedBy: {tomas . exequiel} throwing: dice onBoardOfLength: 10 during: 2.
