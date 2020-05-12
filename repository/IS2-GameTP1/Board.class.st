@@ -51,12 +51,11 @@ Board >> initializeWith:nSquares players: listOfPlayers [
 	
 	collection := OrderedCollection new.
 	 
-
-	(nSquares * 0.48) asInteger timesRepeat: (collection add:(Square with: NoEffect new) ).
-	(nSquares * 0.20) asInteger timesRepeat: (collection add: (Square with: WormHole new)).
-	(nSquares * 0.20) asInteger timesRepeat: (collection add: (Square with: SpeedUp new)).
-	(nSquares * 0.10) asInteger timesRepeat: (collection add: (Square with: MoonWalk new)).
-	(nSquares * 0.02) asInteger timesRepeat: (collection add:(Square with: AtomicBomb new)).
+	(nSquares * 0.48) asInteger timesRepeat: (collection addLast: (Square with: NoEffect new) ).
+	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: WormHole new)).
+	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: SpeedUp new)).
+	(nSquares * 0.10) asInteger timesRepeat: (collection addLast: (Square with: MoonWalk new)).
+	(nSquares * 0.02) asInteger timesRepeat: (collection addLast: (Square with: AtomicBomb new)).
 	
 	collection shuffle.
 	
