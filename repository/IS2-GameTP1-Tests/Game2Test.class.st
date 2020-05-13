@@ -17,17 +17,15 @@ Game2Test >> setUp [
 ]
 
 { #category : #tests }
-Game2Test >> testGame [
-	| dice game |
-
-	dice := Die of: 6 rolling: #(5 2 5 2 5).
-	
-	game := Game playedBy: {tomas.exequiel  }  throwing:dice  onBoardLength:10  during:2 .
-	
-	game playAllTurns.
-
-
-	self assert: game winner name equals: 'Tomas'.
+Game2Test >> testAtomicBomb [
+	|dice game|
+	dice:= Die of: 8 rolling:#(5 4) .
+	game:=Game with: 10 laps:2  players:{tomas.exequiel }  dices:dice .
+	game playNextTurn .
+	game playNextTurn .
+	game board squares reset.
+	self assert: (game board squares current players asArray includes:exequiel);
+		assert:(game board squares current players asArray includes:tomas).
 ]
 
 { #category : #tests }

@@ -5,17 +5,22 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-AtomicBomb >> doEffectOver: squares [
-	
+AtomicBomb class >> withPlayers: listOfPlayers [
+	^ self new initializeWith: listOfPlayers .
 ]
 
 { #category : #'as yet unclassified' }
 AtomicBomb >> doEffectOver:squares to:aPlayer [
-	"iterador : para cada player le hago un :
-	leave
-	previous varias veces hasta checkpoint=true
-	put
-	"
+	|players|
+	players:= OrderedCollection new.
+	squares reset.
+	squares next.
+	[ squares current checkpoint ] whileFalse: [ 
+	players addAll: squares current players. 
+	squares current players removeAll .
+	squares next.].
+
+	squares current players addAllLast: players.
 	
 	
 ]
