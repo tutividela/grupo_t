@@ -14,6 +14,11 @@ Player class >> named: aName [
 ]
 
 { #category : #'as yet unclassified' }
+Player >> ceroLaps [
+	^ self lapsDone == 0.
+]
+
+{ #category : #'as yet unclassified' }
 Player >> decreaseLap [
 	lapsDone := lapsDone -1.
 	lapsDone < 0 ifTrue: [ self resetLaps . ]

@@ -29,6 +29,17 @@ Game2Test >> testAtomicBomb [
 ]
 
 { #category : #tests }
+Game2Test >> testMoonWalk [
+	|dice game|
+	dice:= Die of: 8 rolling:#(8 3).
+	game :=Game with: 10 laps:2  players:{exequiel.tomas}  dices:dice .
+	game playNextTurn .
+	game playNextTurn .
+	self assert: ((game board findPlayer:exequiel) squares currentIndex)equals: 3;
+		assert:((game board findPlayer: tomas) squares currentIndex )equals:3. 
+]
+
+{ #category : #tests }
 Game2Test >> testSpeedUp [
 	|dice game|
 	dice:= Die of: 6 rolling: #(1). 

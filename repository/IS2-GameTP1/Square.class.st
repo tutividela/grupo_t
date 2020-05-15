@@ -39,6 +39,11 @@ Square >> leaves: aPlayer [
 	players remove: aPlayer.
 ]
 
+{ #category : #'as yet unclassified' }
+Square >> leavesASet: setOfPlayers [
+	players removeAll: setOfPlayers .
+]
+
 { #category : #initialization }
 Square >> players [
 	^players.
@@ -47,4 +52,9 @@ Square >> players [
 { #category : #initialization }
 Square >> put: aPlayer [
 	players add: aPlayer.
+]
+
+{ #category : #'as yet unclassified' }
+Square >> putASet: setOfPlayers [ 
+	players addAll: setOfPlayers .
 ]

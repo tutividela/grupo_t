@@ -35,6 +35,11 @@ CircularIterator >> currentIndex [
 	^currentIndex .
 ]
 
+{ #category : #'as yet unclassified' }
+CircularIterator >> goToIndex: anIndex [
+	currentIndex := anIndex .
+]
+
 { #category : #testing }
 CircularIterator >> includes: anObject [
 

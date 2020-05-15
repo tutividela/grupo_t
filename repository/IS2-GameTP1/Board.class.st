@@ -88,7 +88,7 @@ Board >> size:nSquares with:listOfPlayers [
 	collection addFirst: (CheckPointSquare with: NoEffect new players: listOfPlayers).
 	collection add: (Square with: SpeedUp new).
 	collection add: (Square with: WormHole  new).
-	collection add: (Square with: MoonWalk  new).
+	collection add: (Square with: (MoonWalk withKnownNValue: 5)).
 	collection add: (Square with: AtomicBomb  new).
 	1 to: (nSquares -collection size) do: [ :s| collection add:(Square with: NoEffect new)].
 	"(nSquares - 5) asInteger timesRepeat: (collection add: (Square with: NoEffect new))."

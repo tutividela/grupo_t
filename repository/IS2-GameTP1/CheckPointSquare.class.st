@@ -39,6 +39,11 @@ CheckPointSquare >> leaves: aPlayer [
 	players remove: aPlayer.
 ]
 
+{ #category : #'as yet unclassified' }
+CheckPointSquare >> leavesASet: setOfPlayers [
+	players removeAll: setOfPlayers .
+]
+
 { #category : #initialization }
 CheckPointSquare >> players [
 	^players.
@@ -47,4 +52,9 @@ CheckPointSquare >> players [
 { #category : #initialization }
 CheckPointSquare >> put: aPlayer [
 	players add: aPlayer.
+]
+
+{ #category : #'as yet unclassified' }
+CheckPointSquare >> putASet: setOfPlayers [ 
+	players addAll: setOfPlayers .
 ]
