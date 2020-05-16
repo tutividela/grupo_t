@@ -4,11 +4,7 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
-NoEffect >> doEffectOver: squares [
-	
-]
+{ #category : #effect }
+NoEffect >> applyTo: aPlayer in: board [ 
 
-{ #category : #'as yet unclassified' }
-NoEffect >> doEffectOver:squares to:aPlayer [
 ]

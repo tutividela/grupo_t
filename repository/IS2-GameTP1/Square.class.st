@@ -18,12 +18,7 @@ Square class >> with: anEffect players: listOfPlayers [
 	^self new initializeWith: anEffect players: listOfPlayers.
 ]
 
-{ #category : #initialization }
-Square >> checkpoint [
-	^false.
-]
-
-{ #category : #initialization }
+{ #category : #accesing }
 Square >> effect [
 	^effect.
 ]
@@ -34,27 +29,27 @@ Square >> initializeWith: squareEffect players: listOfPlayers [
 	players := OrderedCollection withAll: listOfPlayers.
 ]
 
-{ #category : #initialization }
+{ #category : #query }
+Square >> isCheckpoint [
+	^false.
+]
+
+{ #category : #'process actions' }
 Square >> leaves: aPlayer [
 	players remove: aPlayer.
 ]
 
-{ #category : #'as yet unclassified' }
-Square >> leavesASet: setOfPlayers [
-	players removeAll: setOfPlayers .
-]
-
-{ #category : #initialization }
+{ #category : #accesing }
 Square >> players [
 	^players.
 ]
 
-{ #category : #initialization }
+{ #category : #'process actions' }
 Square >> put: aPlayer [
-	players add: aPlayer.
+	players addLast: aPlayer.
 ]
 
-{ #category : #'as yet unclassified' }
-Square >> putASet: setOfPlayers [ 
-	players addAll: setOfPlayers .
+{ #category : #'process actions' }
+Square >> putASet: ofPlayers [ 
+	players addAllLast: ofPlayers .
 ]

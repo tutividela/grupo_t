@@ -2,7 +2,6 @@ Class {
 	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
-		'squares',
 		'dices',
 		'players',
 		'scoreboard',
@@ -12,13 +11,13 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
-Game class >> playedBy:aSetOfPlayer throwing:dices onBoardLength:aNumberOfSquares during:aNumberOfLaps [
+{ #category : #'instance creation' }
+Game class >> playedBy: aSetOfPlayer throwing: dices on: aBoard during: aNumberOfLaps [
 	^self new 
-		initializeWith: aNumberOfSquares 
+		initialize: aBoard 
 		lapsToWin: aNumberOfLaps 
 		playersList: aSetOfPlayer 
-		dicesList: dices.
+		dicesList: dices 
 ]
 
 { #category : #'instance creation' }
@@ -30,14 +29,20 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 		dicesList: dices 
 ]
 
-{ #category : #'instance creation' }
-Game class >> with: numberOfSquares laps: numberOfLaps players: listOfPlayers dices: listOfDices [
-	^self new squares: numberOfSquares  laps:numberOfLaps   players:listOfPlayers   dices:listOfDices . 
-]
-
 { #category : #accesing }
 Game >> board [
 	^board.
+]
+
+{ #category : #initialization }
+Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
+	players  := CircularIterator cyclingOver: listOfPlayers.
+	dices := listOfDices.
+	scoreboard := listOfPlayers copy.
+	
+	laps := numberOfLaps.
+	board := aBoard.
+	board setPlayersInCheckPoint: listOfPlayers.
 ]
 
 { #category : #initialization }
@@ -87,20 +92,14 @@ Game >> scoreboard [
 	^ scoreboard copy .
 ]
 
-{ #category : #'as yet unclassified' }
-Game >> squares: numberOfSquares laps: numberOfLaps players: listOfPlayers dices:listOfDices [ 
-	players  := CircularIterator cyclingOver: listOfPlayers.
-	dices := listOfDices.
-	scoreboard := listOfPlayers copy.
-	
-	laps := numberOfLaps.
-	board := Board size: numberOfSquares  players:listOfPlayers  .
-	
-]
-
 { #category : #sorting }
 Game >> updateScoboard [
 	scoreboard sort: [ :p1 :p2 | p1 lapsDone >= p2 lapsDone ].
+]
+
+{ #category : #search }
+Game >> whereIs: aPlayer [
+	^board whereIs: aPlayer.
 ]
 
 { #category : #players }

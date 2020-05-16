@@ -18,10 +18,9 @@ Player >> ceroLaps [
 	^ self lapsDone == 0.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'modifier state' }
 Player >> decreaseLap [
-	lapsDone := lapsDone -1.
-	lapsDone < 0 ifTrue: [ self resetLaps . ]
+	lapsDone := lapsDone < 0 ifTrue: [ 0 ] ifFalse: [ lapsDone - 1 ].
 		
 		
 	
@@ -30,8 +29,7 @@ Player >> decreaseLap [
 { #category : #initialization }
 Player >> initializeWithName: aName [ 
 	name:= aName. 
-	"lapsDone := 0."
-	self resetLaps .
+	lapsDone := 0.
 ]
 
 { #category : #accessing }
@@ -44,14 +42,9 @@ Player >> name [
 	^name.
 ]
 
-{ #category : #accessing }
+{ #category : #'modifier state' }
 Player >> registerLap [
 	lapsDone := lapsDone + 1.
-]
-
-{ #category : #initialization }
-Player >> resetLaps [
-	lapsDone :=0.
 ]
 
 { #category : #rolling }

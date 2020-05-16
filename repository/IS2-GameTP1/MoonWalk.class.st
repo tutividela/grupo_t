@@ -18,7 +18,21 @@ MoonWalk class >> withSizeBoard:nSquares [
 ]
 
 { #category : #'as yet unclassified' }
-MoonWalk >> doEffectOver: squares [
+MoonWalk >> applyTo: aPlayer in: board [ 
+	|restOfPlayers |
+	restOfPlayers :=self searchPlayersOn: board squares except:aPlayer .
+	[ restOfPlayers isEmpty  ]
+		whileFalse: [ 
+			self searchPositionOf: restOfPlayers first in: board squares.
+			self nValue asInteger timesRepeat: [  
+				(board squares current isCheckpoint) 
+					ifTrue: [ restOfPlayers first ceroLaps ifTrue: [board squares reset. ] ifFalse: [board squares previous . restOfPlayers first decreaseLap .]]
+					ifFalse: [ board squares previous . ]
+				].
+				board squares current players addLast: restOfPlayers first.
+				restOfPlayers removeFirst . 
+			 ] 
+	
 	
 ]
 
@@ -30,7 +44,7 @@ MoonWalk >> doEffectOver: squares to: aPlayer [
 		whileFalse: [ 
 			self searchPositionOf: restOfPlayers first in:squares.
 			self nValue asInteger timesRepeat: [  
-				(squares current checkpoint) 
+				(squares current isCheckpoint) 
 					ifTrue: [ restOfPlayers first ceroLaps ifTrue: [squares reset. ] ifFalse: [squares previous . restOfPlayers first decreaseLap .]]
 					ifFalse: [ squares previous . ]
 				].
@@ -63,7 +77,7 @@ MoonWalk >> searchPlayersOn:squares except:aPlayer [
 	squares reset.
 	playersCol addAll: (squares current players).
 	squares next.
-	[ squares current checkpoint ]whileFalse: [ 
+	[ squares current isCheckpoint ]whileFalse: [ 
 		playersCol addAll:(squares current players ).
 		squares next.
 	 ].

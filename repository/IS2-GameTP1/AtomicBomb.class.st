@@ -9,18 +9,18 @@ AtomicBomb class >> withPlayers: listOfPlayers [
 	^ self new initializeWith: listOfPlayers .
 ]
 
-{ #category : #'as yet unclassified' }
-AtomicBomb >> doEffectOver:squares to:aPlayer [
-	|players|
+{ #category : #effect }
+AtomicBomb >> applyTo: aPlayer in: board [ 
+	| players |
+	
 	players:= OrderedCollection new.
-	squares reset.
-	squares next.
-	[ squares current checkpoint ] whileFalse: [ 
-	players addAll: squares current players. 
-	squares current players removeAll .
-	squares next.].
+	board resetIndex.
+	[ board nextPosition isCheckpoint ] whileFalse: [ 
+		players addAll: board playersOfCurrentPosition. 
+		board playersOfCurrentPosition removeAll.
+	].
 
-	squares current players addAllLast: players.
+	board currentPosition putASet: players.
 	
 	
 ]
