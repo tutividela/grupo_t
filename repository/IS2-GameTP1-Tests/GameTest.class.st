@@ -232,10 +232,11 @@ GameTest >> testMoonW02 [
 
 { #category : #tests }
 GameTest >> testMoonWalk [
-	| dice game |
+	| dice game|
 	
 
 	dice := Die of: 8 rolling: #(8 3).
+	
 	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard during: 2.
 	
 	game playNextTurn.
@@ -243,6 +244,24 @@ GameTest >> testMoonWalk [
 	
 	self 	assert: (game whereIs: exequiel ) equals: 3;
 		  	assert: (game whereIs: tomas) equals: 3. 
+]
+
+{ #category : #tests }
+GameTest >> testMoonWalk2 [
+	| dice game player3|
+	
+
+	dice := Die of: 8 rolling: #(8 7 3).
+	player3:=Player named: 'Marcos'.
+	game := Game playedBy: {exequiel.player3 . tomas} throwing: dice on: self aBoard during: 2.
+	
+	game playNextTurn.
+	game playNextTurn.
+	game playNextTurn .
+	
+	self 	assert: (game whereIs: exequiel ) equals: 3;
+		  	assert: (game whereIs: tomas) equals: 3;
+			assert: (game whereIs: player3 )equals:2.
 ]
 
 { #category : #tests }

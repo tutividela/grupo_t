@@ -48,7 +48,7 @@ MoonWalk >> doEffectOver: squares to: aPlayer [
 					ifTrue: [ restOfPlayers first ceroLaps ifTrue: [squares reset. ] ifFalse: [squares previous . restOfPlayers first decreaseLap .]]
 					ifFalse: [ squares previous . ]
 				].
-				squares current players add: restOfPlayers first.
+				squares current players addLast: restOfPlayers first.
 				restOfPlayers removeFirst . 
 			 ] 
 	
