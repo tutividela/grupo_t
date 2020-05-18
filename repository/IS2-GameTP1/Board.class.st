@@ -17,16 +17,9 @@ Board class >> with: nSquares players: listOfPlayers [
 	^self new initializeWith: nSquares players: listOfPlayers.
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 Board >> currentPosition [
 	^ squares current
-]
-
-{ #category : #search }
-Board >> findPlayer: aPlayer [
-	[  (self playersOfCurrentPosition asArray includes: aPlayer)  ] whileFalse: [ 
-		squares next.
-		].
 ]
 
 { #category : #initialization }
@@ -35,12 +28,12 @@ Board >> initializeWith: listOfSquares [
 ]
 
 { #category : #initialization }
-Board >> initializeWith:nSquares players: listOfPlayers [
+Board >> initializeWith: nSquares players: listOfPlayers [
 	| collection |
 	
 	collection := OrderedCollection new.
 	 
-	(nSquares * 0.48) asInteger timesRepeat: (collection addLast: (Square with: NoEffect new) ).
+	(nSquares * 0.48) asInteger timesRepeat: (collection addLast: (Square with: NoEffect new)).
 	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: WormHole new)).
 	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: SpeedUp new)).
 	(nSquares * 0.10) asInteger timesRepeat: (collection addLast: (Square with: MoonWalk new)).
@@ -54,12 +47,12 @@ Board >> initializeWith:nSquares players: listOfPlayers [
 ]
 
 { #category : #'process actions' }
-Board >> move: aPlayer squares: rollResult [
-	self findPlayer: aPlayer.
+Board >> move: aPlayer this: rollResult [
+	self moveCurrentPositionTo: aPlayer.
 	
 	self currentPosition leaves: aPlayer.
 
-	rollResult timesRepeat: [ self nextPosition isCheckpoint  ifTrue: [ aPlayer registerLap ]  ].
+	rollResult timesRepeat: [ self nextPosition isCheckpoint ifTrue: [ aPlayer registerLap ]  ].
 	
 	self currentPosition put: aPlayer.
 
@@ -70,7 +63,14 @@ Board >> move: aPlayer squares: rollResult [
 	
 ]
 
-{ #category : #'process actions' }
+{ #category : #private }
+Board >> moveCurrentPositionTo: aPlayer [
+	[  self playersOfCurrentPosition asArray includes: aPlayer  ] whileFalse: [ 
+		squares next.
+		].
+]
+
+{ #category : #private }
 Board >> nextPosition [
 	^squares next.
 ]
@@ -80,12 +80,12 @@ Board >> playersOfCurrentPosition [
 	^self currentPosition players.
 ]
 
-{ #category : #'process actions' }
+{ #category : #private }
 Board >> previousPosition [
 	^squares previous.
 ]
 
-{ #category : #'process actions' }
+{ #category : #private }
 Board >> resetIndex [
 	squares reset.
 ]
@@ -108,7 +108,7 @@ Board >> whereIs: aPlayer [
 	
 	position := 0.	
 	self resetIndex.
-	[  ( self playersOfCurrentPosition asArray includes: aPlayer)  ] whileFalse: [ 
+	[ self playersOfCurrentPosition asArray includes: aPlayer ] whileFalse: [ 
 		self nextPosition.
 		position := position + 1.
 		].

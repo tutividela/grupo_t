@@ -203,7 +203,7 @@ GameTest >> testIfTheWinnerIsInFirstPlace [
 ]
 
 { #category : #tests }
-GameTest >> testMoonW01 [
+GameTest >> testMoonW [
 	| dice game |
 	dice := Die of: 6 rolling: #(1 3). 
 
@@ -217,43 +217,12 @@ GameTest >> testMoonW01 [
 ]
 
 { #category : #tests }
-GameTest >> testMoonW02 [
-	| dice game |
-	dice := Die of: 6 rolling: #(1 3). 
-
-	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard04 during: 2.
-
-	game playNextTurn .
-	game playNextTurn .
-	
-	self 	assert: ( game whereIs: tomas ) equals: 3;
-			assert: ( game whereIs: exequiel ) equals: 0.
-]
-
-{ #category : #tests }
 GameTest >> testMoonWalk [
-	| dice game|
-	
-
-	dice := Die of: 8 rolling: #(8 3).
-	
-	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard during: 2.
-	
-	game playNextTurn.
-	game playNextTurn.
-	
-	self 	assert: (game whereIs: exequiel ) equals: 3;
-		  	assert: (game whereIs: tomas) equals: 3. 
-]
-
-{ #category : #tests }
-GameTest >> testMoonWalk2 [
 	| dice game player3|
 	
-
 	dice := Die of: 8 rolling: #(8 7 3).
 	player3:=Player named: 'Marcos'.
-	game := Game playedBy: {exequiel.player3 . tomas} throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: {exequiel. player3 . tomas} throwing: dice on: self aBoard during: 2.
 	
 	game playNextTurn.
 	game playNextTurn.
@@ -275,11 +244,11 @@ GameTest >> testNoWinnerYet [
 	self 
 		should: [ game winner ] 
 		raise: Error 
-		description: 'No winner yet'
+		description: 'No winner yet'.
 ]
 
 { #category : #tests }
-GameTest >> testSpeedUp01 [
+GameTest >> testSpeedUpEffect [
 	| dice game |
 	dice := Die of: 6 rolling: #(1). 
 
@@ -288,6 +257,21 @@ GameTest >> testSpeedUp01 [
 	game playNextTurn .
 	
 	self assert: ( game whereIs: exequiel ) equals: 5.
+]
+
+{ #category : #tests }
+GameTest >> testWinnerEndsInCheckPoint [
+	| dice game |
+	
+	dice := Die of: 6 rolling: #(5 2).
+	
+	game := Game playedBy: { tomas } throwing: dice on: self aBoard02 during: 1.
+	
+	game playAllTurns .
+	
+	self
+		assert: game scoreboard first lapsDone  equals: 1;
+		assert: (game whereIs: tomas) equals: 0.
 ]
 
 { #category : #tests }

@@ -11,7 +11,7 @@ WormHole >> applyTo: aPlayer in: board [
 
 	board currentPosition leaves: aPlayer.
 
-	aPlayer lapsDone == 0 & (playerPosition  < 4) ifTrue: [ board resetIndex ] 
+	aPlayer lapsDone == 0 & (playerPosition < 4) ifTrue: [ board resetIndex ] 
 		ifFalse: [
 			4 timesRepeat:  [ 
 					board previousPosition . 

@@ -46,8 +46,7 @@ SequentialNaturalNumberProvider class >> providing: aSequence [
 
 { #category : #initialization }
 SequentialNaturalNumberProvider >> initializeProviding: aSequence [
-
-	sequence := (CircularIterator cyclingOver: aSequence ) 
+	sequence := CircularIterator cyclingOver: aSequence.
 ]
 
 { #category : #providing }

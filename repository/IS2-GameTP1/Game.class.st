@@ -75,13 +75,18 @@ Game >> playAllTurns [
 
 { #category : #game }
 Game >> playNextTurn [
-	| player rollResult |
+	| aPlayer rollResult amountOfMoves |
 	self isStillOn
 		ifFalse: [ ^ 'game over' ].
 	
-	player := self whoPlays .
-	rollResult := player roll: dices.
-	board move: player squares: rollResult .
+	aPlayer := self whoPlays .
+	rollResult := aPlayer roll: dices.
+	
+	amountOfMoves := laps - aPlayer lapsDone  == 1 & (rollResult > (board squares size - (self whereIs: aPlayer)) )
+				ifTrue:  [ board squares size - (self whereIs: aPlayer) ] 
+				ifFalse: [ rollResult ].
+	
+	board move: aPlayer this: amountOfMoves .
 	
 	self updateScoboard.
 	self nextTurn.
