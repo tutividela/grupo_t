@@ -14,7 +14,7 @@ GameTest >> aBoard [
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
 						
-						Square with: (MoonW withRecoil: 5) .
+						Square with: (MoonWalk withRecoil: 5) .
 						Square with: AtomicBomb  new.
 						Square with: NoEffect new .
 						
@@ -30,7 +30,7 @@ GameTest >> aBoard [
 GameTest >> aBoard02 [
 	^Board with: { 	CheckPointSquare with: NoEffect new.
 						Square with: SpeedUp new .					
-						Square with: (MoonW withRecoil: 5) .
+						Square with: (MoonWalk withRecoil: 5) .
 						
 						Square with: AtomicBomb  new.
 						Square with: NoEffect new .
@@ -50,7 +50,7 @@ GameTest >> aBoard03 [
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
 						
-						Square with: (MoonW withRecoil: 2) .
+						Square with: (MoonWalk withRecoil: 2) .
 						Square with: AtomicBomb  new.
 						Square with: NoEffect new .
 						
@@ -68,7 +68,7 @@ GameTest >> aBoard04 [
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
 						
-						Square with: (MoonW withRecoil: 7) .
+						Square with: (MoonWalk withRecoil: 7) .
 						Square with: AtomicBomb  new.
 						Square with: NoEffect new .
 						
@@ -202,20 +202,6 @@ GameTest >> testIfTheWinnerIsInFirstPlace [
 	game playAllTurns.
 	
 	self assert: game winner equals: game scoreboard first.  
-]
-
-{ #category : #tests }
-GameTest >> testMoonW [
-	| dice game |
-	dice := Die of: 6 rolling: #(1 3). 
-
-	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard03 during: 2.
-
-	game playNextTurn .
-	game playNextTurn .
-	
-	self 	assert: ( game whereIs: tomas ) equals: 3;
-			assert: ( game whereIs: exequiel ) equals: 3.
 ]
 
 { #category : #tests }
