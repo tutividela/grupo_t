@@ -26,32 +26,38 @@ CircularIterator class >> cyclingOver: aSequentiableCollection [
 
 { #category : #accessing }
 CircularIterator >> current [
-
 	^options at: currentIndex + 1
 ]
 
 { #category : #testing }
 CircularIterator >> includes: anObject [
-
 	^options includes: anObject  
 ]
 
 { #category : #initialization }
 CircularIterator >> initializeCyclingOver: anArray [
-
 	options := anArray.
 	self reset
 ]
 
 { #category : #iterating }
 CircularIterator >> next [
-
 	currentIndex := (currentIndex + 1) \\ options size.
 	^self current 
 ]
 
+{ #category : #accessing }
+CircularIterator >> previous [ 	
+	currentIndex := currentIndex - 1.
+	currentIndex < 0 ifTrue: [ currentIndex := (options size ) + currentIndex  ].
+]
+
 { #category : #iterating }
 CircularIterator >> reset [
-
 	currentIndex := 0
+]
+
+{ #category : #iterating }
+CircularIterator >> size [
+	^options size.
 ]

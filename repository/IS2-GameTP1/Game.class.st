@@ -2,34 +2,62 @@ Class {
 	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
-		'squares',
 		'dices',
 		'players',
-		'scoreboard'
+		'scoreboard',
+		'board',
+		'laps'
 	],
 	#category : #'IS2-GameTP1'
 }
 
 { #category : #'instance creation' }
-Game class >> with: numberOfSquares players: listOfPlayers dices: listOfDices [
-	
+Game class >> playedBy: aSetOfPlayer throwing: dices on: aBoard during: aNumberOfLaps [
 	^self new 
-		initializeWith: numberOfSquares 
-		playersList: listOfPlayers 
-		dicesList: listOfDices 
+		initialize: aBoard 
+		lapsToWin: aNumberOfLaps 
+		playersList: aSetOfPlayer 
+		dicesList: dices 
+]
+
+{ #category : #'instance creation' }
+Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfSquares during: aNumberOfLaps [
+	^self new 
+		initializeWith: aNumberOfSquares 
+		lapsToWin: aNumberOfLaps 
+		playersList: aSetOfPlayer 
+		dicesList: dices 
+]
+
+{ #category : #accesing }
+Game >> board [
+	^board.
 ]
 
 { #category : #initialization }
-Game >> initializeWith: numberOfSquares playersList: listOfPlayers dicesList: listOfDices [ 
-	scoreboard := listOfPlayers copy.
-	squares := numberOfSquares.
+Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
+	scoreboard := listOfPlayers copy.
+	
+	laps := numberOfLaps.
+	board := aBoard.
+	board setPlayersInCheckPoint: listOfPlayers.
+]
+
+{ #category : #initialization }
+Game >> initializeWith: numberOfSquares lapsToWin: numberOfLaps playersList: listOfPlayers dicesList:listOfDices [ 
+	players  := CircularIterator cyclingOver: listOfPlayers.
+	dices := listOfDices.
+	scoreboard := listOfPlayers copy.
+	
+	laps := numberOfLaps.
+	board := Board with: numberOfSquares players: listOfPlayers.
 ]
 
 { #category : #game }
 Game >> isStillOn [
-	^scoreboard first square < squares.
+	^scoreboard first lapsDone < laps.
 ]
 
 { #category : #private }
@@ -47,13 +75,18 @@ Game >> playAllTurns [
 
 { #category : #game }
 Game >> playNextTurn [
-	| player rollResult |
+	| aPlayer rollResult amountOfMoves |
 	self isStillOn
 		ifFalse: [ ^ 'game over' ].
 	
-	player := self whoPlays .
-	rollResult := player roll: dices.
-	player updateSquare: (player square + rollResult > squares ifTrue: [ squares - player square ] ifFalse: [ rollResult ]).
+	aPlayer := self whoPlays .
+	rollResult := aPlayer roll: dices.
+	
+	amountOfMoves := laps - aPlayer lapsDone  == 1 & (rollResult > (board squares size - (self whereIs: aPlayer)) )
+				ifTrue:  [ board squares size - (self whereIs: aPlayer) ] 
+				ifFalse: [ rollResult ].
+	
+	board move: aPlayer this: amountOfMoves .
 	
 	self updateScoboard.
 	self nextTurn.
@@ -66,7 +99,12 @@ Game >> scoreboard [
 
 { #category : #sorting }
 Game >> updateScoboard [
-	scoreboard sort: [ :p1 :p2 | p1 square >= p2 square ].
+	scoreboard sort: [ :p1 :p2 | p1 lapsDone >= p2 lapsDone ].
+]
+
+{ #category : #search }
+Game >> whereIs: aPlayer [
+	^board whereIs: aPlayer.
 ]
 
 { #category : #players }
