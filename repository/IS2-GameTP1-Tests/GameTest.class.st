@@ -14,7 +14,7 @@ GameTest >> aBoard [
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
 						
-						Square with: (MoonWalk withKnownNValue: 5) .
+						Square with: (MoonW withRecoil: 5) .
 						Square with: AtomicBomb  new.
 						Square with: NoEffect new .
 						
@@ -116,7 +116,9 @@ GameTest >> testAtomicBombWhenOneLapIsDone [
 	game playNextTurn .
 	
 	self 	assert: ( game whereIs: tomas ) equals: 0;
-			assert: ( game whereIs: exequiel ) equals: 0.
+			assert: (tomas lapsDone) equals: 1;
+			assert: ( game whereIs: exequiel ) equals: 0;
+			assert: (exequiel lapsDone)equals: 0.
 ]
 
 { #category : #tests }
