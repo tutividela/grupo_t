@@ -3,19 +3,26 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'players',
-		'effect'
+		'effect',
+		'checkpoint'
 	],
 	#category : #'IS2-GameTP1'
 }
 
 { #category : #'instance creation' }
-Square class >> with: anEffect [
-	^self with: anEffect players: {}.
+Square class >> as: checkpoint with: anEffect [
+	^self new initializeAs: checkpoint  with: anEffect 
+
 ]
 
 { #category : #'instance creation' }
-Square class >> with: anEffect players: listOfPlayers [
-	^self new initializeWith: anEffect players: listOfPlayers.
+Square class >> asCheckpoint [
+	^self as: true with: NoEffect new.
+]
+
+{ #category : #'instance creation' }
+Square class >> with: anEffect [
+	^self as: false with: anEffect
 ]
 
 { #category : #accesing }
@@ -24,14 +31,15 @@ Square >> effect [
 ]
 
 { #category : #initialization }
-Square >> initializeWith: squareEffect players: listOfPlayers [
-	effect := squareEffect .
-	players := OrderedCollection withAll: listOfPlayers.
+Square >> initializeAs: checkPoint with: anEffect [
+	effect := anEffect .
+	players := OrderedCollection new.
+	checkpoint := checkPoint.
 ]
 
 { #category : #query }
 Square >> isCheckpoint [
-	^false.
+	^checkpoint.
 ]
 
 { #category : #'process actions' }

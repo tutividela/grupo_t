@@ -22,11 +22,15 @@ Game class >> playedBy: aSetOfPlayer throwing: dices on: aBoard during: aNumberO
 
 { #category : #'instance creation' }
 Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfSquares during: aNumberOfLaps [
-	^self new 
-		initializeWith: aNumberOfSquares 
-		lapsToWin: aNumberOfLaps 
-		playersList: aSetOfPlayer 
-		dicesList: dices 
+	aNumberOfSquares < 0
+		ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ]
+		ifFalse: [ ^self 
+			playedBy: aSetOfPlayer  
+			throwing: dices 
+			on: (Board ofLength: aNumberOfSquares)
+			during: aNumberOfLaps 
+		]
+
 ]
 
 { #category : #accesing }
@@ -45,24 +49,9 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	board setPlayersInCheckPoint: listOfPlayers.
 ]
 
-{ #category : #initialization }
-Game >> initializeWith: numberOfSquares lapsToWin: numberOfLaps playersList: listOfPlayers dicesList:listOfDices [ 
-	players  := CircularIterator cyclingOver: listOfPlayers.
-	dices := listOfDices.
-	scoreboard := listOfPlayers copy.
-	
-	laps := numberOfLaps.
-	board := Board with: numberOfSquares players: listOfPlayers.
-]
-
 { #category : #game }
 Game >> isStillOn [
 	^scoreboard first lapsDone < laps.
-]
-
-{ #category : #private }
-Game >> nextTurn [
-	^players next.
 ]
 
 { #category : #game }
@@ -77,7 +66,7 @@ Game >> playAllTurns [
 Game >> playNextTurn [
 	| aPlayer rollResult amountOfMoves |
 	self isStillOn
-		ifFalse: [ ^ 'game over' ].
+		ifFalse: [ ^ self ].
 	
 	aPlayer := self whoPlays .
 	rollResult := aPlayer roll: dices.
@@ -89,12 +78,18 @@ Game >> playNextTurn [
 	board move: aPlayer this: amountOfMoves .
 	
 	self updateScoboard.
-	self nextTurn.
+	self switchTurn.
+	
 ]
 
 { #category : #accesing }
 Game >> scoreboard [
 	^ scoreboard copy .
+]
+
+{ #category : #private }
+Game >> switchTurn [
+	^players next.
 ]
 
 { #category : #sorting }

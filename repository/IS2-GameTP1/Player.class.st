@@ -13,11 +13,6 @@ Player class >> named: aName [
 	^self new initializeWithName: aName 
 ]
 
-{ #category : #'as yet unclassified' }
-Player >> ceroLaps [
-	^ self lapsDone == 0.
-]
-
 { #category : #'modifier state' }
 Player >> decreaseLap [
 	lapsDone := lapsDone < 0 ifTrue: [ 0 ] ifFalse: [ lapsDone - 1 ].

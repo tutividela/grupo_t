@@ -4,11 +4,6 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
-AtomicBomb class >> withPlayers: listOfPlayers [
-	^ self new initializeWith: listOfPlayers .
-]
-
 { #category : #effect }
 AtomicBomb >> applyTo: aPlayer in: board [ 
 	| players |

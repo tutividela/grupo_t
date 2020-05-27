@@ -8,13 +8,32 @@ Class {
 }
 
 { #category : #'instance creation' }
+Board class >> ofLength: nSquares [
+	| collection |
+	
+	collection := OrderedCollection new.
+	 
+	(nSquares * 0.48) asInteger timesRepeat: [collection addLast: (Square with: NoEffect new)].
+	(nSquares * 0.20) asInteger timesRepeat: [collection addLast: (Square with: WormHole new)].
+	(nSquares * 0.20) asInteger timesRepeat: [collection addLast: (Square with: SpeedUp new)].
+	(nSquares * 0.10) asInteger timesRepeat: [collection addLast: (Square with: (MoonWalk withRecoil:(Random new nextInt:nSquares)))].
+	(nSquares * 0.02) asInteger timesRepeat: [collection addLast: (Square with: AtomicBomb new)].
+	
+	collection shuffle.
+	
+	collection addFirst: Square asCheckpoint.
+	
+	^self with: collection
+]
+
+{ #category : #'instance creation' }
 Board class >> with: listOfSquares [
 	^self new initializeWith: listOfSquares.
 ]
 
-{ #category : #'instance creation' }
-Board class >> with: nSquares players: listOfPlayers [
-	^self new initializeWith: nSquares players: listOfPlayers.
+{ #category : #accessing }
+Board >> amountOfSquares [
+	^squares size .
 ]
 
 { #category : #private }
@@ -25,25 +44,6 @@ Board >> currentPosition [
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
-]
-
-{ #category : #initialization }
-Board >> initializeWith: nSquares players: listOfPlayers [
-	| collection |
-	
-	collection := OrderedCollection new.
-	 
-	(nSquares * 0.48) asInteger timesRepeat: (collection addLast: (Square with: NoEffect new)).
-	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: WormHole new)).
-	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: SpeedUp new)).
-	(nSquares * 0.10) asInteger timesRepeat: (collection addLast: (Square with: (MoonWalk withRecoil:(Random new nextInt:nSquares)))).
-	(nSquares * 0.02) asInteger timesRepeat: (collection addLast: (Square with: AtomicBomb new)).
-	
-	collection shuffle.
-	
-	collection addFirst: (CheckPointSquare with: NoEffect new players: listOfPlayers).
-	
-	squares := CircularIterator cyclingOver: collection .
 ]
 
 { #category : #'process actions' }

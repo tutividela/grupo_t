@@ -7,7 +7,7 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instance creation' }
 MoonWalk class >> withRecoil: nValue [
 	^self new initializeWith: nValue .
 ]

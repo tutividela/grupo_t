@@ -10,7 +10,7 @@ Class {
 
 { #category : #board }
 GameTest >> aBoard [
-	^Board with: { 	CheckPointSquare with: NoEffect new.
+	^Board with: { 	Square asCheckpoint.
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
 						
@@ -28,7 +28,7 @@ GameTest >> aBoard [
 
 { #category : #board }
 GameTest >> aBoard02 [
-	^Board with: { 	CheckPointSquare with: NoEffect new.
+	^Board with: { 	Square asCheckpoint.
 						Square with: SpeedUp new .					
 						Square with: (MoonWalk withRecoil: 5) .
 						
@@ -37,42 +37,6 @@ GameTest >> aBoard02 [
 						Square with: NoEffect new.
 						
 						Square with: WormHole  new .
-						Square with: NoEffect new .
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new  				
-						}.
-]
-
-{ #category : #board }
-GameTest >> aBoard03 [
-	^Board with: { 	CheckPointSquare with: NoEffect new.
-						Square with: SpeedUp new .
-						Square with: WormHole  new .
-						
-						Square with: (MoonWalk withRecoil: 2) .
-						Square with: AtomicBomb  new.
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new.
-						Square with: NoEffect new .
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new  				
-						}.
-]
-
-{ #category : #board }
-GameTest >> aBoard04 [
-	^Board with: { 	CheckPointSquare with: NoEffect new.
-						Square with: SpeedUp new .
-						Square with: WormHole  new .
-						
-						Square with: (MoonWalk withRecoil: 7) .
-						Square with: AtomicBomb  new.
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new.
 						Square with: NoEffect new .
 						Square with: NoEffect new .
 						
@@ -90,10 +54,25 @@ GameTest >> setUp [
 
 { #category : #tests }
 GameTest >> testAtomicBombWhenNoLapsWereDone [
-	| dice game |
+	| dice game aBoard|
 	dice := Die of: 6 rolling: #(6 4). 
 
-	game := Game playedBy: {tomas . exequiel} throwing: dice on: self aBoard during: 2.
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+						
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+								}.
+								
+	game := Game playedBy: {tomas . exequiel} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
 	game playNextTurn .
@@ -104,10 +83,25 @@ GameTest >> testAtomicBombWhenNoLapsWereDone [
 
 { #category : #tests }
 GameTest >> testAtomicBombWhenOneLapIsDone [
-	| dice game |
+	| dice game aBoard|
 	dice := Die of: 6 rolling: #(5 5 5 3 4). 
+	
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+						
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+								}.
 
-	game := Game playedBy: {tomas . exequiel} throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: {tomas . exequiel} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
 	game playNextTurn .
@@ -119,6 +113,18 @@ GameTest >> testAtomicBombWhenOneLapIsDone [
 			assert: (tomas lapsDone) equals: 1;
 			assert: ( game whereIs: exequiel ) equals: 0;
 			assert: (exequiel lapsDone)equals: 0.
+]
+
+{ #category : #tests }
+GameTest >> testBoardWithNegativeAmountOfSquares [
+	| dice |
+	
+	dice := Die of: 6 rolling: #(5 2 5 2 5).
+	
+	self 
+		should: [ Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: -10 during: 3 ] 
+		raise: Error 
+		description: 'A Board cannot have negative amount of squares'.
 ]
 
 { #category : #tests }
@@ -153,7 +159,7 @@ GameTest >> testGameIsOver [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 12 during: 3.
 	
 	game playAllTurns.
 	
@@ -166,7 +172,7 @@ GameTest >> testGameIsStillOn [
 
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 15 during: 3.
 	
 	game playNextTurn ; playNextTurn.
 	
@@ -174,43 +180,28 @@ GameTest >> testGameIsStillOn [
 ]
 
 { #category : #tests }
-GameTest >> testIfTheScoreboardIsUpdated [
-	| game dice1 dice2 |
-
-	dice1 := Die of: 6 rolling:#(5 6 1).
-	dice2 := Die of: 6 rolling:#(3 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
-	
-	game playNextTurn.
-	
-	self assert: game scoreboard first name equals: 'Tomas'.  
-	
-	game playNextTurn.
-	
-	self assert: game scoreboard first name equals: 'Exequiel'.  
-]
-
-{ #category : #tests }
-GameTest >> testIfTheWinnerIsInFirstPlace [
-	| game dice1 dice2 |
-	
-	dice1 := Die of: 6 rolling:#(3 4 1).
-	dice2 := Die of: 6 rolling:#(2 5 2).
-	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
-	
-	game playAllTurns.
-	
-	self assert: game winner equals: game scoreboard first.  
-]
-
-{ #category : #tests }
 GameTest >> testMoonWalk [
-	| dice game player3|
+	| dice game player3 aBoard|
 	
 	dice := Die of: 8 rolling: #(8 7 3).
 	player3:=Player named: 'Marcos'.
-	game := Game playedBy: {exequiel. player3 . tomas} throwing: dice on: self aBoard during: 2.
+	
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+						
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+								}.
+								
+	game := Game playedBy: {exequiel. player3 . tomas} throwing: dice on: aBoard during: 2.
 	
 	game playNextTurn.
 	game playNextTurn.
@@ -227,7 +218,7 @@ GameTest >> testNoWinnerYet [
 	
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 3.
 	
 	self 
 		should: [ game winner ] 
@@ -236,11 +227,43 @@ GameTest >> testNoWinnerYet [
 ]
 
 { #category : #tests }
-GameTest >> testSpeedUpEffect [
-	| dice game |
-	dice := Die of: 6 rolling: #(1). 
+GameTest >> testScoreboardUpdated [
+	| game dice1 dice2 |
 
-	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard during: 2.
+	dice1 := Die of: 6 rolling:#(5 6 1).
+	dice2 := Die of: 6 rolling:#(3 5 2).
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	
+	game playNextTurn.
+	
+	self assert: game scoreboard first name equals: 'Tomas'.  
+	
+	game playNextTurn.
+	
+	self assert: game scoreboard first name equals: 'Exequiel'.  
+]
+
+{ #category : #tests }
+GameTest >> testSpeedUpEffect [
+	| dice game aBoard |
+	dice := Die of: 6 rolling: #(1). 
+	
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+						
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+								}.
+
+	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
 	
@@ -253,7 +276,7 @@ GameTest >> testWinnerEndsInCheckPoint [
 	
 	dice := Die of: 6 rolling: #(5 2).
 	
-	game := Game playedBy: { tomas } throwing: dice on: self aBoard02 during: 1.
+	game := Game playedBy: { tomas } throwing: dice on: self aBoard  during: 1.
 	
 	game playAllTurns .
 	
@@ -263,12 +286,26 @@ GameTest >> testWinnerEndsInCheckPoint [
 ]
 
 { #category : #tests }
+GameTest >> testWinnerInFirstPlace [
+	| game dice1 dice2 |
+	
+	dice1 := Die of: 6 rolling:#(3 4 1).
+	dice2 := Die of: 6 rolling:#(2 5 2).
+	
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 20 during: 3.
+	
+	game playAllTurns.
+	
+	self assert: game winner equals: game scoreboard first.  
+]
+
+{ #category : #tests }
 GameTest >> testWinnerOneDice [
 	| dice game |
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 3.
 	
 	game playAllTurns.
 
@@ -292,10 +329,25 @@ GameTest >> testWinnerTwoDices [
 
 { #category : #tests }
 GameTest >> testWormHoleWhenCeroLapsAndRollResultGreaterThanFour [
-	| dice game |
+	| dice game aBoard |
 	dice := Die of: 6 rolling: #(6). 
 
-	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard02 during: 2.
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .					
+									Square with: (MoonWalk withRecoil: 5) .
+						
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+									Square with: NoEffect new.
+						
+									Square with: WormHole  new .
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+							}.
+	
+	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
 	
@@ -304,10 +356,25 @@ GameTest >> testWormHoleWhenCeroLapsAndRollResultGreaterThanFour [
 
 { #category : #tests }
 GameTest >> testWormHoleWhenCeroLapsAndRollResultLessThanFour [
-	| dice game |
+	| dice game aBoard  |
 	dice := Die of: 7 rolling: #(2). 
+	
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+						
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+								}.
 
-	game := Game playedBy: {exequiel . tomas} throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
 	
@@ -316,10 +383,25 @@ GameTest >> testWormHoleWhenCeroLapsAndRollResultLessThanFour [
 
 { #category : #tests }
 GameTest >> testWormHoleWhenOneLapIsDone [
-	| dice game |
+	| dice game aBoard |
 	dice := Die of: 6 rolling: #(6 6). 
+	
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+						
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+						
+									Square with: NoEffect new  				
+								}.
 
-	game := Game playedBy: {tomas} throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: {tomas} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
 	game playNextTurn .
