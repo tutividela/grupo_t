@@ -44,6 +44,17 @@ Board >> currentPosition [
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
+	"places:= Place with: (listOfSquares players copy)."
+]
+
+{ #category : #'as yet unclassified' }
+Board >> move:rollResult a:aPlayer lapsToWin:laps [
+	|amountOfMoves |
+	amountOfMoves := laps - aPlayer lapsDone  == 1 & (rollResult > (self squares size - (self whereIs: aPlayer)) )
+				ifTrue:  [ self squares size - (self whereIs: aPlayer) ] 
+				ifFalse: [ rollResult ].
+	
+	self move: aPlayer this: amountOfMoves .
 ]
 
 { #category : #'process actions' }
