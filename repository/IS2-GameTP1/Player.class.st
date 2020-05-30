@@ -13,14 +13,6 @@ Player class >> named: aName [
 	^self new initializeWithName: aName 
 ]
 
-{ #category : #'modifier state' }
-Player >> decreaseLap [
-	lapsDone := lapsDone < 0 ifTrue: [ 0 ] ifFalse: [ lapsDone - 1 ].
-		
-		
-	
-]
-
 { #category : #initialization }
 Player >> initializeWithName: aName [ 
 	name:= aName. 
@@ -35,11 +27,6 @@ Player >> lapsDone [
 { #category : #accessing }
 Player >> name [
 	^name.
-]
-
-{ #category : #'modifier state' }
-Player >> registerLap [
-	lapsDone := lapsDone + 1.
 ]
 
 { #category : #rolling }

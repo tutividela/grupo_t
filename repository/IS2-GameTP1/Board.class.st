@@ -2,7 +2,8 @@ Class {
 	#name : #Board,
 	#superclass : #Object,
 	#instVars : [
-		'squares'
+		'squares',
+		'positions'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -37,41 +38,49 @@ Board >> amountOfSquares [
 ]
 
 { #category : #private }
-Board >> currentPosition [
+Board >> currentSquare [
 	^ squares current
+]
+
+{ #category : #private }
+Board >> goToCheckpoint [
+	squares reset.
 ]
 
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
-	"places:= Place with: (listOfSquares players copy)."
-]
-
-{ #category : #'as yet unclassified' }
-Board >> move:rollResult a:aPlayer lapsToWin:laps [
-	|amountOfMoves |
-	amountOfMoves := laps - aPlayer lapsDone  == 1 & (rollResult > (self squares size - (self whereIs: aPlayer)) )
-				ifTrue:  [ self squares size - (self whereIs: aPlayer) ] 
-				ifFalse: [ rollResult ].
-	
-	self move: aPlayer this: amountOfMoves .
 ]
 
 { #category : #'process actions' }
 Board >> move: aPlayer this: rollResult [
 	self moveCurrentPositionTo: aPlayer.
 	
-	self currentPosition leaves: aPlayer.
+	self currentSquare leaves: aPlayer.
 
-	rollResult timesRepeat: [ self nextPosition isCheckpoint ifTrue: [ aPlayer registerLap ]  ].
+	rollResult timesRepeat: [ self nextSquare isCheckpoint ifTrue: [ (self positionOf: aPlayer ) registerLap ] ].
 	
-	self currentPosition put: aPlayer.
+	self currentSquare put: aPlayer.
 
-	self currentPosition effect applyTo: aPlayer in: self . 
+	self currentSquare effect applyTo: aPlayer in: self . 
 	
-	self resetIndex.
+	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer ).
+	
+	self goToCheckpoint.
 	
 	
+]
+
+{ #category : #'process actions' }
+Board >> move:aPlayer this:rollResult lapsToWin:laps [
+	|amountOfMoves position|
+	
+	position := self positionOf: aPlayer.
+	amountOfMoves := laps - position currentLap  == 1 & (rollResult > (self amountOfSquares  - position currentSquare) )
+				ifTrue:  [ self amountOfSquares  - position currentSquare ] 
+				ifFalse: [ rollResult ].
+	
+	self move: aPlayer this: amountOfMoves .
 ]
 
 { #category : #private }
@@ -82,29 +91,37 @@ Board >> moveCurrentPositionTo: aPlayer [
 ]
 
 { #category : #private }
-Board >> nextPosition [
+Board >> nextSquare [
 	^squares next.
 ]
 
 { #category : #accessing }
 Board >> playersOfCurrentPosition [
-	^self currentPosition players.
+	^self currentSquare players.
+]
+
+{ #category : #accessing }
+Board >> positionOf: aPlayer [
+	^positions detect: [: position | position player == aPlayer ] .
+]
+
+{ #category : #accessing }
+Board >> positions [
+	^positions .
 ]
 
 { #category : #private }
-Board >> previousPosition [
+Board >> previousSquare [
 	^squares previous.
 ]
 
 { #category : #private }
-Board >> resetIndex [
-	squares reset.
-]
-
-{ #category : #accessing }
 Board >> setPlayersInCheckPoint: players [
-	self resetIndex.
-	self currentPosition putASet: players.
+	self goToCheckpoint.
+	
+	positions := players collect: [:player | Position of: player ].
+	
+	self currentSquare putASet: players.
 	
 ]
 
@@ -118,9 +135,9 @@ Board >> whereIs: aPlayer [
 	| position |
 	
 	position := 0.	
-	self resetIndex.
+	self goToCheckpoint.
 	[ self playersOfCurrentPosition asArray includes: aPlayer ] whileFalse: [ 
-		self nextPosition.
+		self nextSquare.
 		position := position + 1.
 		].
 	

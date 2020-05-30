@@ -17,20 +17,22 @@ MoonWalk >> applyTo: aPlayer in: board [
 	| position |
 	position := 0.
 	board squares reset.
-	[ board nextPosition isCheckpoint ] whileFalse: [ 
+	[ board nextSquare isCheckpoint ] whileFalse: [ 
 	
 		board playersOfCurrentPosition do: [ :player |
 			player = aPlayer ifFalse: [
-				board currentPosition leaves: player.
+				board currentSquare leaves: player.
 
-				player lapsDone == 0 & (position < recoilValue) ifTrue: [ board resetIndex ] 
+				(board positionOf: player ) currentLap  == 0 & (position < recoilValue) ifTrue: [ board goToCheckpoint ] 
 				ifFalse: [
 					recoilValue timesRepeat:  [ 
-						board previousPosition . 
-						(board currentPosition isCheckpoint) ifTrue: [ player decreaseLap ].
+						board previousSquare . 
+						(board currentSquare isCheckpoint) ifTrue: [ (board positionOf: aPlayer ) decreaseALap  ].
 					]. 
 				].
-				board currentPosition put: player .]
+				board currentSquare put: player .
+				(board positionOf: player ) registerSquare: (board whereIs: player).
+			]
 		].
 		position := position + 1.
 	].

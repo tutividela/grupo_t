@@ -109,10 +109,10 @@ GameTest >> testAtomicBombWhenOneLapIsDone [
 	game playNextTurn .
 	game playNextTurn .
 	
-	self 	assert: ( game whereIs: tomas ) equals: 0;
-			assert: (tomas lapsDone) equals: 1;
-			assert: ( game whereIs: exequiel ) equals: 0;
-			assert: (exequiel lapsDone)equals: 0.
+	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 0;
+			assert: ( game board positionOf: tomas ) currentLap equals: 1;
+			assert: ( game board positionOf: exequiel  ) currentSquare equals: 0;
+			assert: ( game board positionOf: exequiel  ) currentLap equals: 0.
 ]
 
 { #category : #tests }
@@ -141,14 +141,14 @@ GameTest >> testFinalScoreboard [
 	game playAllTurns.
 	
 	self
-		assert: game scoreboard first lapsDone  equals: 3;
-		assert: game scoreboard first name equals: 'Tomas';
+		assert: game scoreboard first currentLap  equals: 3;
+		assert: game scoreboard first player name equals: 'Tomas';
 		
-		assert: game scoreboard second lapsDone  equals: 1;
-		assert: game scoreboard second name equals: 'Exequiel';
+		assert: game scoreboard second currentLap  equals: 1;
+		assert: game scoreboard second player name equals: 'Exequiel';
 		
-		assert: game scoreboard last lapsDone  equals: 1;
-		assert: game scoreboard last name equals: 'Marcos'.
+		assert: game scoreboard last currentLap  equals: 1;
+		assert: game scoreboard last player name equals: 'Marcos'.
 		
 ]
 
@@ -236,11 +236,11 @@ GameTest >> testScoreboardUpdated [
 	
 	game playNextTurn.
 	
-	self assert: game scoreboard first name equals: 'Tomas'.  
+	self assert: game scoreboard first player name equals: 'Tomas'.  
 	
 	game playNextTurn.
 	
-	self assert: game scoreboard first name equals: 'Exequiel'.  
+	self assert: game scoreboard first player name equals: 'Exequiel'.  
 ]
 
 { #category : #tests }
@@ -281,7 +281,7 @@ GameTest >> testWinnerEndsInCheckPoint [
 	game playAllTurns .
 	
 	self
-		assert: game scoreboard first lapsDone  equals: 1;
+		assert: game scoreboard first currentLap equals: 1;
 		assert: (game whereIs: tomas) equals: 0.
 ]
 
@@ -292,11 +292,11 @@ GameTest >> testWinnerInFirstPlace [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 20 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard during: 3.
 	
 	game playAllTurns.
 	
-	self assert: game winner equals: game scoreboard first.  
+	self assert: game winner equals: game scoreboard first player.  
 ]
 
 { #category : #tests }
@@ -324,7 +324,7 @@ GameTest >> testWinnerTwoDices [
 	game playAllTurns.
 
 
-	self assert: game winner name equals: 'Tomas'.
+	self assert: game winner name equals: 'Exequiel'.
 ]
 
 { #category : #tests }

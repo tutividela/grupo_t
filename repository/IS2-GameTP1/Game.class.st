@@ -42,16 +42,17 @@ Game >> board [
 Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
-	scoreboard := listOfPlayers copy.
 	
 	laps := numberOfLaps.
 	board := aBoard.
 	board setPlayersInCheckPoint: listOfPlayers.
+	
+	scoreboard := board positions.
 ]
 
 { #category : #game }
 Game >> isStillOn [
-	^scoreboard first lapsDone < laps.
+	^scoreboard first currentLap < laps.
 ]
 
 { #category : #game }
@@ -64,17 +65,16 @@ Game >> playAllTurns [
 
 { #category : #game }
 Game >> playNextTurn [
-	| aPlayer rollResult|
+	| aPlayer rollResult |
 	self isStillOn
 		ifFalse: [ ^ self ].
-	
-	aPlayer := self whoPlays .
+		
+	aPlayer := self whoPlays.
 	rollResult := aPlayer roll: dices.
-	board move: rollResult  a:aPlayer  lapsToWin:laps. 
+	board move: aPlayer this: rollResult lapsToWin: laps.
 	
 	self updateScoboard.
-	self switchTurn.
-	
+	self switchTurn
 ]
 
 { #category : #accesing }
@@ -89,12 +89,12 @@ Game >> switchTurn [
 
 { #category : #sorting }
 Game >> updateScoboard [
-	scoreboard sort: [ :p1 :p2 | p1 lapsDone >= p2 lapsDone ].
+	scoreboard sort: [ :pl1 :pl2 | pl1 currentLap > pl2 currentLap | (pl1 currentLap = pl2 currentLap & (pl1 currentSquare > pl2 currentSquare)) ].
 ]
 
 { #category : #search }
 Game >> whereIs: aPlayer [
-	^board whereIs: aPlayer.
+	^(board positionOf: aPlayer ) currentSquare.
 ]
 
 { #category : #players }
@@ -106,6 +106,6 @@ Game >> whoPlays [
 Game >> winner [
 	^self isStillOn 
 		ifTrue: [ Error signal: 'No winner yet' ]
-		ifFalse: [ scoreboard first ].
+		ifFalse: [ scoreboard first player ].
 
 ]

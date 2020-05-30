@@ -9,17 +9,17 @@ WormHole >> applyTo: aPlayer in: board [
 	|playerPosition|
 	playerPosition := board whereIs: aPlayer.
 
-	board currentPosition leaves: aPlayer.
+	board currentSquare leaves: aPlayer.
 
-	aPlayer lapsDone == 0 & (playerPosition < 4) ifTrue: [ board resetIndex ] 
+	(board positionOf: aPlayer ) currentLap  == 0 & (playerPosition < 4) ifTrue: [ board goToCheckpoint ] 
 		ifFalse: [
 			4 timesRepeat:  [ 
-					board previousPosition . 
-					(board currentPosition isCheckpoint) ifTrue: [ aPlayer decreaseLap ] 
+					board previousSquare . 
+					(board currentSquare isCheckpoint) ifTrue: [ (board positionOf: aPlayer ) decreaseALap  ] 
 					]. 
 		].
 	
 		
-	board currentPosition put: aPlayer .
+	board currentSquare put: aPlayer .
 	
 ]

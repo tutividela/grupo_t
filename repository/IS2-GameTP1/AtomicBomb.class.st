@@ -9,13 +9,17 @@ AtomicBomb >> applyTo: aPlayer in: board [
 	| players |
 	
 	players:= OrderedCollection new.
-	board resetIndex.
-	[ board nextPosition isCheckpoint ] whileFalse: [ 
+	board goToCheckpoint.
+	[ board nextSquare isCheckpoint ] whileFalse: [ 
 		players addAll: board playersOfCurrentPosition. 
 		board playersOfCurrentPosition removeAll.
 	].
 
-	board currentPosition putASet: players.
+	board currentSquare putASet: players.
+	
+	players do: [:player | (board positionOf: player ) registerSquare: 0. ]
+	
+		
 	
 	
 ]
