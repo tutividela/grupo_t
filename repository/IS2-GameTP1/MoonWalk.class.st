@@ -14,27 +14,12 @@ MoonWalk class >> withRecoil: nValue [
 
 { #category : #effect }
 MoonWalk >> applyTo: aPlayer in: board [ 
-	| position |
-	position := 0.
-	board squares reset.
-	[ board nextSquare isCheckpoint ] whileFalse: [ 
-	
+	board goAllOverTheBoard: [ 
 		board playersOfCurrentPosition do: [ :player |
 			player = aPlayer ifFalse: [
-				board currentSquare leaves: player.
-
-				(board positionOf: player ) currentLap  == 0 & (position < recoilValue) ifTrue: [ board goToCheckpoint ] 
-				ifFalse: [
-					recoilValue timesRepeat:  [ 
-						board previousSquare . 
-						(board currentSquare isCheckpoint) ifTrue: [ (board positionOf: aPlayer ) decreaseALap  ].
-					]. 
-				].
-				board currentSquare put: player .
-				(board positionOf: player ) registerSquare: (board whereIs: player).
+				board moveBack: player this: recoilValue.	
 			]
 		].
-		position := position + 1.
 	].
 
 ]

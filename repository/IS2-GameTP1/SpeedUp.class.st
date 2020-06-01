@@ -6,8 +6,6 @@ Class {
 
 { #category : #effect }
 SpeedUp >> applyTo: aPlayer in: board [ 
-	board currentSquare leaves: aPlayer.
-	4 timesRepeat: [  board nextSquare isCheckpoint ifTrue: [ (board positionOf: aPlayer ) registerLap ] ].
-	board currentSquare put: aPlayer . 
+	board moveForward: aPlayer this: 4.
 	
 ]

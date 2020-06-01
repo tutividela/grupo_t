@@ -42,6 +42,14 @@ Board >> currentSquare [
 	^ squares current
 ]
 
+{ #category : #accessing }
+Board >> goAllOverTheBoard: aBlock [
+	self goToCheckpoint.
+	[ self nextSquare isCheckpoint ] whileFalse: [ 
+		aBlock value.
+	].
+]
+
 { #category : #private }
 Board >> goToCheckpoint [
 	squares reset.
@@ -56,15 +64,9 @@ Board >> initializeWith: listOfSquares [
 Board >> move: aPlayer this: rollResult [
 	self moveCurrentPositionTo: aPlayer.
 	
-	self currentSquare leaves: aPlayer.
-
-	rollResult timesRepeat: [ self nextSquare isCheckpoint ifTrue: [ (self positionOf: aPlayer ) registerLap ] ].
-	
-	self currentSquare put: aPlayer.
+	self moveForward: aPlayer this: rollResult.
 
 	self currentSquare effect applyTo: aPlayer in: self . 
-	
-	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer ).
 	
 	self goToCheckpoint.
 	
@@ -83,11 +85,47 @@ Board >> move:aPlayer this:rollResult lapsToWin:laps [
 	self move: aPlayer this: amountOfMoves .
 ]
 
+{ #category : #accessing }
+Board >> moveBack: aPlayer this: amount [
+	|playerPosition|
+	playerPosition := self whereIs: aPlayer.
+	
+	self currentSquare leaves: aPlayer.
+
+	(self positionOf: aPlayer ) currentLap  == 0 & (playerPosition < amount ) 
+		ifTrue: [ self  goToCheckpoint ] 
+		ifFalse: [
+			amount  timesRepeat:  [ 
+				self  previousSquare . 
+				(self currentSquare isCheckpoint) ifTrue: [ (self positionOf: aPlayer ) decreaseALap  ].
+			]. 
+		].
+	
+	self currentSquare put: aPlayer .
+	
+	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer).
+
+				
+]
+
 { #category : #private }
 Board >> moveCurrentPositionTo: aPlayer [
 	[  self playersOfCurrentPosition asArray includes: aPlayer  ] whileFalse: [ 
 		squares next.
 		].
+]
+
+{ #category : #accessing }
+Board >> moveForward: aPlayer this: amount [
+	self currentSquare leaves: aPlayer.
+
+	amount timesRepeat: [ self nextSquare isCheckpoint ifTrue: [ (self positionOf: aPlayer ) registerLap ] ].
+	
+	self currentSquare put: aPlayer.
+	
+	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer ).
+
+				
 ]
 
 { #category : #private }

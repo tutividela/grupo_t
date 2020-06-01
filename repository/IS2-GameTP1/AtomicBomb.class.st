@@ -9,8 +9,8 @@ AtomicBomb >> applyTo: aPlayer in: board [
 	| players |
 	
 	players:= OrderedCollection new.
-	board goToCheckpoint.
-	[ board nextSquare isCheckpoint ] whileFalse: [ 
+	
+	board goAllOverTheBoard: [ 
 		players addAll: board playersOfCurrentPosition. 
 		board playersOfCurrentPosition removeAll.
 	].

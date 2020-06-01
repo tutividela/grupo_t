@@ -316,10 +316,10 @@ GameTest >> testWinnerOneDice [
 GameTest >> testWinnerTwoDices [
 	| dice1 dice2 game |
 
-	dice1 := Die of: 6 rolling: #(2 5 2 5 2).
-	dice2 := Die of: 4 rolling: #(2 2 2 2 2).
+	dice1 := Die of: 6 rolling: #(2 5).
+	dice2 := Die of: 6 rolling: #(2 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 2.
 	
 	game playAllTurns.
 
