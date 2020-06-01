@@ -36,7 +36,7 @@ Board >> currentSquare [
 	^ squares current
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 Board >> goAllOverTheBoard: aBlock [
 	self goToCheckpoint.
 	[ self nextSquare isCheckpoint ] whileFalse: [ 
@@ -74,7 +74,7 @@ Board >> move: aPlayer this: rollResult [
 	
 ]
 
-{ #category : #accessing }
+{ #category : #'process actions' }
 Board >> moveBack: aPlayer this: amount [
 	|playerPosition|
 	playerPosition := self whereIs: aPlayer.
@@ -97,7 +97,7 @@ Board >> moveBack: aPlayer this: amount [
 				
 ]
 
-{ #category : #accessing }
+{ #category : #'process actions' }
 Board >> moveForward: aPlayer this: amount [
 	self currentSquare leaves: aPlayer.
 

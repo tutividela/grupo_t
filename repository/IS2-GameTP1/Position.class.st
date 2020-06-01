@@ -24,7 +24,7 @@ Position >> currentSquare [
 	^currentSquare .
 ]
 
-{ #category : #accessing }
+{ #category : #'process operations' }
 Position >> decreaseALap [
 	currentLap := currentLap < 0 ifTrue: [ 0 ] ifFalse: [ currentLap - 1 ].
 ]
@@ -41,12 +41,12 @@ Position >> player [
 	^player
 ]
 
-{ #category : #accessing }
+{ #category : #'process operations' }
 Position >> registerLap [
 	currentLap := currentLap + 1.
 ]
 
-{ #category : #accessing }
+{ #category : #'process operations' }
 Position >> registerSquare: square [
 	currentSquare  := square.
 ]
