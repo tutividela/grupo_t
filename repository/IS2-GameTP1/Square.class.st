@@ -25,6 +25,20 @@ Square class >> with: anEffect [
 	^self as: false with: anEffect
 ]
 
+{ #category : #'instance creation' }
+Square class >> withRandomEffect [
+	| number effect |
+	number := Random new nextInt: 100.
+	
+	(number between: 1 and: 48) 	ifTrue: [ effect := NoEffect new ].
+	(number between: 49 and: 68) 	ifTrue: [ effect := WormHole new ].
+	(number between: 69 and: 88) 	ifTrue: [ effect := SpeedUp new ].
+	(number between: 89 and: 98) 	ifTrue: [ effect := MoonWalk withRecoil:(Random new nextInt: 10) ].
+	(number between: 99 and: 100)	ifTrue: [ effect := AtomicBomb new ].
+	
+	^self as: false with: effect.
+]
+
 { #category : #accesing }
 Square >> effect [
 	^effect.

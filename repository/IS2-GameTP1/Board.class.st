@@ -13,17 +13,11 @@ Board class >> ofLength: nSquares [
 	| collection |
 	
 	collection := OrderedCollection new.
+	
+	collection addLast: Square asCheckpoint.
 	 
-	(nSquares * 0.48) asInteger timesRepeat: [collection addLast: (Square with: NoEffect new)].
-	(nSquares * 0.20) asInteger timesRepeat: [collection addLast: (Square with: WormHole new)].
-	(nSquares * 0.20) asInteger timesRepeat: [collection addLast: (Square with: SpeedUp new)].
-	(nSquares * 0.10) asInteger timesRepeat: [collection addLast: (Square with: (MoonWalk withRecoil:(Random new nextInt:nSquares)))].
-	(nSquares * 0.02) asInteger timesRepeat: [collection addLast: (Square with: AtomicBomb new)].
-	
-	collection shuffle.
-	
-	collection addFirst: Square asCheckpoint.
-	
+	(nSquares - 1) timesRepeat: [collection addLast: Square withRandomEffect ].
+
 	^self with: collection
 ]
 
@@ -55,6 +49,13 @@ Board >> goToCheckpoint [
 	squares reset.
 ]
 
+{ #category : #private }
+Board >> goToTheSquareOf: aPlayer [
+	[  self playersOfCurrentPosition asArray includes: aPlayer  ] whileFalse: [ 
+		squares next.
+		].
+]
+
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
@@ -62,7 +63,7 @@ Board >> initializeWith: listOfSquares [
 
 { #category : #'process actions' }
 Board >> move: aPlayer this: rollResult [
-	self moveCurrentPositionTo: aPlayer.
+	self goToTheSquareOf: aPlayer.
 	
 	self moveForward: aPlayer this: rollResult.
 
@@ -71,18 +72,6 @@ Board >> move: aPlayer this: rollResult [
 	self goToCheckpoint.
 	
 	
-]
-
-{ #category : #'process actions' }
-Board >> move:aPlayer this:rollResult lapsToWin:laps [
-	|amountOfMoves position|
-	
-	position := self positionOf: aPlayer.
-	amountOfMoves := laps - position currentLap  == 1 & (rollResult > (self amountOfSquares  - position currentSquare) )
-				ifTrue:  [ self amountOfSquares  - position currentSquare ] 
-				ifFalse: [ rollResult ].
-	
-	self move: aPlayer this: amountOfMoves .
 ]
 
 { #category : #accessing }
@@ -106,13 +95,6 @@ Board >> moveBack: aPlayer this: amount [
 	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer).
 
 				
-]
-
-{ #category : #private }
-Board >> moveCurrentPositionTo: aPlayer [
-	[  self playersOfCurrentPosition asArray includes: aPlayer  ] whileFalse: [ 
-		squares next.
-		].
 ]
 
 { #category : #accessing }
@@ -140,7 +122,7 @@ Board >> playersOfCurrentPosition [
 
 { #category : #accessing }
 Board >> positionOf: aPlayer [
-	^positions detect: [: position | position player == aPlayer ] .
+	^positions detect: [:position | position player == aPlayer ] .
 ]
 
 { #category : #accessing }
@@ -180,4 +162,5 @@ Board >> whereIs: aPlayer [
 		].
 	
 	^position.
+	
 ]

@@ -2,8 +2,7 @@ Class {
 	#name : #Player,
 	#superclass : #Object,
 	#instVars : [
-		'name',
-		'lapsDone'
+		'name'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -16,12 +15,6 @@ Player class >> named: aName [
 { #category : #initialization }
 Player >> initializeWithName: aName [ 
 	name:= aName. 
-	lapsDone := 0.
-]
-
-{ #category : #accessing }
-Player >> lapsDone [
-	^lapsDone.
 ]
 
 { #category : #accessing }

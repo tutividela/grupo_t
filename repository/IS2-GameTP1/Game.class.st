@@ -47,7 +47,7 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	board := aBoard.
 	board setPlayersInCheckPoint: listOfPlayers.
 	
-	scoreboard := board positions.
+	scoreboard := board positions copy.
 ]
 
 { #category : #game }
@@ -65,16 +65,28 @@ Game >> playAllTurns [
 
 { #category : #game }
 Game >> playNextTurn [
-	| aPlayer rollResult |
-	self isStillOn
-		ifFalse: [ ^ self ].
+	| aPlayer rollResult  amountOfMoves |
+	self isStillOn ifFalse: [ ^ self ].
 		
 	aPlayer := self whoPlays.
 	rollResult := aPlayer roll: dices.
-	board move: aPlayer this: rollResult lapsToWin: laps.
+	amountOfMoves := self possibleMovesFor: aPlayer withThis: rollResult .
+	
+	board move: aPlayer this: amountOfMoves.
 	
 	self updateScoboard.
-	self switchTurn
+	self switchTurn.
+]
+
+{ #category : #game }
+Game >> possibleMovesFor: aPlayer withThis: rollResult [ 
+	| position |
+	
+	position := board positionOf: aPlayer.
+	
+	laps - position currentLap  == 1 & (rollResult > (board amountOfSquares  - position currentSquare) )
+				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
+				ifFalse: [ ^ rollResult ].
 ]
 
 { #category : #accesing }
