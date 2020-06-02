@@ -7,32 +7,19 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instance creation' }
 MoonWalk class >> withRecoil: nValue [
 	^self new initializeWith: nValue .
 ]
 
 { #category : #effect }
 MoonWalk >> applyTo: aPlayer in: board [ 
-	| position |
-	position := 0.
-	board squares reset.
-	[ board nextPosition isCheckpoint ] whileFalse: [ 
-	
+	board goAllOverTheBoard: [ 
 		board playersOfCurrentPosition do: [ :player |
 			player = aPlayer ifFalse: [
-				board currentPosition leaves: player.
-
-				player lapsDone == 0 & (position < recoilValue) ifTrue: [ board resetIndex ] 
-				ifFalse: [
-					recoilValue timesRepeat:  [ 
-						board previousPosition . 
-						(board currentPosition isCheckpoint) ifTrue: [ player decreaseLap ].
-					]. 
-				].
-				board currentPosition put: player .]
+				board moveBack: player this: recoilValue.	
+			]
 		].
-		position := position + 1.
 	].
 
 ]

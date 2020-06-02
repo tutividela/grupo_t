@@ -13,7 +13,7 @@ PlayerTest >> testCreateAPlayer [
 ]
 
 { #category : #tests }
-PlayerTest >> testPlayerRollDeterministicDices [
+PlayerTest >> testPlayerRoll [
 	| player dices dice1 dice2 |
 	
 	player := Player named: 'Exequiel'.
@@ -28,15 +28,4 @@ PlayerTest >> testPlayerRollDeterministicDices [
 	self assert: (player roll: dices) equals: 7.
 
 	self assert: (player roll: dices) equals: 9.
-]
-
-{ #category : #tests }
-PlayerTest >> testPlayerRollRandomDice [
-	| player dice |
-	dice := Die of: 6.
-
-	player := Player named: 'Exequiel'.
-
-	100 timesRepeat: (self assert: ( (player roll: dice) between: 1 and:12)).
-
 ]

@@ -2,24 +2,58 @@ Class {
 	#name : #Board,
 	#superclass : #Object,
 	#instVars : [
-		'squares'
+		'squares',
+		'positions'
 	],
 	#category : #'IS2-GameTP1'
 }
+
+{ #category : #'instance creation' }
+Board class >> ofLength: nSquares [
+	| collection |
+	
+	collection := OrderedCollection new.
+	
+	collection addLast: Square asCheckpoint.
+	 
+	(nSquares - 1) timesRepeat: [collection addLast: Square withRandomEffect ].
+
+	^self with: collection
+]
 
 { #category : #'instance creation' }
 Board class >> with: listOfSquares [
 	^self new initializeWith: listOfSquares.
 ]
 
-{ #category : #'instance creation' }
-Board class >> with: nSquares players: listOfPlayers [
-	^self new initializeWith: nSquares players: listOfPlayers.
+{ #category : #accessing }
+Board >> amountOfSquares [
+	^squares size .
 ]
 
 { #category : #private }
-Board >> currentPosition [
+Board >> currentSquare [
 	^ squares current
+]
+
+{ #category : #private }
+Board >> goAllOverTheBoard: aBlock [
+	self goToCheckpoint.
+	[ self nextSquare isCheckpoint ] whileFalse: [ 
+		aBlock value.
+	].
+]
+
+{ #category : #private }
+Board >> goToCheckpoint [
+	squares reset.
+]
+
+{ #category : #private }
+Board >> goToTheSquareOf: aPlayer [
+	[  self playersOfCurrentPosition asArray includes: aPlayer  ] whileFalse: [ 
+		squares next.
+		].
 ]
 
 { #category : #initialization }
@@ -27,73 +61,87 @@ Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
 ]
 
-{ #category : #initialization }
-Board >> initializeWith: nSquares players: listOfPlayers [
-	| collection |
+{ #category : #'process actions' }
+Board >> move: aPlayer this: rollResult [
+	self goToTheSquareOf: aPlayer.
 	
-	collection := OrderedCollection new.
-	 
-	(nSquares * 0.48) asInteger timesRepeat: (collection addLast: (Square with: NoEffect new)).
-	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: WormHole new)).
-	(nSquares * 0.20) asInteger timesRepeat: (collection addLast: (Square with: SpeedUp new)).
-	(nSquares * 0.10) asInteger timesRepeat: (collection addLast: (Square with: (MoonWalk withRecoil:(Random new nextInt:nSquares)))).
-	(nSquares * 0.02) asInteger timesRepeat: (collection addLast: (Square with: AtomicBomb new)).
+	self moveForward: aPlayer this: rollResult.
+
+	self currentSquare effect applyTo: aPlayer in: self . 
 	
-	collection shuffle.
+	self goToCheckpoint.
 	
-	collection addFirst: (CheckPointSquare with: NoEffect new players: listOfPlayers).
 	
-	squares := CircularIterator cyclingOver: collection .
 ]
 
 { #category : #'process actions' }
-Board >> move: aPlayer this: rollResult [
-	self moveCurrentPositionTo: aPlayer.
+Board >> moveBack: aPlayer this: amount [
+	|playerPosition|
+	playerPosition := self whereIs: aPlayer.
 	
-	self currentPosition leaves: aPlayer.
+	self currentSquare leaves: aPlayer.
 
-	rollResult timesRepeat: [ self nextPosition isCheckpoint ifTrue: [ aPlayer registerLap ]  ].
-	
-	self currentPosition put: aPlayer.
-
-	self currentPosition effect applyTo: aPlayer in: self . 
-	
-	self resetIndex.
-	
-	
-]
-
-{ #category : #private }
-Board >> moveCurrentPositionTo: aPlayer [
-	[  self playersOfCurrentPosition asArray includes: aPlayer  ] whileFalse: [ 
-		squares next.
+	(self positionOf: aPlayer ) currentLap  == 0 & (playerPosition < amount ) 
+		ifTrue: [ self  goToCheckpoint ] 
+		ifFalse: [
+			amount  timesRepeat:  [ 
+				self  previousSquare . 
+				(self currentSquare isCheckpoint) ifTrue: [ (self positionOf: aPlayer ) decreaseALap  ].
+			]. 
 		].
+	
+	self currentSquare put: aPlayer .
+	
+	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer).
+
+				
+]
+
+{ #category : #'process actions' }
+Board >> moveForward: aPlayer this: amount [
+	self currentSquare leaves: aPlayer.
+
+	amount timesRepeat: [ self nextSquare isCheckpoint ifTrue: [ (self positionOf: aPlayer ) registerLap ] ].
+	
+	self currentSquare put: aPlayer.
+	
+	(self positionOf: aPlayer ) registerSquare: (self whereIs: aPlayer ).
+
+				
 ]
 
 { #category : #private }
-Board >> nextPosition [
+Board >> nextSquare [
 	^squares next.
 ]
 
 { #category : #accessing }
 Board >> playersOfCurrentPosition [
-	^self currentPosition players.
+	^self currentSquare players.
+]
+
+{ #category : #accessing }
+Board >> positionOf: aPlayer [
+	^positions detect: [:position | position player == aPlayer ] .
+]
+
+{ #category : #accessing }
+Board >> positions [
+	^positions .
 ]
 
 { #category : #private }
-Board >> previousPosition [
+Board >> previousSquare [
 	^squares previous.
 ]
 
 { #category : #private }
-Board >> resetIndex [
-	squares reset.
-]
-
-{ #category : #accessing }
 Board >> setPlayersInCheckPoint: players [
-	self resetIndex.
-	self currentPosition putASet: players.
+	self goToCheckpoint.
+	
+	positions := players collect: [:player | Position of: player ].
+	
+	self currentSquare putASet: players.
 	
 ]
 
@@ -107,11 +155,12 @@ Board >> whereIs: aPlayer [
 	| position |
 	
 	position := 0.	
-	self resetIndex.
+	self goToCheckpoint.
 	[ self playersOfCurrentPosition asArray includes: aPlayer ] whileFalse: [ 
-		self nextPosition.
+		self nextSquare.
 		position := position + 1.
 		].
 	
 	^position.
+	
 ]
