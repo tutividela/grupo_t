@@ -6,7 +6,9 @@ Class {
 		'players',
 		'scoreboard',
 		'board',
-		'laps'
+		'laps',
+		'activePermanentCards',
+		'lastCardPlayed'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -80,13 +82,17 @@ Game >> playNextTurn [
 
 { #category : #game }
 Game >> possibleMovesFor: aPlayer withThis: rollResult [ 
-	| position |
+	| position extra |
 	
 	position := board positionOf: aPlayer.
 	
+	extra := 0.
+	"ACA: aplicar los efectos de overload/speed/acceleratio"
+	"extra : = revisar las cartar permanentes activas -> ver si alguna aplica al jugador del turno ifTrue: aplico el efecto de la carta."
+	
 	laps - position currentLap  == 1 & (rollResult > (board amountOfSquares  - position currentSquare) )
-				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
-				ifFalse: [ ^ rollResult ].
+				ifTrue:  [ ^ board amountOfSquares  - position currentSquare + extra] 
+				ifFalse: [ ^ rollResult + extra ].
 ]
 
 { #category : #accesing }
