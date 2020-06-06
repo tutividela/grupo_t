@@ -208,7 +208,7 @@ CardTest >> testCumulativeAccelerationCard [
 	
 	self assert: ( game whereIs: tomas ) equals: 7.
 	
-	game currentPlayerActivatesThis: card to: exequiel .
+	game currentPlayerActivatesThis: card2 to: exequiel .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: exequiel ) equals: 8.
