@@ -40,8 +40,26 @@ Game >> board [
 	^board.
 ]
 
+{ #category : #'as yet unclassified' }
+Game >> currentPlayerActivatesThis: card to: aPlayer [.
+	card type isPermanent 
+		ifTrue: [ 
+			self whoPlays playsA: card.
+			card applyTo: aPlayer.
+			activePermanentCards addLast: card.
+			 ]
+		
+		ifFalse: [ 
+			 
+			].
+		
+	
+]
+
 { #category : #initialization }
 Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
+	listOfPlayers do: [:player | player cardsInHand == 0 ifTrue: [player takes: {Card randomFromDeck . Card randomFromDeck }]].
+	
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
 	
@@ -50,6 +68,8 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	board setPlayersInCheckPoint: listOfPlayers.
 	
 	scoreboard := board positions copy.
+	
+	activePermanentCards := OrderedCollection new.
 ]
 
 { #category : #game }
@@ -80,6 +100,11 @@ Game >> playNextTurn [
 	self switchTurn.
 ]
 
+{ #category : #accesing }
+Game >> players [
+	^players.
+]
+
 { #category : #game }
 Game >> possibleMovesFor: aPlayer withThis: rollResult [ 
 	| position extra |
@@ -87,11 +112,10 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 	position := board positionOf: aPlayer.
 	
 	extra := 0.
-	"ACA: aplicar los efectos de overload/speed/acceleratio"
-	"extra : = revisar las cartar permanentes activas -> ver si alguna aplica al jugador del turno ifTrue: aplico el efecto de la carta."
-	
-	laps - position currentLap  == 1 & (rollResult > (board amountOfSquares  - position currentSquare) )
-				ifTrue:  [ ^ board amountOfSquares  - position currentSquare + extra] 
+	activePermanentCards do: [:card | card player = aPlayer | card type applysToAllPlayers   ifTrue: [extra := extra + card type extraMoves] ].
+
+	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
+				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ rollResult + extra ].
 ]
 

@@ -18,10 +18,9 @@ Player >> cards [
 	^cards.
 ]
 
-{ #category : #rolling }
-Player >> give: firstTwoCards [ 
-	cards addAll: firstTwoCards.
-
+{ #category : #accessing }
+Player >> cardsInHand [
+	^cards size.
 ]
 
 { #category : #initialization }
@@ -35,8 +34,25 @@ Player >> name [
 	^name.
 ]
 
+{ #category : #accessing }
+Player >> playsA: card [
+	cards remove: card ifAbsent: [ Error signal: 'This card is not in player s hand.' ].
+]
+
 { #category : #rolling }
 Player >> roll: dices [ 
 	^ dices roll.
+
+]
+
+{ #category : #rolling }
+Player >> takes: theseCards [ 
+	cards addAll: theseCards.
+
+]
+
+{ #category : #rolling }
+Player >> takesA: card [ 
+	cards addLast: card.
 
 ]

@@ -65,7 +65,9 @@ Board >> initializeWith: listOfSquares [
 Board >> move: aPlayer this: rollResult [
 	self goToTheSquareOf: aPlayer.
 	
-	self moveForward: aPlayer this: rollResult.
+	rollResult >= 0 
+		ifTrue: [ self moveForward: aPlayer this: rollResult]
+		ifFalse: [ self moveBack: aPlayer this: rollResult * (-1) ].
 
 	self currentSquare effect applyTo: aPlayer in: self . 
 	
