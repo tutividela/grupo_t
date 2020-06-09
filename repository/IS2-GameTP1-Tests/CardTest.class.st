@@ -353,22 +353,22 @@ CardTest >> testOverloadCard [
 
 { #category : #tests }
 CardTest >> testPlayAPermanentCardOnAnotherPlayersTurn [
-	"| game dice card card2 |
+	| game dice card card2 |
 
 	dice := Die of: 6 rolling:#(6 6).	
 
 	card := Card type: Speed new .
-	card2 := Card type: Acceleration new .
+	card2 := Card type: Overload new .
 	
 	tomas takes: { card . Card type: Speed new }.
-	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
+	exequiel  takes: { card2 . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 		
 	self 
-		should: [ game currentPlayerActivatesThis: card2 to: tomas . ] 
+		should: [ game activateThis: card2 from: exequiel to: tomas ] 
 		raise: Error 
-		description: 'This card is not in player s hand.'."
+		description: 'A player wants to play a permanent card on another turn.'.
 ]
 
 { #category : #tests }

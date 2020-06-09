@@ -35,6 +35,30 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 
 ]
 
+{ #category : #'as yet unclassified' }
+Game >> activateThis: card from: player1 to: player2 [.
+	(player1 ~= self whoPlays) & card type isPermanent
+	
+		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
+		ifFalse: [ 
+			card type isPermanent 
+				ifTrue: [ 
+					self whoPlays playsA: card.
+					card applyTo: player2.
+					activePermanentCards addLast: card.
+				]
+		
+				ifFalse: [ 
+				 	player1 playsA: card.
+					
+				].
+		
+				lastCardPlayed := card.
+		]
+		
+	
+]
+
 { #category : #accesing }
 Game >> board [
 	^board.
@@ -42,16 +66,7 @@ Game >> board [
 
 { #category : #'as yet unclassified' }
 Game >> currentPlayerActivatesThis: card to: aPlayer [.
-	card type isPermanent 
-		ifTrue: [ 
-			self whoPlays playsA: card.
-			card applyTo: aPlayer.
-			activePermanentCards addLast: card.
-			 ]
-		
-		ifFalse: [ 
-			 
-			].
+	self activateThis: card from: self whoPlays to: aPlayer  
 		
 	
 ]
