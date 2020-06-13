@@ -23,6 +23,17 @@ Player >> cardsInHand [
 	^cards size.
 ]
 
+{ #category : #'as yet unclassified' }
+Player >> choosesCard:aCard From: activeCards [
+	^activeCards at: aCard .	
+]
+
+{ #category : #'as yet unclassified' }
+Player >> choosesPlayerfromPosition: aPosition inSocreBoard: aScoreBoard [
+	^aScoreBoard at: aPosition. 
+	
+]
+
 { #category : #initialization }
 Player >> initializeWithName: aName [ 
 	name:= aName. 

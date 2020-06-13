@@ -34,6 +34,11 @@ Card >> applyTo: aPlayer [
 	player  := aPlayer.
 ]
 
+{ #category : #comparing }
+Card >> equals: anotherCard [
+	^ ((self value asString) == (anotherCard value asString )).
+]
+
 { #category : #initialization }
 Card >> initializeAs: cardType [
 	type := cardType.

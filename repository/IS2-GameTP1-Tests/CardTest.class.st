@@ -178,6 +178,71 @@ CardTest >> testAccelerationCard [
 ]
 
 { #category : #tests }
+CardTest >> testCancellationCardWithOrWithoutPlayersTurn [
+	|game dice board cancellationCard2  speedCard1 speedCard2 |
+	dice:= Die of: 6 rolling:#(1) .
+	board:= Board with: { Square asCheckpoint.
+								Square with: NoEffect new .
+								Square with: NoEffect new .				
+								Square with: AtomicBomb  new.
+								Square with: NoEffect new .
+								Square with: WormHole  new .
+								Square with: Take randomCard.
+								Square with: NoEffect new .
+								Square with: (MoonWalk withRecoil: 5) .
+								Square with: NoEffect new .
+							} .
+	
+	cancellationCard2:= Card type: Cancellation new.
+	speedCard1 :=Card type: Speed new.
+	speedCard2 :=Card type: Speed new.
+	exequiel takes: {Card type: Cancellation new. speedCard1}.
+	tomas takes: { cancellationCard2  . speedCard2 }.
+	game:=Game playedBy: { exequiel.tomas} throwing:dice  on:board  during:2 .
+	
+	game currentPlayerActivatesThis: speedCard1  to:exequiel.
+	game playNextTurn .
+	game currentPlayerActivatesThis: speedCard2  to: tomas. 
+	game activateCancellationCard: cancellationCard2  removing:speedCard1  from: tomas.
+	
+	
+	self assert: game activePermanentCards asArray  equals: { speedCard2 }. 
+	
+]
+
+{ #category : #tests }
+CardTest >> testCancellationWithError [
+	|game dice board cancellationCard2  speedCard1 speedCard2 |
+	dice:= Die of: 6 rolling:#(1) .
+	board:= Board with: { Square asCheckpoint.
+								Square with: NoEffect new .
+								Square with: NoEffect new .				
+								Square with: AtomicBomb  new.
+								Square with: NoEffect new .
+								Square with: WormHole  new .
+								Square with: Take randomCard.
+								Square with: NoEffect new .
+								Square with: (MoonWalk withRecoil: 5) .
+								Square with: NoEffect new .
+							} .
+	
+	cancellationCard2:= Card type: Cancellation new.
+	speedCard1 :=Card type: Speed new.
+	speedCard2 :=Card type: Speed new.
+	exequiel takes: {Card type: Cancellation new. speedCard1}.
+	tomas takes: { cancellationCard2  . speedCard2 }.
+	game:=Game playedBy: { exequiel.tomas} throwing:dice  on:board  during:2 .
+	
+	game currentPlayerActivatesThis: speedCard1  to:exequiel.
+	game playNextTurn .
+	game currentPlayerActivatesThis: speedCard2  to: tomas. 
+	game activateCancellationCard: cancellationCard2  removing:(Card type: Acceleration new)  from: tomas.
+	
+	
+	self should: [ game activateCancellationCard: cancellationCard2  removing:(Card type: Acceleration new)  from: tomas ] raise: Error description: 'Card not found' . 
+]
+
+{ #category : #tests }
 CardTest >> testCumulativeAccelerationCard [
 	| game aBoard dice card card2 |
 
@@ -425,6 +490,42 @@ CardTest >> testPlayerHasTwoRandomCardsAtTheBeginning [
 	
 	self 	assert: game players current cardsInHand equals: 2; 
 			assert: game players next cardsInHand equals: 2.  
+]
+
+{ #category : #tests }
+CardTest >> testRepeatWithSpeedUp [
+	| game aBoard dice card |
+
+	dice := Die of: 6 rolling:#(1 3).	
+	aBoard := Board with: { 	Square asCheckpoint.
+									Square with: NoEffect new .
+									Square with: NoEffect new .				
+									Square with: SpeedUp  new.
+									Square with: NoEffect new .
+									Square with: WormHole  new .
+									Square with: Take randomCard.
+									Square with: NoEffect new .
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: NoEffect new  				
+							}.
+							
+	card := Card type: Repeat new .
+	
+	tomas takes: { card . Card type: Speed new }.
+	exequiel  takes: {  card . Card type: Acceleration new }.
+	
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
+	
+	game playNextTurn .
+	game playNextTurn .
+	
+	game activateRepeatCard: card from:exequiel.
+	
+	self assert: (game whereIs: exequiel) equals:7.
+	
+
+
+
 ]
 
 { #category : #tests }

@@ -36,6 +36,55 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 ]
 
 { #category : #'as yet unclassified' }
+Game >> activateCancellationCard: card1 removing:card2 from:player1 [
+	"|cardFound|
+	cardFound:=activePermanentCards detect: [ :card | (card == card2) ] .
+	cardFound isNil 
+		ifNil:  [ Error signal: 'No permanent card found' ]
+		ifNotNil: [activePermanentCards remove: card2. player1 playsA: card1. lastCardPlayed := card1] "
+	activePermanentCards detect: [ :card | card == card2] ifFound: [activePermanentCards remove: card2. player1 playsA: card1. lastCardPlayed := card1] ifNone: [ Error signal: 'Card not found' ].
+]
+
+{ #category : #'as yet unclassified' }
+Game >> activateRedoCard:card Possiblyto:aPlayer [
+	aPlayer playsA: card.
+	card actLike: lastCardPlayed.
+	card type isPermanent 
+		ifTrue: [ self activateThis: card from:self whoPlays to:aPlayer ]
+		ifFalse: [  ]
+]
+
+{ #category : #'as yet unclassified' }
+Game >> activateRepeatCard:card from:aPlayer [
+	self whereIs: aPlayer.
+	"previousSquare == board currentSquare 
+		ifTrue: [ Error signal: 'First you must roll dices.' ]
+		ifFalse: [  
+	board currentSquare effect applyTo: aPlayer in:board.
+	aPlayer playsA: card.
+	lastCardPlayed :=card.
+		]"
+	board currentSquare effect applyTo: aPlayer in:board.
+	aPlayer playsA: card.
+	lastCardPlayed :=card.
+]
+
+{ #category : #'as yet unclassified' }
+Game >> activateRepeatCard:card from:aPlayer placedInPreviousSquare:previousSquare [
+	self whereIs: aPlayer.
+	"previousSquare == board currentSquare 
+		ifTrue: [ Error signal: 'First you must roll dices.' ]
+		ifFalse: [  
+	board currentSquare effect applyTo: aPlayer in:board.
+	aPlayer playsA: card.
+	lastCardPlayed :=card.
+		]"
+	board currentSquare effect applyTo: aPlayer in:board.
+	aPlayer playsA: card.
+	lastCardPlayed :=card.
+]
+
+{ #category : #'as yet unclassified' }
 Game >> activateThis: card from: player1 to: player2 [.
 	(player1 ~= self whoPlays) & card type isPermanent
 	
@@ -46,17 +95,23 @@ Game >> activateThis: card from: player1 to: player2 [.
 					self whoPlays playsA: card.
 					card applyTo: player2.
 					activePermanentCards addLast: card.
+					
 				]
 		
-				ifFalse: [ 
-				 	player1 playsA: card.
-					
-				].
+				"ifFalse: [ 
+					player1 playsA: card.
+				 	
+				]".		
 		
 				lastCardPlayed := card.
 		]
 		
 	
+]
+
+{ #category : #accesing }
+Game >> activePermanentCards [
+	^activePermanentCards .
 ]
 
 { #category : #accesing }
@@ -115,6 +170,17 @@ Game >> playNextTurn [
 	self switchTurn.
 ]
 
+{ #category : #'as yet unclassified' }
+Game >> player:aPlayer choosesCard:aCard from:activeCards [
+	^activeCards at: aCard.
+]
+
+{ #category : #'as yet unclassified' }
+Game >> player:aPlayer1 choosesPlayer:aPlayer2 from: playerList [
+	^playerList at: aPlayer2.
+	
+]
+
 { #category : #accesing }
 Game >> players [
 	^players.
@@ -132,6 +198,11 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ rollResult + extra ].
+]
+
+{ #category : #removing }
+Game >> removePermanentCard: aPermanentCard [
+	activePermanentCards remove: aPermanentCard .
 ]
 
 { #category : #accesing }
