@@ -2,10 +2,7 @@ Class {
 	#name : #Redo,
 	#superclass : #Object,
 	#instVars : [
-		'wildCardFrom',
-		'isPermanent',
-		'applyToAllPlayers',
-		'extraMoves'
+		'represents'
 	],
 	#category : #'IS2-GameTP1'
 }
