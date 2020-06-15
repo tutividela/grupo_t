@@ -4,6 +4,11 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
+{ #category : #'as yet unclassified' }
+Overload >> applyEffectToThis: card inThe: game [
+	game addThis: card.
+]
+
 { #category : #testing }
 Overload >> applysToAllPlayers [
 	^false
@@ -17,4 +22,9 @@ Overload >> extraMoves [
 { #category : #testing }
 Overload >> isPermanent [
 	^true
+]
+
+{ #category : #testing }
+Overload >> isRedo [
+	^false
 ]

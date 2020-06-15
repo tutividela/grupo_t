@@ -36,27 +36,39 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 ]
 
 { #category : #'as yet unclassified' }
-Game >> activateThis: card from: player1 to: player2 [.
-	(player1 ~= self whoPlays) & card type isPermanent
+Game >> activateThis: card from: player to: aPlayerOrCard [.
+	(player ~= self whoPlays) & card type isPermanent
 	
 		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
 		ifFalse: [ 
-			card type isPermanent 
-				ifTrue: [ 
-					self whoPlays playsA: card.
-					card applyTo: player2.
-					activePermanentCards addLast: card.
-				]
-		
-				ifFalse: [ 
-				 	player1 playsA: card.
-					
-				].
-		
-				lastCardPlayed := card.
+			player playsA: card.
+			card applyTo: aPlayerOrCard in: self .
+			lastCardPlayed := card.
 		]
 		
 	
+]
+
+{ #category : #accesing }
+Game >> activePermanentCards [
+	^activePermanentCards.
+]
+
+{ #category : #accesing }
+Game >> addThis: activePermanentCard [
+	activePermanentCards addLast: activePermanentCard.
+]
+
+{ #category : #accesing }
+Game >> amountOfActivePermanentCards [
+	^activePermanentCards size.
+]
+
+{ #category : #accesing }
+Game >> applyTheLastEffectOverTheLastPlayer [
+	players previous .
+	board applyLastEffectUsedTo: self whoPlays .
+	self switchTurn.
 ]
 
 { #category : #accesing }
@@ -85,11 +97,17 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	scoreboard := board positions copy.
 	
 	activePermanentCards := OrderedCollection new.
+	lastCardPlayed := nil.
 ]
 
 { #category : #game }
 Game >> isStillOn [
 	^scoreboard first currentLap < laps.
+]
+
+{ #category : #accesing }
+Game >> lastCardPlayed [
+	^lastCardPlayed .
 ]
 
 { #category : #game }
@@ -132,6 +150,11 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ rollResult + extra ].
+]
+
+{ #category : #accesing }
+Game >> removeThis: activePermanentCard [
+	activePermanentCards remove: activePermanentCard ifAbsent: [Error signal: 'Permanent card not active.'].
 ]
 
 { #category : #accesing }

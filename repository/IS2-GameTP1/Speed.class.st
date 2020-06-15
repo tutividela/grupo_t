@@ -4,6 +4,11 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
+{ #category : #'as yet unclassified' }
+Speed >> applyEffectToThis: card inThe: game [
+	game addThis: card.
+]
+
 { #category : #testing }
 Speed >> applysToAllPlayers [
 	^false
@@ -17,4 +22,9 @@ Speed >> extraMoves [
 { #category : #testing }
 Speed >> isPermanent [
 	^true
+]
+
+{ #category : #testing }
+Speed >> isRedo [
+	^false
 ]

@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'squares',
-		'positions'
+		'positions',
+		'lastEffect'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -29,6 +30,16 @@ Board class >> with: listOfSquares [
 { #category : #accessing }
 Board >> amountOfSquares [
 	^squares size .
+]
+
+{ #category : #'process actions' }
+Board >> applyLastEffectUsedTo: aPlayer [
+	self goToTheSquareOf: aPlayer.
+	
+	lastEffect applyTo: aPlayer in: self . 
+	
+	self goToCheckpoint.
+	
 ]
 
 { #category : #private }
@@ -61,6 +72,11 @@ Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
 ]
 
+{ #category : #accessing }
+Board >> lastEffectApplied [
+	^lastEffect
+]
+
 { #category : #'process actions' }
 Board >> move: aPlayer this: rollResult [
 	self goToTheSquareOf: aPlayer.
@@ -68,8 +84,10 @@ Board >> move: aPlayer this: rollResult [
 	rollResult >= 0 
 		ifTrue: [ self moveForward: aPlayer this: rollResult]
 		ifFalse: [ self moveBack: aPlayer this: rollResult * (-1) ].
-
-	self currentSquare effect applyTo: aPlayer in: self . 
+		
+	lastEffect := self currentSquare effect.
+	
+	lastEffect applyTo: aPlayer in: self . 
 	
 	self goToCheckpoint.
 	
@@ -124,7 +142,7 @@ Board >> playersOfCurrentPosition [
 
 { #category : #accessing }
 Board >> positionOf: aPlayer [
-	^positions detect: [:position | position player == aPlayer ] .
+	^positions detect: [:position | position player == aPlayer ] ifNone: [ Error signal: 'This position does not exist.' ].
 ]
 
 { #category : #accessing }

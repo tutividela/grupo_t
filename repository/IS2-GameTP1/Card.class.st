@@ -30,8 +30,16 @@ Card class >> type: card [
 ]
 
 { #category : #initialization }
-Card >> applyTo: aPlayer [ 
-	player  := aPlayer.
+Card >> applyTo: playerOrCard in: game [
+	self type isPermanent 
+		ifTrue: [
+			player  := playerOrCard.
+			type applyEffectToThis: self inThe: game
+			]
+		
+		ifFalse: [ 
+			type applyEffectToThis: playerOrCard inThe: game 
+			]
 ]
 
 { #category : #initialization }
