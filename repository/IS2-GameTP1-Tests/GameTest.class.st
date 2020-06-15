@@ -110,7 +110,8 @@ GameTest >> testGameIsStillOn [
 
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 15 during: 3.
+		
+	game := Game playedBy: {tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
 	
 	game playNextTurn ; playNextTurn.
 	
