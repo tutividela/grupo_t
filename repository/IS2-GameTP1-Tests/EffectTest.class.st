@@ -140,6 +140,32 @@ EffectTest >> testSpeedUpEffect [
 ]
 
 { #category : #tests }
+EffectTest >> testTakeEffectGivesACardToPlayer [
+	|game aBoard dice|
+	dice:= Die of: 6 rolling:#(5) .
+	aBoard:= Board with: { 	Square asCheckpoint.
+									Square with: SpeedUp new .
+									Square with: WormHole  new .
+									Square with: (MoonWalk withRecoil: 5) .
+									Square with: AtomicBomb  new.
+									Square with: (Take cardOf: Speed new) .
+									Square with: NoEffect new.
+									Square with: NoEffect new .
+									Square with: NoEffect new .
+									Square with: NoEffect new 
+								}.
+	
+	
+	exequiel takes:{Card type: Speed new . Card type: Acceleration new}.
+	tomas takes: { Card type: Speed new . Card type: Cancellation new. }. 
+								
+	game:= Game playedBy: { exequiel.tomas } throwing:dice  on: aBoard during:2.
+	game playNextTurn .
+	
+	self assert: exequiel cardsInHand equals: 3. 
+]
+
+{ #category : #tests }
 EffectTest >> testWormHoleWhenCeroLapsAndRollResultGreaterThanFour [
 	| dice game aBoard |
 	dice := Die of: 6 rolling: #(6). 
