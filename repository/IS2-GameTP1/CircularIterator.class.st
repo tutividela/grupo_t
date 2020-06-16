@@ -47,9 +47,16 @@ CircularIterator >> next [
 ]
 
 { #category : #accessing }
+CircularIterator >> options [
+	^options.
+]
+
+{ #category : #accessing }
 CircularIterator >> previous [ 	
 	currentIndex := currentIndex - 1.
 	currentIndex < 0 ifTrue: [ currentIndex := (options size ) + currentIndex  ].
+	
+	^self current.
 ]
 
 { #category : #iterating }

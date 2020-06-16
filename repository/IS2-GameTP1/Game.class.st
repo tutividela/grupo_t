@@ -6,7 +6,9 @@ Class {
 		'players',
 		'scoreboard',
 		'board',
-		'laps'
+		'laps',
+		'activePermanentCards',
+		'lastCardPlayed'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -33,13 +35,60 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 
 ]
 
+{ #category : #cards }
+Game >> activateThis: card from: player to: aPlayerOrCard [.
+	self isStillOn ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
+	
+	(player ~= self whoPlays) & card type isPermanent
+	
+		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
+		ifFalse: [ 
+			card applyTo: aPlayerOrCard in: self .
+			player playsA: card.
+			lastCardPlayed := card.
+		]
+		
+	
+]
+
+{ #category : #accesing }
+Game >> activePermanentCards [
+	^activePermanentCards.
+]
+
+{ #category : #cards }
+Game >> addThis: activePermanentCard [
+	activePermanentCards addLast: activePermanentCard.
+]
+
+{ #category : #accesing }
+Game >> amountOfActivePermanentCards [
+	^activePermanentCards size.
+]
+
+{ #category : #cards }
+Game >> applyTheLastEffectOverTheLastPlayer [
+	players previous .
+	board applyLastEffectUsedTo: self whoPlays .
+	self switchTurn.
+]
+
 { #category : #accesing }
 Game >> board [
 	^board.
 ]
 
+{ #category : #cards }
+Game >> currentPlayerActivatesThis: card to: aPlayer [.
+	self activateThis: card from: self whoPlays to: aPlayer  
+		
+	
+]
+
 { #category : #initialization }
 Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
+	listOfPlayers do: [:player | (2 - player cardsInHand) timesRepeat: [ player takesA:Card randomFromDeck ]].
+	
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
 	
@@ -48,11 +97,19 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	board setPlayersInCheckPoint: listOfPlayers.
 	
 	scoreboard := board positions copy.
+	
+	activePermanentCards := OrderedCollection new.
+	lastCardPlayed := nil.
 ]
 
 { #category : #game }
 Game >> isStillOn [
 	^scoreboard first currentLap < laps.
+]
+
+{ #category : #accesing }
+Game >> lastCardPlayed [
+	^lastCardPlayed .
 ]
 
 { #category : #game }
@@ -78,15 +135,28 @@ Game >> playNextTurn [
 	self switchTurn.
 ]
 
+{ #category : #accesing }
+Game >> players [
+	^players.
+]
+
 { #category : #game }
 Game >> possibleMovesFor: aPlayer withThis: rollResult [ 
-	| position |
+	| position extra |
 	
 	position := board positionOf: aPlayer.
 	
-	laps - position currentLap  == 1 & (rollResult > (board amountOfSquares  - position currentSquare) )
+	extra := 0.
+	activePermanentCards do: [:card | card player = aPlayer | card type applysToAllPlayers   ifTrue: [extra := extra + card type extraMoves] ].
+
+	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
-				ifFalse: [ ^ rollResult ].
+				ifFalse: [ ^ rollResult + extra ].
+]
+
+{ #category : #cards }
+Game >> removeThis: activePermanentCard [
+	activePermanentCards remove: activePermanentCard ifAbsent: [Error signal: 'Permanent card not active.'].
 ]
 
 { #category : #accesing }
