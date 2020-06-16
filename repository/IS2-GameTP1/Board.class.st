@@ -137,7 +137,7 @@ Board >> nextSquare [
 
 { #category : #accessing }
 Board >> playersOfCurrentPosition [
-	^self currentSquare players.
+	^self currentSquare players .
 ]
 
 { #category : #accessing }
@@ -176,11 +176,13 @@ Board >> whereIs: aPlayer [
 	
 	position := 0.	
 	self goToCheckpoint.
-	[ self playersOfCurrentPosition asArray includes: aPlayer ] whileFalse: [ 
+	[ (self playersOfCurrentPosition asArray includes: aPlayer) | (position > self amountOfSquares) ] whileFalse: [ 
 		self nextSquare.
 		position := position + 1.
 		].
 	
-	^position.
+	(position > self amountOfSquares)
+		ifTrue: [ ^Error signal: 'This player is not in the board.' ]
+		ifFalse: [ ^position ].
 	
 ]

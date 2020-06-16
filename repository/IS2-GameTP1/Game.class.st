@@ -35,14 +35,16 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #cards }
 Game >> activateThis: card from: player to: aPlayerOrCard [.
+	self isStillOn ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
+	
 	(player ~= self whoPlays) & card type isPermanent
 	
 		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
 		ifFalse: [ 
-			player playsA: card.
 			card applyTo: aPlayerOrCard in: self .
+			player playsA: card.
 			lastCardPlayed := card.
 		]
 		
@@ -54,7 +56,7 @@ Game >> activePermanentCards [
 	^activePermanentCards.
 ]
 
-{ #category : #accesing }
+{ #category : #cards }
 Game >> addThis: activePermanentCard [
 	activePermanentCards addLast: activePermanentCard.
 ]
@@ -64,7 +66,7 @@ Game >> amountOfActivePermanentCards [
 	^activePermanentCards size.
 ]
 
-{ #category : #accesing }
+{ #category : #cards }
 Game >> applyTheLastEffectOverTheLastPlayer [
 	players previous .
 	board applyLastEffectUsedTo: self whoPlays .
@@ -76,7 +78,7 @@ Game >> board [
 	^board.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #cards }
 Game >> currentPlayerActivatesThis: card to: aPlayer [.
 	self activateThis: card from: self whoPlays to: aPlayer  
 		
@@ -85,7 +87,7 @@ Game >> currentPlayerActivatesThis: card to: aPlayer [.
 
 { #category : #initialization }
 Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
-	listOfPlayers do: [:player | player cardsInHand == 0 ifTrue: [player takes: {Card randomFromDeck . Card randomFromDeck }]].
+	listOfPlayers do: [:player | (2 - player cardsInHand) timesRepeat: [ player takesA:Card randomFromDeck ]].
 	
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
@@ -152,7 +154,7 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 				ifFalse: [ ^ rollResult + extra ].
 ]
 
-{ #category : #accesing }
+{ #category : #cards }
 Game >> removeThis: activePermanentCard [
 	activePermanentCards remove: activePermanentCard ifAbsent: [Error signal: 'Permanent card not active.'].
 ]

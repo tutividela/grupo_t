@@ -4,7 +4,7 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #accessing }
+{ #category : #operation }
 Repeat >> applyEffectToThis: player inThe: game [
 	game board lastEffectApplied
 		ifNil: [ Error signal: 'No one rolled the dices yet.' ]
@@ -13,12 +13,12 @@ Repeat >> applyEffectToThis: player inThe: game [
 		]
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Repeat >> isPermanent [
 	^false
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Repeat >> isRedo [
 	^false
 ]

@@ -34,7 +34,7 @@ Player >> name [
 	^name.
 ]
 
-{ #category : #accessing }
+{ #category : #operation }
 Player >> playsA: card [
 	cards remove: card ifAbsent: [ Error signal: 'This card is not in player s hand.' ].
 ]
@@ -45,13 +45,13 @@ Player >> roll: dices [
 
 ]
 
-{ #category : #rolling }
+{ #category : #operation }
 Player >> takes: theseCards [ 
 	cards addAll: theseCards.
 
 ]
 
-{ #category : #rolling }
+{ #category : #operation }
 Player >> takesA: card [ 
 	cards addLast: card.
 

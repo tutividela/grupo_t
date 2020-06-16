@@ -7,7 +7,7 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Redo >> applyEffectToThis: playerOrCard inThe: game [
 	| effect |
 	
@@ -26,12 +26,12 @@ Redo >> applyEffectToThis: playerOrCard inThe: game [
 		]
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Redo >> isPermanent [
 	^false
 ]
 
-{ #category : #accessing }
+{ #category : #query }
 Redo >> isRedo [
 	^true
 ]

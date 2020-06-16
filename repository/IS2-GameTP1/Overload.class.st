@@ -4,27 +4,27 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Overload >> applyEffectToThis: card inThe: game [
 	game addThis: card.
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Overload >> applysToAllPlayers [
 	^false
 ]
 
-{ #category : #testing }
+{ #category : #effect }
 Overload >> extraMoves [
 	^-2.
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Overload >> isPermanent [
 	^true
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Overload >> isRedo [
 	^false
 ]

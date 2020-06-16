@@ -223,6 +223,37 @@ CardTest >> testCancellationCardIfThereIsNoActivePermanentCard [
 ]
 
 { #category : #tests }
+CardTest >> testCardsCannotBePlayedWhenTheGameIsOver [
+	| game  dice speed redo |
+
+	dice := Die of: 6 rolling:#(5).	
+							
+	speed := Card type: Speed new.
+	redo := Card type: Redo new .
+
+	tomas takes: {speed . redo}.
+
+	game := Game playedBy: { tomas } throwing: dice on: self aBoard during: 2.
+	
+	game playAllTurns.
+	
+
+	self 	should: [ game activateThis: speed from: tomas to: tomas ]
+			raise:  Error
+			description: 'Cards cannot be played when the game is over.'.
+			
+	self 	should: [ game activateThis: redo from: tomas to: tomas ]
+			raise:  Error
+			description: 'Cards cannot be played when the game is over.'.
+
+
+	
+
+
+
+]
+
+{ #category : #tests }
 CardTest >> testCumulativeAccelerationCard [
 	| game aBoard dice card card2 |
 
@@ -529,6 +560,21 @@ CardTest >> testPlayerHasTwoRandomCardsAtTheBeginning [
 ]
 
 { #category : #tests }
+CardTest >> testPlayersAlwaysStartWithTwoCards [
+	| game dice card |
+
+	dice := Die of: 6 rolling:#(6 6).	
+
+	card := Card type: Speed new .
+	
+	tomas takesA: card.
+		
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+
+	game players options do: [:player | self assert: player cardsInHand equals: 2 ]
+]
+
+{ #category : #tests }
 CardTest >> testRedoCard [
 	| game aBoard dice card redo |
 
@@ -676,7 +722,6 @@ CardTest >> testRedoCardIfNoOneHasPlayedACardYet [
 	exequiel takes: { Card type: Speed new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
-	
 	
 	self 	should: [game currentPlayerActivatesThis: redo to: tomas .]
 			raise: Error

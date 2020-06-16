@@ -4,17 +4,17 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Cancellation >> applyEffectToThis: card inThe: game [
 	game removeThis: card.
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Cancellation >> isPermanent [
 	^false
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Cancellation >> isRedo [
 	^false
 ]

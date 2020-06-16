@@ -4,27 +4,27 @@ Class {
 	#category : #'IS2-GameTP1'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Acceleration >> applyEffectToThis: card inThe: game [
 	game addThis: card.
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Acceleration >> applysToAllPlayers [
 	^true
 ]
 
-{ #category : #testing }
+{ #category : #effect }
 Acceleration >> extraMoves [
 	^1.
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Acceleration >> isPermanent [
 	^true
 ]
 
-{ #category : #testing }
+{ #category : #query }
 Acceleration >> isRedo [
 	^false
 ]

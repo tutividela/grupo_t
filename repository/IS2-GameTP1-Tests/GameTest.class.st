@@ -133,6 +133,20 @@ GameTest >> testNoWinnerYet [
 ]
 
 { #category : #tests }
+GameTest >> testPlayerIsNotInTheBoard [
+	| dice game |
+	
+	dice := Die of: 6 rolling: #(5 2 5 2 5).
+	
+	game := Game playedBy: { tomas } throwing: dice onBoardOfLength: 10 during: 3.
+	
+	self 
+		should: [ game board whereIs: exequiel ] 
+		raise: Error 
+		description: 'This player is not in the board.'.
+]
+
+{ #category : #tests }
 GameTest >> testScoreboardUpdated [
 	| game dice1 dice2 |
 
