@@ -24,14 +24,11 @@ Game class >> playedBy: aSetOfPlayer throwing: dices on: aBoard during: aNumberO
 
 { #category : #'instance creation' }
 Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfSquares during: aNumberOfLaps [
-	aNumberOfSquares < 0
-		ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ]
-		ifFalse: [ ^self 
+		^self 
 			playedBy: aSetOfPlayer  
 			throwing: dices 
 			on: (Board ofLength: aNumberOfSquares)
 			during: aNumberOfLaps 
-		]
 
 ]
 
@@ -39,12 +36,12 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 Game >> activateThis: card from: player to: aPlayerOrCard [.
 	self isStillOn ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
 	
-	(player ~= self whoPlays) & card type isPermanent
+	(player ~= self whoPlays and: [card isPermanent])
 	
 		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
 		ifFalse: [ 
-			card applyTo: aPlayerOrCard in: self .
 			player playsA: card.
+			card applyTo: aPlayerOrCard in: self .
 			lastCardPlayed := card.
 		]
 		

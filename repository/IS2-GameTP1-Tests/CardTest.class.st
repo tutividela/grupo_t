@@ -47,6 +47,7 @@ CardTest >> aBoard02 [
 { #category : #running }
 CardTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
+	super.
 	tomas := Player named: 'Tomas'.
 	exequiel := Player named: 'Exequiel'.
 
@@ -217,7 +218,7 @@ CardTest >> testCancellationCardIfThereIsNoActivePermanentCard [
 	
 	self 	should: [ game activateThis: cancellation from: tomas to: card ]
 			raise:  Error
-			description: 'Permanent card not active.'.
+			withMessageText: 'Permanent card not active.'.
 
 
 ]
@@ -240,11 +241,11 @@ CardTest >> testCardsCannotBePlayedWhenTheGameIsOver [
 
 	self 	should: [ game activateThis: speed from: tomas to: tomas ]
 			raise:  Error
-			description: 'Cards cannot be played when the game is over.'.
+			withMessageText: 'Cards cannot be played when the game is over.'.
 			
 	self 	should: [ game activateThis: redo from: tomas to: tomas ]
 			raise:  Error
-			description: 'Cards cannot be played when the game is over.'.
+			withMessageText: 'Cards cannot be played when the game is over.'.
 
 
 	
@@ -500,7 +501,7 @@ CardTest >> testPlayAPermanentCardOnAnotherPlayersTurn [
 	self 
 		should: [ game activateThis: card2 from: exequiel to: tomas ] 
 		raise: Error 
-		description: 'A player wants to play a permanent card on another turn.'.
+		withMessageText: 'A player wants to play a permanent card on another turn.'.
 ]
 
 { #category : #tests }
@@ -529,34 +530,6 @@ CardTest >> testPlayerGetsANewCard [
 	game playNextTurn .
 	
 	self 	assert: exequiel cardsInHand equals: 3.
-]
-
-{ #category : #tests }
-CardTest >> testPlayerHasTwoCardsAtTheBeginning [
-	| game dice1 dice2 |
-
-	dice1 := Die of: 6 rolling:#(5 6 1).
-	dice2 := Die of: 6 rolling:#(3 5 2).
-	
-	tomas takes: { Card type: Overload new . Card type: Speed new }.
-	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
-	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
-	
-	self 	assert: game players current cardsInHand equals: 2; 
-			assert: game players next cardsInHand equals: 2.  
-]
-
-{ #category : #tests }
-CardTest >> testPlayerHasTwoRandomCardsAtTheBeginning [
-	| game dice1 dice2 |
-
-	dice1 := Die of: 6 rolling:#(5 6 1).
-	dice2 := Die of: 6 rolling:#(3 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
-	
-	self 	assert: game players current cardsInHand equals: 2; 
-			assert: game players next cardsInHand equals: 2.  
 ]
 
 { #category : #tests }
@@ -725,7 +698,7 @@ CardTest >> testRedoCardIfNoOneHasPlayedACardYet [
 	
 	self 	should: [game currentPlayerActivatesThis: redo to: tomas .]
 			raise: Error
-			description: 'No one has played a card yet'.
+			withMessageText: 'No one has played a card yet'.
 
 
 
@@ -791,10 +764,12 @@ CardTest >> testRepeatCardWhenNoOneRolledTheDicesYet [
 	
 	game := Game playedBy: { tomas } throwing: dice on: self aBoard during: 2.
 
-	self 	should:  [ game activateThis: card from: tomas to: tomas. ]
-			raise:  Error
-			description: 'No one has rolled the dices yet.' .
+	game activateThis: card from: tomas to: tomas. 
 	
+	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 0;
+			assert: ( game board positionOf: tomas ) currentLap equals: 0;
+			assert: tomas cardsInHand equals: 1.
+			
 
 
 ]
@@ -953,5 +928,5 @@ CardTest >> testUseOneCardThatIsNotInPlayersHand [
 	self 
 		should: [ game currentPlayerActivatesThis: card2 to: tomas . ] 
 		raise: Error 
-		description: 'This card is not in player s hand.'.
+		withMessageText: 'This card is not in player s hand.'.
 ]

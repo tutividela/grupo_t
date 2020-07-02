@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Acceleration >> applyEffectToThis: card inThe: game [
-	game addThis: card.
+Acceleration >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
+	game addThis: selfCard.
 ]
 
 { #category : #query }

@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Overload >> applyEffectToThis: card inThe: game [
-	game addThis: card.
+Overload >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
+	game addThis: selfCard .
 ]
 
 { #category : #query }

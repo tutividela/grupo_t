@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #operation }
-Cancellation >> applyEffectToThis: card inThe: game [
+Cancellation >> applyEffect: selfCard toThis: card inThe: game [.
 	game removeThis: card.
 ]
 

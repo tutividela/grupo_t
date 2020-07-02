@@ -5,9 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Repeat >> applyEffectToThis: player inThe: game [
+Repeat >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 	game board lastEffectApplied
-		ifNil: [ Error signal: 'No one rolled the dices yet.' ]
 		ifNotNil: [ 
 			game applyTheLastEffectOverTheLastPlayer.
 		]

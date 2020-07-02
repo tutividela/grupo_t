@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Speed >> applyEffectToThis: card inThe: game [
-	game addThis: card.
+Speed >> applyEffect: selfCard toThis: playerOrCard inThe: game [
+	game addThis: selfCard .
 ]
 
 { #category : #query }

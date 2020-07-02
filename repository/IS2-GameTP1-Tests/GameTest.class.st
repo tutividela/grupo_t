@@ -47,6 +47,7 @@ GameTest >> aBoard02 [
 { #category : #running }
 GameTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
+	super.
 	tomas := Player named: 'Tomas'.
 	exequiel := Player named: 'Exequiel'.
 
@@ -61,7 +62,7 @@ GameTest >> testBoardWithNegativeAmountOfSquares [
 	self 
 		should: [ Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: -10 during: 3 ] 
 		raise: Error 
-		description: 'A Board cannot have negative amount of squares'.
+		withMessageText: 'A Board cannot have negative amount of squares'.
 ]
 
 { #category : #tests }
@@ -129,7 +130,7 @@ GameTest >> testNoWinnerYet [
 	self 
 		should: [ game winner ] 
 		raise: Error 
-		description: 'No winner yet'.
+		withMessageText: 'No winner yet'.
 ]
 
 { #category : #tests }
@@ -143,7 +144,7 @@ GameTest >> testPlayerIsNotInTheBoard [
 	self 
 		should: [ game board whereIs: exequiel ] 
 		raise: Error 
-		description: 'This player is not in the board.'.
+		withMessageText: 'This player is not in the board.'.
 ]
 
 { #category : #tests }

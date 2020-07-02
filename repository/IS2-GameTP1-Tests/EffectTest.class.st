@@ -11,6 +11,7 @@ Class {
 { #category : #running }
 EffectTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
+	super.
 	tomas := Player named: 'Tomas'.
 	exequiel := Player named: 'Exequiel'.
 

@@ -31,20 +31,20 @@ Card class >> type: card [
 
 { #category : #operation }
 Card >> applyTo: playerOrCard in: game [
-	self type isPermanent 
-		ifTrue: [
-			player  := playerOrCard.
-			type applyEffectToThis: self inThe: game
-			]
-		
-		ifFalse: [ 
-			type applyEffectToThis: playerOrCard inThe: game 
-			]
+
+		player  := playerOrCard.
+
+		type applyEffect: self toThis: playerOrCard inThe: game.
 ]
 
 { #category : #initialization }
 Card >> initializeAs: cardType [
 	type := cardType.
+]
+
+{ #category : #accessing }
+Card >> isPermanent [ 
+	^type isPermanent.
 ]
 
 { #category : #accessing }

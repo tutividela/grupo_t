@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #operation }
-Redo >> applyEffectToThis: playerOrCard inThe: game [
+Redo >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 	| effect |
 	
 	game lastCardPlayed 

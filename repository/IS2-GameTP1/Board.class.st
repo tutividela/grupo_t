@@ -13,12 +13,13 @@ Class {
 Board class >> ofLength: nSquares [
 	| collection |
 	
+	nSquares < 0 ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ].
+		
 	collection := OrderedCollection new.
 	
 	collection addLast: Square asCheckpoint.
-	 
 	(nSquares - 1) timesRepeat: [collection addLast: Square withRandomEffect ].
-
+	
 	^self with: collection
 ]
 
