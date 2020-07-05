@@ -18,8 +18,3 @@ Speed >> extraMoves [
 Speed >> isPermanent [
 	^true
 ]
-
-{ #category : #query }
-Speed >> isRedo [
-	^false
-]

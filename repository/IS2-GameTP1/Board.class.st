@@ -28,6 +28,20 @@ Board class >> with: listOfSquares [
 	^self new initializeWith: listOfSquares.
 ]
 
+{ #category : #'instance creation' }
+Board class >> withNoEffectOfLength: nSquares [
+	| collection |
+	
+	nSquares < 0 ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ].
+		
+	collection := OrderedCollection new.
+	
+	collection addLast: Square asCheckpoint.
+	(nSquares - 1) timesRepeat: [collection addLast: (Square with: NoEffect new) ].
+	
+	^self with: collection
+]
+
 { #category : #accessing }
 Board >> amountOfSquares [
 	^squares size .
@@ -102,7 +116,7 @@ Board >> moveBack: aPlayer this: amount [
 	
 	self currentSquare leaves: aPlayer.
 
-	(self positionOf: aPlayer ) currentLap  == 0 & (playerPosition < amount ) 
+	((self positionOf: aPlayer ) currentLap  == 0 and: [ playerPosition < amount ])
 		ifTrue: [ self  goToCheckpoint ] 
 		ifFalse: [
 			amount  timesRepeat:  [ 
@@ -177,7 +191,7 @@ Board >> whereIs: aPlayer [
 	
 	position := 0.	
 	self goToCheckpoint.
-	[ (self playersOfCurrentPosition asArray includes: aPlayer) | (position > self amountOfSquares) ] whileFalse: [ 
+	[ (self playersOfCurrentPosition asArray includes: aPlayer) or: [ position > self amountOfSquares ] ] whileFalse: [ 
 		self nextSquare.
 		position := position + 1.
 		].
@@ -186,4 +200,10 @@ Board >> whereIs: aPlayer [
 		ifTrue: [ ^Error signal: 'This player is not in the board.' ]
 		ifFalse: [ ^position ].
 	
+]
+
+{ #category : #'instance creation' }
+Board >> with: effect at: position [ 
+	position > self amountOfSquares ifTrue: [ Error signal: 'This square does not exist' ].
+	squares replaceAt: position this: (Square with: effect).
 ]

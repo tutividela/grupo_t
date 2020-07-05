@@ -40,7 +40,7 @@ Game >> activateThis: card from: player to: aPlayerOrCard [.
 	
 		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
 		ifFalse: [ 
-			player playsA: card.
+			player plays: card.
 			card applyTo: aPlayerOrCard in: self .
 			lastCardPlayed := card.
 		]
@@ -53,6 +53,22 @@ Game >> activePermanentCards [
 	^activePermanentCards.
 ]
 
+{ #category : #game }
+Game >> amountOfMovesFor: aPlayer withThis: rollResult [ 
+	| position extra |
+	
+	position := board positionOf: aPlayer.
+	
+	extra := 0.
+	activePermanentCards do: [:card | 
+		(card assignedTo includes: aPlayer)  ifTrue: [extra := extra + card extraMoves] 
+		].
+
+	(laps - position currentLap  == 1 and: [ (rollResult + extra) > (board amountOfSquares  - position currentSquare) ])
+				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
+				ifFalse: [ ^ rollResult + extra ].
+]
+
 { #category : #cards }
 Game >> applyTheLastEffectOverTheLastPlayer [
 	players previous .
@@ -62,7 +78,7 @@ Game >> applyTheLastEffectOverTheLastPlayer [
 
 { #category : #accesing }
 Game >> board [
-	^board.
+	^board copy.
 ]
 
 { #category : #cards }
@@ -117,7 +133,7 @@ Game >> playNextTurn [
 		
 	aPlayer := self whoPlays.
 	rollResult := aPlayer roll: dices.
-	amountOfMoves := self possibleMovesFor: aPlayer withThis: rollResult .
+	amountOfMoves := self amountOfMovesFor: aPlayer withThis: rollResult .
 	
 	board move: aPlayer this: amountOfMoves.
 	
@@ -128,22 +144,6 @@ Game >> playNextTurn [
 { #category : #accesing }
 Game >> players [
 	^players.
-]
-
-{ #category : #game }
-Game >> possibleMovesFor: aPlayer withThis: rollResult [ 
-	| position extra |
-	
-	position := board positionOf: aPlayer.
-	
-	extra := 0.
-	activePermanentCards do: [:card | 
-		(card assignedTo includes: aPlayer)  ifTrue: [extra := extra + card type extraMoves] 
-		].
-
-	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
-				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
-				ifFalse: [ ^ rollResult + extra ].
 ]
 
 { #category : #cards }
@@ -163,7 +163,7 @@ Game >> switchTurn [
 
 { #category : #sorting }
 Game >> updateScoboard [
-	scoreboard sort: [ :pl1 :pl2 | pl1 currentLap > pl2 currentLap | (pl1 currentLap = pl2 currentLap & (pl1 currentSquare > pl2 currentSquare)) ].
+	scoreboard sort: [ :pl1 :pl2 | pl1 currentLap > pl2 currentLap or: [pl1 currentLap = pl2 currentLap and: [pl1 currentSquare > pl2 currentSquare]] ].
 ]
 
 { #category : #search }

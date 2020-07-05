@@ -13,8 +13,3 @@ Cancellation >> applyEffect: selfCard toThis: card inThe: game [.
 Cancellation >> isPermanent [
 	^false
 ]
-
-{ #category : #query }
-Cancellation >> isRedo [
-	^false
-]

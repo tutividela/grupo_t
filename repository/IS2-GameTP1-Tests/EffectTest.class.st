@@ -21,21 +21,12 @@ EffectTest >> setUp [
 EffectTest >> testAtomicBombWhenNoLapsWereDone [
 	| dice game aBoard|
 	dice := Die of: 6 rolling: #(6 4). 
-
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-						
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-								}.
+		
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
 								
 	game := Game playedBy: {tomas . exequiel} throwing: dice on: aBoard during: 2.
 
@@ -51,28 +42,15 @@ EffectTest >> testAtomicBombWhenOneLapIsDone [
 	| dice game aBoard|
 	dice := Die of: 6 rolling: #(5 5 5 3 4). 
 	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-						
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-								}.
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
 
 	game := Game playedBy: {tomas . exequiel} throwing: dice on: aBoard during: 2.
 
-	game playNextTurn .
-	game playNextTurn .
-	game playNextTurn .
-	game playNextTurn .
-	game playNextTurn .
+	game playNextTurn ; playNextTurn; playNextTurn ; playNextTurn ; playNextTurn .
 	
 	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 0;
 			assert: ( game board positionOf: tomas ) currentLap equals: 1;
@@ -87,21 +65,12 @@ EffectTest >> testMoonWalk [
 	dice := Die of: 8 rolling: #(8 7 3).
 	player3:=Player named: 'Marcos'.
 	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-						
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-								}.
-								
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
+
 	game := Game playedBy: {exequiel. player3 . tomas} throwing: dice on: aBoard during: 2.
 	
 	game playNextTurn.
@@ -118,20 +87,11 @@ EffectTest >> testSpeedUpEffect [
 	| dice game aBoard |
 	dice := Die of: 6 rolling: #(1). 
 	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-						
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-								}.
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
 
 	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
@@ -144,23 +104,16 @@ EffectTest >> testSpeedUpEffect [
 EffectTest >> testTakeEffectGivesACardToPlayer [
 	|game aBoard dice|
 	dice:= Die of: 6 rolling:#(5) .
-	aBoard:= Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: (Take cardOf: Speed new) .
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-									Square with: NoEffect new 
-								}.
 	
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
+	aBoard with: Take randomCard at: 6.
+				
+	game:= Game playedBy: { exequiel . tomas } throwing: dice  on: aBoard during: 2.
 	
-	exequiel takes:{Card type: Speed new . Card type: Acceleration new}.
-	tomas takes: { Card type: Speed new . Card type: Cancellation new. }. 
-								
-	game:= Game playedBy: { exequiel.tomas } throwing:dice  on: aBoard during:2.
 	game playNextTurn .
 	
 	self assert: exequiel cardsInHand equals: 3. 
@@ -171,20 +124,11 @@ EffectTest >> testWormHoleWhenCeroLapsAndRollResultGreaterThanFour [
 	| dice game aBoard |
 	dice := Die of: 6 rolling: #(6). 
 
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .					
-									Square with: (MoonWalk withRecoil: 5) .
-						
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: NoEffect new.
-						
-									Square with: WormHole  new .
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-							}.
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: (MoonWalk withRecoil: 5) at: 3.
+	aBoard with: AtomicBomb new at: 4.
+	aBoard with: WormHole new at: 7.
 	
 	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
@@ -197,21 +141,12 @@ EffectTest >> testWormHoleWhenCeroLapsAndRollResultGreaterThanFour [
 EffectTest >> testWormHoleWhenCeroLapsAndRollResultLessThanFour [
 	| dice game aBoard  |
 	dice := Die of: 7 rolling: #(2). 
-	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-						
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-								}.
+		
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
 
 	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
@@ -225,21 +160,12 @@ EffectTest >> testWormHoleWhenOneLapIsDone [
 	| dice game aBoard |
 	dice := Die of: 6 rolling: #(6 6). 
 	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: SpeedUp new .
-									Square with: WormHole  new .
-						
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new.
-									Square with: NoEffect new .
-									Square with: NoEffect new .
-						
-									Square with: NoEffect new  				
-								}.
-
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 2.
+	aBoard with: WormHole new at: 3.
+	aBoard with: (MoonWalk withRecoil: 5) at: 4.
+	aBoard with: AtomicBomb new at: 5.
+	
 	game := Game playedBy: {tomas} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .

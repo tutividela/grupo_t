@@ -35,8 +35,8 @@ Player >> name [
 ]
 
 { #category : #operation }
-Player >> playsA: card [
-	cards remove: card ifAbsent: [ Error signal: 'This card is not in player s hand.' ].
+Player >> plays: aCard [
+	cards remove: aCard ifAbsent: [ Error signal: 'This card is not in player s hand.' ].
 ]
 
 { #category : #rolling }

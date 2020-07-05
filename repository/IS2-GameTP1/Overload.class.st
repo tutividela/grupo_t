@@ -18,8 +18,3 @@ Overload >> extraMoves [
 Overload >> isPermanent [
 	^true
 ]
-
-{ #category : #query }
-Overload >> isRedo [
-	^false
-]

@@ -16,8 +16,3 @@ Repeat >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 Repeat >> isPermanent [
 	^false
 ]
-
-{ #category : #query }
-Repeat >> isRedo [
-	^false
-]

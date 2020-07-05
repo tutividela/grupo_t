@@ -8,42 +8,6 @@ Class {
 	#category : #'IS2-GameTP1-Tests'
 }
 
-{ #category : #board }
-GameTest >> aBoard [
-	^Board with: { 	Square asCheckpoint.
-						Square with: SpeedUp new .
-						Square with: WormHole  new .
-						
-						Square with: (MoonWalk withRecoil: 5) .
-						Square with: AtomicBomb  new.
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new.
-						Square with: NoEffect new .
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new  				
-						}.
-]
-
-{ #category : #board }
-GameTest >> aBoard02 [
-	^Board with: { 	Square asCheckpoint.
-						Square with: SpeedUp new .					
-						Square with: (MoonWalk withRecoil: 5) .
-						
-						Square with: AtomicBomb  new.
-						Square with: NoEffect new .
-						Square with: NoEffect new.
-						
-						Square with: WormHole  new .
-						Square with: NoEffect new .
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new  				
-						}.
-]
-
 { #category : #running }
 GameTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
@@ -74,7 +38,7 @@ GameTest >> testFinalScoreboard [
 	dice1:= Die of: 6 rolling: #(5 5 6).
 	dice2:= Die of: 6 rolling: #(5 4 1).
 	
-	game := Game playedBy: {tomas . exequiel . player3} throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: {tomas . exequiel . player3} throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 3.
 	
 	game playAllTurns.
 	
@@ -97,8 +61,7 @@ GameTest >> testGameIsOver [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard  during: 1.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 10 during: 1.
 	
 	game playAllTurns.
 	
@@ -112,7 +75,7 @@ GameTest >> testGameIsStillOn [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 		
-	game := Game playedBy: {tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 10 during: 3.
 	
 	game playNextTurn ; playNextTurn.
 	
@@ -125,7 +88,7 @@ GameTest >> testNoWinnerYet [
 	
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 1.
 	
 	self 
 		should: [ game winner ] 
@@ -153,7 +116,7 @@ GameTest >> testScoreboardUpdated [
 
 	dice1 := Die of: 6 rolling:#(5 6 1).
 	dice2 := Die of: 6 rolling:#(3 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 3.
 	
 	game playNextTurn.
 	
@@ -170,7 +133,7 @@ GameTest >> testWinnerEndsInCheckPoint [
 	
 	dice := Die of: 6 rolling: #(5 2).
 	
-	game := Game playedBy: { tomas } throwing: dice on: self aBoard  during: 1.
+	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 1.
 	
 	game playAllTurns .
 	
@@ -186,7 +149,8 @@ GameTest >> testWinnerInFirstPlace [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 1.
+
 	
 	game playAllTurns.
 	
@@ -199,7 +163,7 @@ GameTest >> testWinnerOneDice [
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: (Board withNoEffectOfLength: 10) during: 3.
 	
 	game playAllTurns.
 
@@ -213,7 +177,7 @@ GameTest >> testWinnerTwoDices [
 	dice1 := Die of: 6 rolling: #(2 5).
 	dice2 := Die of: 6 rolling: #(2 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 2.
 	
 	game playAllTurns.
 

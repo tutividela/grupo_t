@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'type',
-		'assignedTo'
+		'assignedTo',
+		'represents'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -44,15 +45,45 @@ Card >> assignedTo [
 		ifNotNil: [ ^assignedTo ].
 ]
 
+{ #category : #'as yet unclassified' }
+Card >> assignedToAnyPlayer [
+	assignedTo := OrderedCollection new.
+]
+
+{ #category : #accessing }
+Card >> extraMoves [ 
+	^type extraMoves.
+]
+
 { #category : #initialization }
 Card >> initializeAs: cardType [
 	type := cardType.
 	assignedTo := OrderedCollection new.
+	represents := self.
 ]
 
 { #category : #accessing }
 Card >> isPermanent [ 
 	^type isPermanent.
+]
+
+{ #category : #accessing }
+Card >> represents [ 
+	^represents.
+]
+
+{ #category : #accessing }
+Card >> represents: thisCard [
+	represents := thisCard.
+]
+
+{ #category : #'as yet unclassified' }
+Card >> representsAssignedToAnyPlayer [
+	| card |
+	card := self represents copy.
+	card assignedToAnyPlayer.
+
+	^card.
 ]
 
 { #category : #accessing }
