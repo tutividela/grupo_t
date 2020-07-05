@@ -182,7 +182,7 @@ CardTest >> testCardsCannotBePlayedWhenTheGameIsOver [
 
 	tomas takes: {aPermanentCard . anInstantCard}.
 
-	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 1.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: (Board withNoEffectOfLength: 10) during: 1.
 	
 	game playAllTurns.
 	
