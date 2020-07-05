@@ -6,12 +6,7 @@ Class {
 
 { #category : #operation }
 Overload >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
-	game addThis: selfCard .
-]
-
-{ #category : #query }
-Overload >> applysToAllPlayers [
-	^false
+	game activePermanentCards addLast: selfCard .
 ]
 
 { #category : #effect }

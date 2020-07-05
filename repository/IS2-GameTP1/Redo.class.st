@@ -12,9 +12,7 @@ Redo >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 	| effect |
 	
 	game lastCardPlayed 
-		ifNil: [ Error signal: 'No one has played a card yet' ] 
 		ifNotNil: [ 
-		
 			represents := game lastCardPlayed type.
 			effect := represents.
 			

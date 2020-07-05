@@ -6,12 +6,7 @@ Class {
 
 { #category : #operation }
 Speed >> applyEffect: selfCard toThis: playerOrCard inThe: game [
-	game addThis: selfCard .
-]
-
-{ #category : #query }
-Speed >> applysToAllPlayers [
-	^false
+	game activePermanentCards addLast: selfCard .
 ]
 
 { #category : #effect }

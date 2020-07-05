@@ -6,12 +6,9 @@ Class {
 
 { #category : #operation }
 Acceleration >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
-	game addThis: selfCard.
-]
-
-{ #category : #query }
-Acceleration >> applysToAllPlayers [
-	^true
+	selfCard assignedTo addAll: game players options.
+	
+	game activePermanentCards addLast: selfCard.
 ]
 
 { #category : #effect }

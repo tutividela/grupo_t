@@ -55,7 +55,7 @@ CardTest >> setUp [
 
 { #category : #tests }
 CardTest >> testAccelerationAndOverloadTogether [
-	| game aBoard dice card card2 |
+	| game aBoard dice accelerationCard overloadCard |
 
 	dice := Die of: 6 rolling:#(6 1 1 4).	
 	aBoard := Board with: { 	Square asCheckpoint. 
@@ -70,21 +70,21 @@ CardTest >> testAccelerationAndOverloadTogether [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Acceleration new .
-	card2 := Card type: Overload new .
+	accelerationCard := Card type: Acceleration new .
+	overloadCard := Card type: Overload new .
 	
-	tomas takes: { card . Card type: Overload new }.
-	exequiel takes: { card2 . Card type: Acceleration new }.
+	tomas takes: { accelerationCard . Card type: Overload new }.
+	exequiel takes: { overloadCard . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: accelerationCard to: tomas .
 	game playNextTurn.
 
 	self assert: ( game whereIs: tomas ) equals: 7.
 	
-	game currentPlayerActivatesThis: card2 to: tomas .
+	game currentPlayerActivatesThis: overloadCard to: tomas .
 	game playNextTurn.
 	
 	game playNextTurn.
@@ -98,7 +98,7 @@ CardTest >> testAccelerationAndOverloadTogether [
 
 { #category : #tests }
 CardTest >> testAccelerationAndSpeedTogether [
-	| game aBoard dice card card2 |
+	| game aBoard dice accelerationCard speedCard |
 
 	dice := Die of: 6 rolling:#(6 2).	
 	aBoard := Board with: { 	Square asCheckpoint. 
@@ -113,21 +113,21 @@ CardTest >> testAccelerationAndSpeedTogether [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Acceleration new .
-	card2 := Card type: Speed new .
+	accelerationCard := Card type: Acceleration new .
+	speedCard := Card type: Speed new .
 	
-	tomas takes: { card . Card type: Overload new }.
-	exequiel takes: { card2 . Card type: Acceleration new }.
+	tomas takes: { accelerationCard . Card type: Overload new }.
+	exequiel takes: { speedCard . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: accelerationCard to: tomas .
 	game playNextTurn.
 
 	self assert: ( game whereIs: tomas ) equals: 7.
 	
-	game currentPlayerActivatesThis: card2 to: exequiel .
+	game currentPlayerActivatesThis: speedCard to: exequiel .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: exequiel ) equals: 4.
@@ -141,7 +141,7 @@ CardTest >> testAccelerationAndSpeedTogether [
 
 { #category : #tests }
 CardTest >> testAccelerationCard [
-	| game aBoard dice card |
+	| game aBoard dice accelerationCard |
 
 	dice := Die of: 6 rolling:#(6 6).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -156,15 +156,15 @@ CardTest >> testAccelerationCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Acceleration new .
+	accelerationCard := Card type: Acceleration new .
 	
-	tomas takes: { card . Card type: Speed new }.
+	tomas takes: { accelerationCard . Card type: Speed new }.
 	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: accelerationCard to: tomas .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: tomas ) equals: 7.
@@ -179,24 +179,24 @@ CardTest >> testAccelerationCard [
 ]
 
 { #category : #tests }
-CardTest >> testCancellationCard [
-	| game dice card cancellation2|
+CardTest >> testCancelAPermanentCard [
+	| game dice aPermanentCard cancellationCard|
 
 	dice := Die of: 6 rolling:#(6 6).	
 		
-	card := Card type: Speed new .
-	cancellation2 := Card type: Cancellation new .	
+	aPermanentCard := Card type: Speed new .
+	cancellationCard := Card type: Cancellation new .	
 		
-	tomas takes: { Card type: Acceleration new . card }.
-	exequiel  takes: { Card type: Speed new . cancellation2 }.
+	tomas takes: { Card type: Acceleration new . aPermanentCard }.
+	exequiel  takes: { Card type: Speed new . cancellationCard }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: aPermanentCard to: tomas .
 	
-	game activateThis: cancellation2 from: exequiel to: card.
+	game activateThis: cancellationCard from: exequiel to: aPermanentCard.
 	
-	self assert: game amountOfActivePermanentCards equals: 0.
+	self assert: game activePermanentCards size equals: 0.
 
 
 
@@ -204,19 +204,19 @@ CardTest >> testCancellationCard [
 
 { #category : #tests }
 CardTest >> testCancellationCardIfThereIsNoActivePermanentCard [
-	| game dice cancellation card |
+	| game dice cancellation aPermanentCard |
 
 	dice := Die of: 6 rolling:#(6 6).	
 
-	card := Card type: Speed new.
+	aPermanentCard := Card type: Speed new.
 	cancellation := Card type: Cancellation new .	
 
 	tomas takes: { Card type: Speed new . cancellation }.
-	exequiel  takes: { Card type: Speed new . card }.
+	exequiel  takes: { Card type: Speed new . aPermanentCard }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 	
-	self 	should: [ game activateThis: cancellation from: tomas to: card ]
+	self 	should: [ game activateThis: cancellation from: tomas to: aPermanentCard ]
 			raise:  Error
 			withMessageText: 'Permanent card not active.'.
 
@@ -225,25 +225,25 @@ CardTest >> testCancellationCardIfThereIsNoActivePermanentCard [
 
 { #category : #tests }
 CardTest >> testCardsCannotBePlayedWhenTheGameIsOver [
-	| game  dice speed redo |
+	| game  dice aPermanentCard anInstantCard |
 
 	dice := Die of: 6 rolling:#(5).	
 							
-	speed := Card type: Speed new.
-	redo := Card type: Redo new .
+	aPermanentCard := Card type: Speed new.
+	anInstantCard := Card type: Redo new .
 
-	tomas takes: {speed . redo}.
+	tomas takes: {aPermanentCard . anInstantCard}.
 
 	game := Game playedBy: { tomas } throwing: dice on: self aBoard during: 2.
 	
 	game playAllTurns.
 	
 
-	self 	should: [ game activateThis: speed from: tomas to: tomas ]
+	self 	should: [ game activateThis: aPermanentCard from: tomas to: tomas ]
 			raise:  Error
 			withMessageText: 'Cards cannot be played when the game is over.'.
 			
-	self 	should: [ game activateThis: redo from: tomas to: tomas ]
+	self 	should: [ game activateThis: anInstantCard from: tomas to: tomas ]
 			raise:  Error
 			withMessageText: 'Cards cannot be played when the game is over.'.
 
@@ -256,7 +256,7 @@ CardTest >> testCardsCannotBePlayedWhenTheGameIsOver [
 
 { #category : #tests }
 CardTest >> testCumulativeAccelerationCard [
-	| game aBoard dice card card2 |
+	| game aBoard dice accelerationCard1 accelerationCard2 |
 
 	dice := Die of: 6 rolling:#(6 6).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -271,21 +271,21 @@ CardTest >> testCumulativeAccelerationCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Acceleration new .
-	card2 := Card type: Acceleration new .
+	accelerationCard1 := Card type: Acceleration new .
+	accelerationCard2 := Card type: Acceleration new .
 	
-	tomas takes: { card . Card type: Speed new }.
-	exequiel  takes: { card2 . Card type: Overload new }.
+	tomas takes: { accelerationCard1 . Card type: Speed new }.
+	exequiel  takes: { accelerationCard2 . Card type: Overload new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: accelerationCard1 to: tomas .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: tomas ) equals: 7.
 	
-	game currentPlayerActivatesThis: card2 to: exequiel .
+	game currentPlayerActivatesThis: accelerationCard2 to: exequiel .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: exequiel ) equals: 8.
@@ -297,7 +297,7 @@ CardTest >> testCumulativeAccelerationCard [
 
 { #category : #tests }
 CardTest >> testCumulativeOverloadCard [
-	| game aBoard dice card card2 |
+	| game aBoard dice overloadCard1 overloadCard2 |
 
 	dice := Die of: 6 rolling:#(6 2 1 4).	
 	aBoard := Board with: { 	Square asCheckpoint. 
@@ -312,22 +312,22 @@ CardTest >> testCumulativeOverloadCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Overload new .
-	card2 := Card type: Overload new .
+	overloadCard1 := Card type: Overload new .
+	overloadCard2 := Card type: Overload new .
 	
-	tomas takes: { card . card2 }.
+	tomas takes: { overloadCard1 . overloadCard2 }.
 	exequiel takes: { Card type: Overload new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: exequiel .
+	game currentPlayerActivatesThis: overloadCard1 to: exequiel .
 	game playNextTurn.
 	game playNextTurn.
 	
 	self assert: ( game whereIs: exequiel ) equals: 0.
 	
-	game currentPlayerActivatesThis: card2 to: exequiel .
+	game currentPlayerActivatesThis: overloadCard2 to: exequiel .
 	
 	game playNextTurn.
 	game playNextTurn.
@@ -341,7 +341,7 @@ CardTest >> testCumulativeOverloadCard [
 
 { #category : #tests }
 CardTest >> testCumulativeSpeedCard [
-	| game aBoard dice card card2 |
+	| game aBoard dice speedCard1 speedCard2 |
 
 	dice := Die of: 6 rolling:#(3 2).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -356,23 +356,23 @@ CardTest >> testCumulativeSpeedCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Speed new .
-	card2 := Card type: Speed new .
+	speedCard1 := Card type: Speed new .
+	speedCard2 := Card type: Speed new .
 	
-	tomas takes: { card . card2 }.
+	tomas takes: { speedCard1 . speedCard2 }.
 	exequiel  takes: { Card type: Acceleration new . Card type: Overload new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: speedCard1 to: tomas .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: tomas ) equals: 4.
 	
 	game playNextTurn.
 	
-	game currentPlayerActivatesThis: card2 to: tomas .
+	game currentPlayerActivatesThis: speedCard2 to: tomas .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: tomas ) equals: 9.
@@ -384,7 +384,7 @@ CardTest >> testCumulativeSpeedCard [
 
 { #category : #tests }
 CardTest >> testNestedRedoCard [
-	| game aBoard dice card redo redo2 redo3 |
+	| game aBoard dice card redoCard1 redoCard2 redoCard3 |
 
 	dice := Die of: 6 rolling:#(5).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -400,19 +400,19 @@ CardTest >> testNestedRedoCard [
 							}.
 							
 	card := Card type: Speed  new .
-	redo := Card type: Redo new .
-	redo2 := Card type: Redo new .
-	redo3 := Card type: Redo new .
+	redoCard1 := Card type: Redo new .
+	redoCard2 := Card type: Redo new .
+	redoCard3 := Card type: Redo new .
 		
-	tomas takes: { card . redo }.
-	exequiel takes: { redo2 . redo3 }.
+	tomas takes: { card . redoCard1 }.
+	exequiel takes: { redoCard2 . redoCard3 }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
 	game currentPlayerActivatesThis: card to: tomas .
-	game currentPlayerActivatesThis: redo to: tomas .
-	game activateThis: redo2 from: exequiel to: exequiel.
+	game currentPlayerActivatesThis: redoCard1 to: tomas .
+	game activateThis: redoCard2 from: exequiel to: exequiel.
 
 	
 	game playNextTurn.
@@ -425,7 +425,7 @@ CardTest >> testNestedRedoCard [
 	self 	assert: ( game board positionOf: exequiel ) currentSquare equals: 6;
 			assert: ( game board positionOf: exequiel ) currentLap equals: 0.
 	
-	game activateThis: redo3 from: exequiel to: exequiel.
+	game activateThis: redoCard3 from: exequiel to: exequiel.
 	
 	game playNextTurn.
 	game playNextTurn.
@@ -440,7 +440,7 @@ CardTest >> testNestedRedoCard [
 
 { #category : #tests }
 CardTest >> testOverloadCard [
-	| game aBoard dice card |
+	| game aBoard dice overloadCard |
 
 	dice := Die of: 6 rolling:#(6 2 1 4 2 1).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -455,15 +455,15 @@ CardTest >> testOverloadCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Overload new .
+	overloadCard := Card type: Overload new .
 	
-	tomas takes: { card . Card type: Speed new }.
+	tomas takes: { overloadCard . Card type: Speed new }.
 	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: exequiel .
+	game currentPlayerActivatesThis: overloadCard to: exequiel .
 	game playNextTurn.
 	game playNextTurn.
 	
@@ -486,20 +486,18 @@ CardTest >> testOverloadCard [
 
 { #category : #tests }
 CardTest >> testPlayAPermanentCardOnAnotherPlayersTurn [
-	| game dice card card2 |
+	| game dice aPermanentCard |
 
 	dice := Die of: 6 rolling:#(6 6).	
 
-	card := Card type: Speed new .
-	card2 := Card type: Overload new .
+	aPermanentCard := Card type: Overload new .
 	
-	tomas takes: { card . Card type: Speed new }.
-	exequiel  takes: { card2 . Card type: Acceleration new }.
+	exequiel takesA: aPermanentCard.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 		
 	self 
-		should: [ game activateThis: card2 from: exequiel to: tomas ] 
+		should: [ game activateThis: aPermanentCard from: exequiel to: tomas ] 
 		raise: Error 
 		withMessageText: 'A player wants to play a permanent card on another turn.'.
 ]
@@ -549,7 +547,7 @@ CardTest >> testPlayersAlwaysStartWithTwoCards [
 
 { #category : #tests }
 CardTest >> testRedoCard [
-	| game aBoard dice card redo |
+	| game aBoard dice card redoCard |
 
 	dice := Die of: 6 rolling:#(5).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -565,17 +563,17 @@ CardTest >> testRedoCard [
 							}.
 							
 	card := Card type: Acceleration  new .
-	redo := Card type: Redo new .
+	redoCard := Card type: Redo new .
 
 		
-	tomas takes: { card . redo }.
+	tomas takes: { card . redoCard }.
 	exequiel takes: { Card type: Speed new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
 	game currentPlayerActivatesThis: card to: tomas .
-	game currentPlayerActivatesThis: redo to: tomas .
+	game currentPlayerActivatesThis: redoCard to: tomas .
 	
 	game playNextTurn.
 	
@@ -592,41 +590,44 @@ CardTest >> testRedoCard [
 
 { #category : #tests }
 CardTest >> testRedoCardAsCancellationCard [
-	| game  dice speed speed2 cancel redo |
+	| game  dice speedCard1 speedCard2 cancellationCard redoCard |
 
 	dice := Die of: 6 rolling:#(5).	
 							
-	speed := Card type: Speed new.
-	speed2 := Card type: Speed new.
-	cancel := Card type: Cancellation new.
-	redo := Card type: Redo new .
+	speedCard1 := Card type: Speed new.
+	speedCard2 := Card type: Speed new.
+	cancellationCard := Card type: Cancellation new.
+	redoCard := Card type: Redo new .
 
 		
-	tomas takes: { speed . redo }.
-	exequiel takes: {speed2. cancel }.
+	tomas takes: { speedCard1 . redoCard }.
+	exequiel takes: {speedCard2. cancellationCard }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: speed to: tomas .
+	game currentPlayerActivatesThis: speedCard1 to: tomas .
 	
 	game playNextTurn .
 	
-	game currentPlayerActivatesThis: speed2 to: exequiel .
+	game currentPlayerActivatesThis: speedCard2 to: exequiel .
 	
-	game activateThis: cancel from: exequiel to: speed.
+	self assert: game activePermanentCards size equals: 2.
+		
+	game activateThis: cancellationCard from: exequiel to: speedCard1.
 	
-	game activateThis: redo from: tomas to: speed2.
+	self assert: game activePermanentCards size equals: 1.
+	
+	game activateThis: redoCard from: tomas to: speedCard2.
 
-	
-	self assert: game amountOfActivePermanentCards equals: 0.
+	self assert: game activePermanentCards size equals: 0.
 
 
 ]
 
 { #category : #tests }
 CardTest >> testRedoCardAsRepeatCard [
-	| game aBoard dice  redo repeat |
+	| game aBoard dice  redoCard repeatCard |
 
 	dice := Die of: 6 rolling:#(1).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -642,10 +643,10 @@ CardTest >> testRedoCardAsRepeatCard [
 							}.
 							
 
-	redo := Card type: Redo new .
-	repeat := Card type: Repeat new .
+	redoCard := Card type: Redo new .
+	repeatCard := Card type: Repeat new .
 		
-	tomas takes: { repeat . redo }.
+	tomas takes: { repeatCard . redoCard }.
 	exequiel takes: { Card type: Speed new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
@@ -655,12 +656,12 @@ CardTest >> testRedoCardAsRepeatCard [
 	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 5;
 			assert: ( game board positionOf: tomas ) currentLap equals: 0.
 			
-	game activateThis: repeat from: tomas to: nil.
+	game activateThis: repeatCard from: tomas to: nil.
 	
 	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 9;
 			assert: ( game board positionOf: tomas ) currentLap equals: 0.
 			
-	game activateThis: redo from: tomas to: nil.
+	game activateThis: redoCard from: tomas to: nil.
 	
 	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 3;
 			assert: ( game board positionOf: tomas ) currentLap equals: 1.
@@ -672,7 +673,7 @@ CardTest >> testRedoCardAsRepeatCard [
 
 { #category : #tests }
 CardTest >> testRedoCardIfNoOneHasPlayedACardYet [
-	| game aBoard dice card redo |
+	| game aBoard dice redoCard |
 
 	dice := Die of: 6 rolling:#(5).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -687,16 +688,13 @@ CardTest >> testRedoCardIfNoOneHasPlayedACardYet [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Acceleration  new .
-	redo := Card type: Redo new .
+	redoCard := Card type: Redo new .
 
-		
-	tomas takes: { card . redo }.
-	exequiel takes: { Card type: Speed new . Card type: Acceleration new }.
+	tomas takesA: redoCard.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
-	self 	should: [game currentPlayerActivatesThis: redo to: tomas .]
+	self 	should: [game currentPlayerActivatesThis: redoCard to: tomas .]
 			raise: Error
 			withMessageText: 'No one has played a card yet'.
 
@@ -707,7 +705,7 @@ CardTest >> testRedoCardIfNoOneHasPlayedACardYet [
 
 { #category : #tests }
 CardTest >> testRepeatCard [
-	| game aBoard dice card card2 |
+	| game aBoard dice repeatCard1 repeatCard2 |
 
 	dice := Die of: 6 rolling:#(3 6).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -722,10 +720,10 @@ CardTest >> testRepeatCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Repeat new .
-	card2 := Card type: Repeat new .
+	repeatCard1 := Card type: Repeat new .
+	repeatCard2 := Card type: Repeat new .
 		
-	tomas takes: { card . card2 }.
+	tomas takes: { repeatCard1 . repeatCard2 }.
 	exequiel takes: { Card type: Acceleration new . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
@@ -733,7 +731,7 @@ CardTest >> testRepeatCard [
 	
 	game playNextTurn.
 	
-	game activateThis: card from: tomas to: nil.
+	game activateThis: repeatCard1 from: tomas to: nil.
 	
 	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 1;
 			assert: ( game board positionOf: tomas ) currentLap equals: 1.
@@ -743,7 +741,7 @@ CardTest >> testRepeatCard [
 	self 	assert: ( game board positionOf: exequiel ) currentSquare equals: 2;
 			assert: ( game board positionOf: exequiel ) currentLap equals: 0.
 			
-	game activateThis: card2 from: tomas to: nil.
+	game activateThis: repeatCard2 from: tomas to: nil.
 	
 	self 	assert: ( game board positionOf: exequiel ) currentSquare equals: 0;
 			assert: ( game board positionOf: exequiel ) currentLap equals: 0.
@@ -755,16 +753,16 @@ CardTest >> testRepeatCard [
 
 { #category : #tests }
 CardTest >> testRepeatCardWhenNoOneRolledTheDicesYet [
-	| game dice card |
+	| game dice repeatCard |
 
 	dice := Die of: 6 rolling:#(3 6).	
-	card := Card type: Repeat new .
+	repeatCard := Card type: Repeat new .
 	
-	tomas takes: { card . Card type: Speed new }.
+	tomas takesA: repeatCard.
 	
 	game := Game playedBy: { tomas } throwing: dice on: self aBoard during: 2.
 
-	game activateThis: card from: tomas to: tomas. 
+	game activateThis: repeatCard from: tomas to: tomas. 
 	
 	self 	assert: ( game board positionOf: tomas ) currentSquare equals: 0;
 			assert: ( game board positionOf: tomas ) currentLap equals: 0;
@@ -776,7 +774,7 @@ CardTest >> testRepeatCardWhenNoOneRolledTheDicesYet [
 
 { #category : #tests }
 CardTest >> testRepeatCardWithNoEffect [
-	| game aBoard dice card |
+	| game aBoard dice repeatCard |
 
 	dice := Die of: 6 rolling:#(1).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -791,9 +789,9 @@ CardTest >> testRepeatCardWithNoEffect [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Repeat new .
+	repeatCard := Card type: Repeat new .
 	
-	tomas takes: { card . Card type: Speed new }.
+	tomas takes: { repeatCard . Card type: Speed new }.
 	
 	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 2.
 	
@@ -801,7 +799,7 @@ CardTest >> testRepeatCardWithNoEffect [
 	
 	self assert: ( game whereIs: tomas ) equals: 1.
 	
-	game activateThis: card from: tomas to: tomas.
+	game activateThis: repeatCard from: tomas to: tomas.
 	
 	self assert: ( game whereIs: tomas ) equals: 1.
 	
@@ -811,7 +809,7 @@ CardTest >> testRepeatCardWithNoEffect [
 
 { #category : #tests }
 CardTest >> testSpeedAndOverloadTogether [
-	| game aBoard dice card card2 |
+	| game aBoard dice speedCard overloadCard |
 
 	dice := Die of: 6 rolling:#(6 2 1 4).	
 	aBoard := Board with: { 	Square asCheckpoint. 
@@ -826,21 +824,21 @@ CardTest >> testSpeedAndOverloadTogether [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Speed new .
-	card2 := Card type: Overload new .
+	speedCard := Card type: Speed new .
+	overloadCard := Card type: Overload new .
 	
-	tomas takes: { card . Card type: Overload new }.
-	exequiel takes: { card2 . Card type: Acceleration new }.
+	tomas takes: { speedCard . Card type: Overload new }.
+	exequiel takes: { overloadCard . Card type: Acceleration new }.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: speedCard to: tomas .
 	game playNextTurn.
 
 	self assert: ( game whereIs: tomas ) equals: 7.
 	
-	game currentPlayerActivatesThis: card2 to: tomas .
+	game currentPlayerActivatesThis: overloadCard to: tomas .
 	game playNextTurn.
 	
 	game playNextTurn.
@@ -854,7 +852,7 @@ CardTest >> testSpeedAndOverloadTogether [
 
 { #category : #tests }
 CardTest >> testSpeedCard [
-	| game aBoard dice card |
+	| game aBoard dice speedCard |
 
 	dice := Die of: 6 rolling:#(6 6).	
 	aBoard := Board with: { 	Square asCheckpoint.
@@ -869,15 +867,14 @@ CardTest >> testSpeedCard [
 									Square with: NoEffect new  				
 							}.
 							
-	card := Card type: Speed new .
+	speedCard := Card type: Speed new .
 	
-	tomas takes: { card . Card type: Speed new }.
-	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
+	tomas takesA: speedCard.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: speedCard to: tomas .
 	game playNextTurn.
 	
 	self assert: ( game whereIs: tomas ) equals: 7.
@@ -893,19 +890,18 @@ CardTest >> testSpeedCard [
 
 { #category : #tests }
 CardTest >> testUseOneCardFromPlayersHand [
-	| game dice card |
+	| game dice speedCard |
 
 	dice := Die of: 6 rolling:#(6 6).	
 
-	card := Card type: Speed new .
+	speedCard := Card type: Speed new .
 	
-	tomas takes: { card . Card type: Speed new }.
-	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
+	tomas takesA: speedCard.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 	
 	
-	game currentPlayerActivatesThis: card to: tomas .
+	game currentPlayerActivatesThis: speedCard to: tomas .
 	
 	self assert: tomas cardsInHand equals: 1.
 
@@ -913,20 +909,19 @@ CardTest >> testUseOneCardFromPlayersHand [
 
 { #category : #tests }
 CardTest >> testUseOneCardThatIsNotInPlayersHand [
-	| game dice card card2 |
+	| game dice speedCard accelerationCard |
 
 	dice := Die of: 6 rolling:#(6 6).	
 
-	card := Card type: Speed new .
-	card2 := Card type: Acceleration new .
+	speedCard := Card type: Speed new .
+	accelerationCard := Card type: Acceleration new .
 	
-	tomas takes: { card . Card type: Speed new }.
-	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
+	tomas takesA: speedCard.
 	
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
 		
 	self 
-		should: [ game currentPlayerActivatesThis: card2 to: tomas . ] 
+		should: [ game currentPlayerActivatesThis: accelerationCard to: tomas . ] 
 		raise: Error 
 		withMessageText: 'This card is not in player s hand.'.
 ]

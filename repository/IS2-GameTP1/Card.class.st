@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'type',
-		'player'
+		'assignedTo'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -32,24 +32,27 @@ Card class >> type: card [
 { #category : #operation }
 Card >> applyTo: playerOrCard in: game [
 
-		player  := playerOrCard.
+		assignedTo addLast: playerOrCard.
 
 		type applyEffect: self toThis: playerOrCard inThe: game.
+]
+
+{ #category : #accessing }
+Card >> assignedTo [
+	assignedTo 
+		ifNil: [ Error signal: 'This card has not been assigned to a player yet.' ] 
+		ifNotNil: [ ^assignedTo ].
 ]
 
 { #category : #initialization }
 Card >> initializeAs: cardType [
 	type := cardType.
+	assignedTo := OrderedCollection new.
 ]
 
 { #category : #accessing }
 Card >> isPermanent [ 
 	^type isPermanent.
-]
-
-{ #category : #accessing }
-Card >> player [
-	^player
 ]
 
 { #category : #accessing }

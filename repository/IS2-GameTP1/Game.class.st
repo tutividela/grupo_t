@@ -54,16 +54,6 @@ Game >> activePermanentCards [
 ]
 
 { #category : #cards }
-Game >> addThis: activePermanentCard [
-	activePermanentCards addLast: activePermanentCard.
-]
-
-{ #category : #accesing }
-Game >> amountOfActivePermanentCards [
-	^activePermanentCards size.
-]
-
-{ #category : #cards }
 Game >> applyTheLastEffectOverTheLastPlayer [
 	players previous .
 	board applyLastEffectUsedTo: self whoPlays .
@@ -106,7 +96,10 @@ Game >> isStillOn [
 
 { #category : #accesing }
 Game >> lastCardPlayed [
-	^lastCardPlayed .
+	lastCardPlayed 
+		ifNil: [ Error signal: 'No one has played a card yet' ] 
+		ifNotNil: [ ^lastCardPlayed  ].
+
 ]
 
 { #category : #game }
@@ -144,7 +137,9 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 	position := board positionOf: aPlayer.
 	
 	extra := 0.
-	activePermanentCards do: [:card | card player = aPlayer | card type applysToAllPlayers   ifTrue: [extra := extra + card type extraMoves] ].
+	activePermanentCards do: [:card | 
+		(card assignedTo includes: aPlayer)  ifTrue: [extra := extra + card type extraMoves] 
+		].
 
 	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
