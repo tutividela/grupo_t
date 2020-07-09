@@ -14,7 +14,7 @@ Take class >> cardOf: aType [
 
 { #category : #'instance creation' }
 Take class >> randomCard [ 
-	^self this: Card randomFromDeck .
+	^self this: (Card source: Random new) .
 ]
 
 { #category : #'instance creation' }

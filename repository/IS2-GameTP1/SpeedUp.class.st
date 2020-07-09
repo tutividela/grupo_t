@@ -6,6 +6,9 @@ Class {
 
 { #category : #effect }
 SpeedUp >> applyTo: aPlayer in: board [ 
-	board moveForward: aPlayer this: 4.
+	board reversal 
+	ifTrue: 	[ board moveBack: aPlayer this: 4. ]
+	ifFalse: [ board moveForward: aPlayer this: 4. ].
+
 	
 ]

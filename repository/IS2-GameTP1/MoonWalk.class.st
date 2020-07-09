@@ -17,7 +17,9 @@ MoonWalk >> applyTo: aPlayer in: board [
 	board goAllOverTheBoard: [ 
 		board playersOfCurrentPosition do: [ :player |
 			player = aPlayer ifFalse: [
-				board moveBack: player this: recoilValue.	
+					board reversal 
+						ifTrue: 	[ board moveForward: player this: recoilValue ]
+						ifFalse: 	[ board moveBack: player this: recoilValue ].
 			]
 		].
 	].

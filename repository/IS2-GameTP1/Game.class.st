@@ -55,18 +55,15 @@ Game >> activePermanentCards [
 
 { #category : #game }
 Game >> amountOfMovesFor: aPlayer withThis: rollResult [ 
-	| position extra |
+	| position total|
+	
+	total := rollResult + (self extraMovesFor: aPlayer).
 	
 	position := board positionOf: aPlayer.
-	
-	extra := 0.
-	activePermanentCards do: [:card | 
-		(card assignedTo includes: aPlayer)  ifTrue: [extra := extra + card extraMoves] 
-		].
 
-	(laps - position currentLap  == 1 and: [ (rollResult + extra) > (board amountOfSquares  - position currentSquare) ])
+	(laps - position currentLap  == 1 and: [ total > (board amountOfSquares  - position currentSquare) ])
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
-				ifFalse: [ ^ rollResult + extra ].
+				ifFalse: [ ^ total ].
 ]
 
 { #category : #cards }
@@ -88,9 +85,22 @@ Game >> currentPlayerActivatesThis: card to: aPlayer [.
 	
 ]
 
+{ #category : #'as yet unclassified' }
+Game >> extraMovesFor: aPlayer [
+	| extra |
+
+	extra := 0.
+	activePermanentCards do: [:card | 
+		(card assignedTo includes: aPlayer)  ifTrue: [extra := extra + card extraMoves] 
+		].
+	
+	^extra.
+	
+]
+
 { #category : #initialization }
 Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers dicesList: listOfDices [ 
-	listOfPlayers do: [:player | (2 - player cardsInHand) timesRepeat: [ player takesA:Card randomFromDeck ]].
+	listOfPlayers do: [:player | (2 - player cardsInHand) timesRepeat: [ player takesA: (Card source: Random new) ]].
 	
 	players  := CircularIterator cyclingOver: listOfPlayers.
 	dices := listOfDices.
@@ -135,7 +145,7 @@ Game >> playNextTurn [
 	rollResult := aPlayer roll: dices.
 	amountOfMoves := self amountOfMovesFor: aPlayer withThis: rollResult .
 	
-	board move: aPlayer this: amountOfMoves.
+	board move: aPlayer this: amountOfMoves reversalMode: false.
 	
 	self updateScoboard.
 	self switchTurn.

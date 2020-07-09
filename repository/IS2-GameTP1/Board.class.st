@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'squares',
 		'positions',
-		'lastEffect'
+		'lastEffect',
+		'reversal'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -85,6 +86,7 @@ Board >> goToTheSquareOf: aPlayer [
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
+	reversal := false.
 ]
 
 { #category : #accessing }
@@ -93,7 +95,9 @@ Board >> lastEffectApplied [
 ]
 
 { #category : #'process actions' }
-Board >> move: aPlayer this: rollResult [
+Board >> move: aPlayer this: rollResult reversalMode: status [.
+	reversal := status.
+
 	self goToTheSquareOf: aPlayer.
 	
 	rollResult >= 0 
@@ -168,6 +172,11 @@ Board >> positions [
 { #category : #private }
 Board >> previousSquare [
 	^squares previous.
+]
+
+{ #category : #accessing }
+Board >> reversal [
+	^reversal.
 ]
 
 { #category : #private }
