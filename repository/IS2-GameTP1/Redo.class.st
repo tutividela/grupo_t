@@ -12,6 +12,7 @@ Redo >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 			
 			selfCard representsAssignedToAnyPlayer applyTo: playerOrCard in: game.
 		]
+	"PRUEBA"
 ]
 
 { #category : #query }
