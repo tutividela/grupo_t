@@ -78,6 +78,11 @@ Card >> representsAssignedToAnyPlayer [
 	^card.
 ]
 
+{ #category : #highlighting }
+Card >> reverse [
+	^type reverse.
+]
+
 { #category : #accessing }
 Card >> type [
 	^type

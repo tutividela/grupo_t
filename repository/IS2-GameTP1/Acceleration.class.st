@@ -7,7 +7,7 @@ Class {
 { #category : #operation }
 Acceleration >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
 	selfCard assignedToAnyPlayer.
-	selfCard assignedTo addAll: game players options.
+	selfCard assignedTo addAll: game players options .
 	
 	game activePermanentCards addLast: selfCard.
 ]
@@ -20,4 +20,9 @@ Acceleration >> extraMoves [
 { #category : #query }
 Acceleration >> isPermanent [
 	^true
+]
+
+{ #category : #highlighting }
+Acceleration >> reverse [
+	^false
 ]

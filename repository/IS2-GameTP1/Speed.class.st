@@ -18,3 +18,8 @@ Speed >> extraMoves [
 Speed >> isPermanent [
 	^true
 ]
+
+{ #category : #highlighting }
+Speed >> reverse [
+	^false
+]

@@ -65,7 +65,7 @@ GameTest >> testGameIsOver [
 	
 	game playAllTurns.
 	
-	self deny: game isStillOn.  
+	self deny: game status.  
 ]
 
 { #category : #tests }
@@ -79,7 +79,7 @@ GameTest >> testGameIsStillOn [
 	
 	game playNextTurn ; playNextTurn.
 	
-	self assert: game isStillOn.  
+	self assert: game status.  
 ]
 
 { #category : #tests }

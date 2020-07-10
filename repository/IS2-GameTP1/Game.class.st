@@ -34,7 +34,7 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 
 { #category : #cards }
 Game >> activateThis: card from: player to: aPlayerOrCard [.
-	self isStillOn ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
+	self status ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
 	
 	(player ~= self whoPlays and: [card isPermanent])
 	
@@ -115,11 +115,6 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	lastCardPlayed := nil.
 ]
 
-{ #category : #game }
-Game >> isStillOn [
-	^scoreboard first currentLap < laps.
-]
-
 { #category : #accesing }
 Game >> lastCardPlayed [
 	lastCardPlayed 
@@ -130,7 +125,7 @@ Game >> lastCardPlayed [
 
 { #category : #game }
 Game >> playAllTurns [
-	[ self isStillOn ]
+	[ self status ]
 		whileTrue: [ 
 			self playNextTurn.
 		]
@@ -139,13 +134,13 @@ Game >> playAllTurns [
 { #category : #game }
 Game >> playNextTurn [
 	| aPlayer rollResult  amountOfMoves |
-	self isStillOn ifFalse: [ ^ self ].
+	self status ifFalse: [ ^ self ].
 		
 	aPlayer := self whoPlays.
 	rollResult := aPlayer roll: dices.
 	amountOfMoves := self amountOfMovesFor: aPlayer withThis: rollResult .
 	
-	board move: aPlayer this: amountOfMoves reversalMode: false.
+	board move: aPlayer this: amountOfMoves reversalMode: self reversalMode .
 	
 	self updateScoboard.
 	self switchTurn.
@@ -161,9 +156,19 @@ Game >> removeThis: activePermanentCard [
 	activePermanentCards remove: activePermanentCard ifAbsent: [Error signal: 'Permanent card not active.'].
 ]
 
+{ #category : #'as yet unclassified' }
+Game >> reversalMode [
+	activePermanentCards detect: [:card | card reverse ] ifFound: [ ^true ] ifNone: [ ^false ].
+]
+
 { #category : #accesing }
 Game >> scoreboard [
 	^ scoreboard copy .
+]
+
+{ #category : #game }
+Game >> status [
+	^scoreboard first currentLap < laps.
 ]
 
 { #category : #private }
@@ -188,7 +193,7 @@ Game >> whoPlays [
 
 { #category : #players }
 Game >> winner [
-	^self isStillOn 
+	^self status 
 		ifTrue: [ Error signal: 'No winner yet' ]
 		ifFalse: [ scoreboard first player ].
 

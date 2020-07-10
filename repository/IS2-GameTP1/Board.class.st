@@ -66,7 +66,8 @@ Board >> currentSquare [
 { #category : #private }
 Board >> goAllOverTheBoard: aBlock [
 	self goToCheckpoint.
-	[ self nextSquare isCheckpoint ] whileFalse: [ 
+	
+	[ (reversal ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
 		aBlock value.
 	].
 ]

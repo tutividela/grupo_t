@@ -18,3 +18,8 @@ Overload >> extraMoves [
 Overload >> isPermanent [
 	^true
 ]
+
+{ #category : #highlighting }
+Overload >> reverse [
+	^false
+]
