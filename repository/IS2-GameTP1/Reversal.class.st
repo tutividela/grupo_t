@@ -21,8 +21,3 @@ Reversal >> extraMoves [
 Reversal >> isPermanent [
 	^true
 ]
-
-{ #category : #query }
-Reversal >> reverse [
-	^true
-]

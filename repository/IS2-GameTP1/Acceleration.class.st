@@ -21,8 +21,3 @@ Acceleration >> extraMoves [
 Acceleration >> isPermanent [
 	^true
 ]
-
-{ #category : #highlighting }
-Acceleration >> reverse [
-	^false
-]

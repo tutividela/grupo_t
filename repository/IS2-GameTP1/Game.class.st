@@ -55,14 +55,14 @@ Game >> activePermanentCards [
 
 { #category : #game }
 Game >> amountOfMovesFor: aPlayer withThis: rollResult [ 
-	| position total|
+	| total amountOfSquares position |
 	
 	total := rollResult + (self extraMovesFor: aPlayer).
-	
-	position := board positionOf: aPlayer.
+	amountOfSquares := board amountOfSquares.
+	position := scoreboard detect: [:p | p player == aPlayer ] ifNone: [ Error signal: 'This position does not exist.' ].
 
-	(laps - position currentLap  == 1 and: [ total > (board amountOfSquares  - position currentSquare) ])
-				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
+	(laps - position currentLap  == 1 and: [ total > (amountOfSquares - position currentSquare) ])
+				ifTrue:  [ ^ amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ total ].
 ]
 
@@ -158,7 +158,7 @@ Game >> removeThis: activePermanentCard [
 
 { #category : #'as yet unclassified' }
 Game >> reversalMode [
-	activePermanentCards detect: [:card | card reverse ] ifFound: [ ^true ] ifNone: [ ^false ].
+	activePermanentCards detect: [:card | card extraMoves == 0 ] ifFound: [ ^true ] ifNone: [ ^false ].
 ]
 
 { #category : #accesing }
