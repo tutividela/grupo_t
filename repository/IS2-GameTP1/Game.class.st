@@ -55,13 +55,15 @@ Game >> activePermanentCards [
 
 { #category : #game }
 Game >> amountOfMovesFor: aPlayer withThis: rollResult [ 
-	| total amountOfSquares position |
+	| total amountOfSquares position afterRollingPosition |
 	
 	total := rollResult + (self extraMovesFor: aPlayer).
 	amountOfSquares := board amountOfSquares.
 	position := scoreboard detect: [:p | p player == aPlayer ] ifNone: [ Error signal: 'This position does not exist.' ].
+	
+	afterRollingPosition := board estimatedFinalPositionFor: aPlayer moving: total.
 
-	(laps - position currentLap  == 1 and: [ total > (amountOfSquares - position currentSquare) ])
+	(afterRollingPosition > (Position of: aPlayer  at: 0 with: laps))
 				ifTrue:  [ ^ amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ total ].
 ]
@@ -178,7 +180,7 @@ Game >> switchTurn [
 
 { #category : #sorting }
 Game >> updateScoboard [
-	scoreboard sort: [ :pl1 :pl2 | pl1 currentLap > pl2 currentLap or: [pl1 currentLap = pl2 currentLap and: [pl1 currentSquare > pl2 currentSquare]] ].
+	scoreboard sort: [ :position1 :position2 | position1 > position2 ].
 ]
 
 { #category : #search }

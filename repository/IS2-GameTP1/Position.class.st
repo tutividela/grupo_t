@@ -11,7 +11,18 @@ Class {
 
 { #category : #'instance creation' }
 Position class >> of: aPlayer [ 
-	^self new initializeWith: aPlayer .
+	^self of: aPlayer at: 0 with: 0.
+]
+
+{ #category : #'as yet unclassified' }
+Position class >> of: aPlayer at: square with: lapsDone [ 
+	^self new initialize: aPlayer at: square with: lapsDone .
+]
+
+{ #category : #comparing }
+Position >> > aPosition [ 
+	^(currentLap > aPosition currentLap) or: [ (currentLap = aPosition currentLap) and: [currentSquare > aPosition currentSquare] ].
+
 ]
 
 { #category : #accessing }
@@ -30,9 +41,9 @@ Position >> decreaseALap [
 ]
 
 { #category : #initialization }
-Position >> initializeWith: aPlayer [
-	currentLap := 0.
-	currentSquare := 0.
+Position >> initialize: aPlayer at: square with: lapsDone [
+	currentLap := lapsDone.
+	currentSquare := square.
 	player :=aPlayer.
 ]
 
@@ -49,4 +60,11 @@ Position >> registerLap [
 { #category : #'process operations' }
 Position >> registerSquare: square [
 	currentSquare  := square.
+]
+
+{ #category : #initialization }
+Position >> reset [
+	currentLap := 0.
+	currentSquare := 0.
+
 ]

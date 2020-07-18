@@ -27,6 +27,11 @@ Take >> applyTo: aPlayer in: board [
 	aPlayer takesA: card copy.
 ]
 
+{ #category : #effect }
+Take >> estimated: aPosition in: board [ 
+	^aPosition copy
+]
+
 { #category : #initialization }
 Take >> initializeGiving: aCard [ 
 	card := aCard.

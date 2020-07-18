@@ -26,6 +26,11 @@ MoonWalk >> applyTo: aPlayer in: board [
 
 ]
 
+{ #category : #effect }
+MoonWalk >> estimated: aPosition in: board [ 
+	^aPosition copy
+]
+
 { #category : #initialization }
 MoonWalk >> initializeWith: value [
 	recoilValue := value .

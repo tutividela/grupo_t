@@ -63,6 +63,54 @@ Board >> currentSquare [
 	^ squares current
 ]
 
+{ #category : #'as yet unclassified' }
+Board >> estimatedFinalPositionFor: aPlayer moving: rollResult [
+	| position finalPosition |
+	 
+	position := (self positionOf: aPlayer) copy.
+	
+	self goToTheSquareOf: aPlayer.
+	
+	position := rollResult > 0
+		ifTrue: 	[ self estimatedMoveFoward: position this: rollResult ]
+		ifFalse: [ self estimatedMoveBack: position this: rollResult * (-1) ].
+		
+	finalPosition := self currentSquare effect estimated: position in: self . 
+	
+	self goToCheckpoint.
+	
+	^finalPosition.
+	
+]
+
+{ #category : #'as yet unclassified' }
+Board >> estimatedMoveBack: position this: rollResult [
+	| aPosition num |
+	aPosition := position copy.
+	num := aPosition currentSquare.
+	
+	(aPosition currentLap  == 0 and: [ aPosition currentSquare < rollResult ])
+				ifTrue: 	[ aPosition reset. num := 0] 
+				ifFalse: [ rollResult timesRepeat:  [ num := num - 1. self previousSquare isCheckpoint ifTrue: [ aPosition decreaseALap. num := (self amountOfSquares) - 1 ] ] ].
+	
+	aPosition registerSquare: num.		
+	
+	^aPosition.
+]
+
+{ #category : #'as yet unclassified' }
+Board >> estimatedMoveFoward: position this: rollResult [ 
+	| aPosition num |
+	aPosition := position copy.
+	num := aPosition currentSquare.
+	rollResult timesRepeat: [ num := num + 1. self nextSquare isCheckpoint ifTrue: [ aPosition registerLap. num := 0 ] ].
+	
+	aPosition registerSquare: num.
+	
+	^aPosition.
+	
+]
+
 { #category : #private }
 Board >> goAllOverTheBoard: aBlock [
 	self goToCheckpoint.

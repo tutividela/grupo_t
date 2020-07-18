@@ -23,3 +23,12 @@ AtomicBomb >> applyTo: aPlayer in: board [
 	
 	
 ]
+
+{ #category : #effect }
+AtomicBomb >> estimated: aPosition in: board [ 
+	^(aPosition registerSquare: 0) copy.
+	
+		
+	
+	
+]

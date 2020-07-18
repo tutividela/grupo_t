@@ -12,3 +12,11 @@ SpeedUp >> applyTo: aPlayer in: board [
 
 	
 ]
+
+{ #category : #effect }
+SpeedUp >> estimated: aPosition in: board [ 
+	board reversal 
+	ifTrue: 	[ ^board estimatedMoveBack: aPosition this: 4 ]
+	ifFalse: [ ^board estimatedMoveFoward: aPosition this: 4 ].
+
+]

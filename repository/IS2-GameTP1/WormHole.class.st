@@ -12,3 +12,13 @@ WormHole >> applyTo: aPlayer in: board [
 
 	
 ]
+
+{ #category : #effect }
+WormHole >> estimated: aPosition in: board [ 
+	board reversal 
+	ifTrue: [ ^board estimatedMoveFoward: aPosition this: 4 ]
+	ifFalse:	[ ^board estimatedMoveBack: aPosition this: 4 ].
+
+
+	
+]
