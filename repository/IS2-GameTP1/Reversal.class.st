@@ -7,7 +7,7 @@ Class {
 { #category : #operation }
 Reversal >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 	selfCard assignedToAnyPlayer.
-	selfCard assignedTo addAll: game players options.
+	selfCard assignedTo addAll: game players.
 	
 	game activePermanentCards addLast: selfCard.
 ]

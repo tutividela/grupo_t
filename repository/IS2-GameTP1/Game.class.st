@@ -149,7 +149,7 @@ Game >> playNextTurn [
 
 { #category : #accesing }
 Game >> players [
-	^players.
+	^players options.
 ]
 
 { #category : #cards }

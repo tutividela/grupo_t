@@ -5,9 +5,9 @@ Class {
 }
 
 { #category : #operation }
-Acceleration >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
+Acceleration >> applyEffect: selfCard toThis: playerOrCard inThe: game [
 	selfCard assignedToAnyPlayer.
-	selfCard assignedTo addAll: game players options .
+	selfCard assignedTo addAll: game players .
 	
 	game activePermanentCards addLast: selfCard.
 ]
