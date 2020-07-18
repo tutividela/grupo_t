@@ -11,10 +11,16 @@ Class {
 }
 
 { #category : #'instance creation' }
+Board class >> assertAmountOf: squares [
+	squares < 0
+		ifTrue: [ Error signal: 'A Board cannot have negative amount of squares' ]
+]
+
+{ #category : #'instance creation' }
 Board class >> ofLength: nSquares [
 	| collection |
 	
-	nSquares < 0 ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ].
+	self assertAmountOf: nSquares .
 		
 	collection := OrderedCollection new.
 	
@@ -33,7 +39,7 @@ Board class >> with: listOfSquares [
 Board class >> withNoEffectOfLength: nSquares [
 	| collection |
 	
-	nSquares < 0 ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ].
+	self assertAmountOf: nSquares .
 		
 	collection := OrderedCollection new.
 	
@@ -56,6 +62,13 @@ Board >> applyLastEffectUsedTo: aPlayer [
 	
 	self goToCheckpoint.
 	
+]
+
+{ #category : #'instance creation' }
+Board >> assertExistenceOf: aSquare [
+	aSquare > self amountOfSquares
+		ifTrue: [ Error signal: 'It does not exist.' ]
+		ifFalse: [ ^aSquare ]
 ]
 
 { #category : #private }
@@ -141,6 +154,11 @@ Board >> initializeWith: listOfSquares [
 { #category : #accessing }
 Board >> lastEffectApplied [
 	^lastEffect
+]
+
+{ #category : #'as yet unclassified' }
+Board >> leftSquaresFor: aPlayer [
+	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
 ]
 
 { #category : #'process actions' }
@@ -254,14 +272,12 @@ Board >> whereIs: aPlayer [
 		position := position + 1.
 		].
 	
-	(position > self amountOfSquares)
-		ifTrue: [ ^Error signal: 'This player is not in the board.' ]
-		ifFalse: [ ^position ].
+	^self assertExistenceOf: position .
 	
 ]
 
 { #category : #'instance creation' }
-Board >> with: effect at: position [ 
-	position > self amountOfSquares ifTrue: [ Error signal: 'This square does not exist' ].
-	squares replaceAt: position this: (Square with: effect).
+Board >> with: effect at: position [
+	self assertExistenceOf: position.
+	squares replaceAt: position this: (Square with: effect)
 ]

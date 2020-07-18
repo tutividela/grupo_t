@@ -33,19 +33,14 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 ]
 
 { #category : #cards }
-Game >> activateThis: card from: player to: aPlayerOrCard [.
-	self status ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
+Game >> activateThis: card from: player to: aPlayerOrCard [
+	self assertCardsCanBePlayed.
 	
-	(player ~= self whoPlays and: [card isPermanent])
-	
+	(card isPermanent and: [ player ~= self whoPlays ])
 		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
-		ifFalse: [ 
-			player plays: card.
-			card applyTo: aPlayerOrCard in: self .
-			lastCardPlayed := card.
-		]
-		
-	
+		ifFalse: [ player plays: card.
+			card applyTo: aPlayerOrCard in: self.
+			lastCardPlayed := card ]
 ]
 
 { #category : #accesing }
@@ -55,16 +50,14 @@ Game >> activePermanentCards [
 
 { #category : #game }
 Game >> amountOfMovesFor: aPlayer withThis: rollResult [ 
-	| total amountOfSquares position afterRollingPosition |
+	| total afterRollingPosition |
 	
 	total := rollResult + (self extraMovesFor: aPlayer).
-	amountOfSquares := board amountOfSquares.
-	position := scoreboard detect: [:p | p player == aPlayer ] ifNone: [ Error signal: 'This position does not exist.' ].
-	
+
 	afterRollingPosition := board estimatedFinalPositionFor: aPlayer moving: total.
 
 	(afterRollingPosition > (Position of: aPlayer  at: 0 with: laps))
-				ifTrue:  [ ^ amountOfSquares  - position currentSquare ] 
+				ifTrue:  [ ^ board leftSquaresFor: aPlayer ] 
 				ifFalse: [ ^ total ].
 ]
 
@@ -73,6 +66,12 @@ Game >> applyTheLastEffectOverTheLastPlayer [
 	players previous .
 	board applyLastEffectUsedTo: self whoPlays .
 	self switchTurn.
+]
+
+{ #category : #cards }
+Game >> assertCardsCanBePlayed [
+	self status
+		ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ]
 ]
 
 { #category : #accesing }

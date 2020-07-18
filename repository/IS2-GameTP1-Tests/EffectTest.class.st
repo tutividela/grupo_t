@@ -101,36 +101,6 @@ EffectTest >> testSpeedUpEffect [
 ]
 
 { #category : #tests }
-EffectTest >> testTEST [
-	| dice game aBoard |
-	dice := Die of: 8 rolling: #(8). 
-	
-	aBoard := Board withNoEffectOfLength: 10.
-	aBoard with: SpeedUp new at: 9.
-
-	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 1.
-
-	game playAllTurns .
-	
-	self assert: ( game whereIs: tomas ) equals: 0.
-]
-
-{ #category : #tests }
-EffectTest >> testTEST2 [
-	| dice game aBoard |
-	dice := Die of: 8 rolling: #(8). 
-	
-	aBoard := Board withNoEffectOfLength: 10.
-	aBoard with: WormHole new at: 9.
-
-	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 1.
-
-	game playNextTurn  .
-	
-	self assert: ( game whereIs: tomas ) equals: 4.
-]
-
-{ #category : #tests }
 EffectTest >> testTakeEffectGivesACardToPlayer [
 	|game aBoard dice|
 	dice:= Die of: 6 rolling:#(5) .
