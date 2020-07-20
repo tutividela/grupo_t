@@ -114,10 +114,10 @@ Board >> estimatedMoveFoward: position this: rollResult [
 ]
 
 { #category : #private }
-Board >> goAllOverTheBoard: aBlock with: status [
+Board >> goAllOverTheBoard: aBlock with: reversalMode [
 	self goToCheckpoint.
 	
-	[ (status ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
+	[ (reversalMode ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
 		aBlock value.
 	].
 ]
