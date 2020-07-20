@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #effect }
-WormHole >> applyTo: aPlayer in: board [ 
-	board reversalMode 
+WormHole >> applyTo: aPlayer in: board reversalMode: status [
+	status
 	ifTrue: 	[ board moveForward: aPlayer this: 4. ]
 	ifFalse: 	[ board moveBack: aPlayer this: 4. ].
 
@@ -14,8 +14,8 @@ WormHole >> applyTo: aPlayer in: board [
 ]
 
 { #category : #effect }
-WormHole >> estimated: aPosition in: board [ 
-	board reversalMode 
+WormHole >> estimated: aPosition in: board reversalMode: status [
+	status
 	ifTrue: [ ^board estimatedMoveFoward: aPosition this: 4 ]
 	ifFalse:	[ ^board estimatedMoveBack: aPosition this: 4 ].
 

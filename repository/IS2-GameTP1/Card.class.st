@@ -32,7 +32,7 @@ Card >> applyTo: playerOrCard in: game [
 
 { #category : #accessing }
 Card >> assignedTo [
-	assignedTo 
+	assignedTo
 		ifNil: [ Error signal: 'This card has not been assigned to a player yet.' ] 
 		ifNotNil: [ ^assignedTo ].
 ]

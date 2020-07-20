@@ -23,12 +23,12 @@ Take class >> this: newCard [
 ]
 
 { #category : #effect }
-Take >> applyTo: aPlayer in: board [ 
+Take >> applyTo: aPlayer in: board reversalMode: status [
 	aPlayer takesA: card copy.
 ]
 
 { #category : #effect }
-Take >> estimated: aPosition in: board [ 
+Take >> estimated: aPosition in: board reversalMode: status [
 	^aPosition copy
 ]
 

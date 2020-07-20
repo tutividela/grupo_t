@@ -54,8 +54,7 @@ Game >> amountOfMovesFor: aPlayer withThis: rollResult [
 	
 	total := rollResult + (self extraMovesFor: aPlayer).
 
-	afterRollingPosition := board estimatedFinalPositionFor: aPlayer moving: total.
-
+	afterRollingPosition := board estimatedFinalPositionFor: aPlayer moving: total listOf: self reversalCards.
 	(afterRollingPosition > (Position of: aPlayer  at: 0 with: laps))
 				ifTrue:  [ ^ board remainingSquaresFor: aPlayer ] 
 				ifFalse: [ ^ total ].
@@ -63,9 +62,17 @@ Game >> amountOfMovesFor: aPlayer withThis: rollResult [
 
 { #category : #cards }
 Game >> applyTheLastEffectOverTheLastPlayer [
+	| status |
 	players previous .
-	board applyLastEffectUsedTo: self whoPlays .
+	
+	board goToTheSquareOf: self whoPlays .
+	status := board reversalStatusWithThis: self reversalCards.
+	board lastEffectApplied applyTo: self whoPlays in: board reversalMode: status.
+	board goToCheckpoint.
+	
 	self switchTurn.
+	
+
 ]
 
 { #category : #cards }
@@ -141,7 +148,7 @@ Game >> playNextTurn [
 	rollResult := aPlayer roll: dices.
 	amountOfMoves := self amountOfMovesFor: aPlayer withThis: rollResult .
 	
-	board move: aPlayer this: amountOfMoves reversalMode: self reversalMode .
+	board move: aPlayer this: amountOfMoves listOf: self reversalCards.
 	
 	self updateScoboard.
 	self switchTurn.
@@ -158,8 +165,9 @@ Game >> removeThis: activePermanentCard [
 ]
 
 { #category : #game }
-Game >> reversalMode [
-	activePermanentCards detect: [:card | card extraMoves == 0 ] ifFound: [ ^true ] ifNone: [ ^false ].
+Game >> reversalCards [
+	^activePermanentCards select: [ :card | card extraMoves == 0 ].
+	
 ]
 
 { #category : #accesing }

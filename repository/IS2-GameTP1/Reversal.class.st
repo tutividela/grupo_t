@@ -5,11 +5,10 @@ Class {
 }
 
 { #category : #operation }
-Reversal >> applyEffect: selfCard toThis: playerOrCard inThe: game [
-	selfCard assignedToAnyPlayer.
-	selfCard assignedTo addAll: game players.
-	
-	game activePermanentCards addLast: selfCard.
+Reversal >> applyEffect: selfCard toThis: square inThe: game [
+	game activePermanentCards detect: [:card | card assignedTo includes: square  ] 
+		ifFound: [ :card |	game removeThis: card ]
+		ifNone: [ game activePermanentCards addLast: selfCard ].
 ]
 
 { #category : #effect }

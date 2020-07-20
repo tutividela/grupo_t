@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'squares',
 		'positions',
-		'lastEffect',
-		'reversalMode'
+		'lastEffect'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -54,16 +53,6 @@ Board >> amountOfSquares [
 	^squares size .
 ]
 
-{ #category : #'process actions' }
-Board >> applyLastEffectUsedTo: aPlayer [
-	self goToTheSquareOf: aPlayer.
-	
-	lastEffect applyTo: aPlayer in: self . 
-	
-	self goToCheckpoint.
-	
-]
-
 { #category : #'instance creation' }
 Board >> assertExistenceOf: aSquare [
 	aSquare > self amountOfSquares
@@ -77,23 +66,23 @@ Board >> currentSquare [
 ]
 
 { #category : #estimation }
-Board >> estimatedFinalPositionFor: aPlayer moving: rollResult [
-	| position finalPosition |
-	 
+Board >> estimatedFinalPositionFor: aPlayer moving: rollResult listOf: reversalCards [
+	| position finalPosition status |
+	
 	position := (self positionOf: aPlayer) copy.
 	
 	self goToTheSquareOf: aPlayer.
-	
 	position := rollResult > 0
-		ifTrue: 	[ self estimatedMoveFoward: position this: rollResult ]
-		ifFalse: [ self estimatedMoveBack: position this: rollResult * (-1) ].
+		ifTrue: [ self estimatedMoveFoward: position this: rollResult ]
+		ifFalse: [ self estimatedMoveBack: position this: rollResult * -1 ].
 		
-	finalPosition := self currentSquare effect estimated: position in: self . 
+	status := self reversalStatusWithThis: reversalCards.
+	
+	finalPosition := self currentSquare effect estimated: position in: self reversalMode: status.
 	
 	self goToCheckpoint.
 	
-	^finalPosition.
-	
+	^ finalPosition.
 ]
 
 { #category : #estimation }
@@ -125,10 +114,10 @@ Board >> estimatedMoveFoward: position this: rollResult [
 ]
 
 { #category : #private }
-Board >> goAllOverTheBoard: aBlock [
+Board >> goAllOverTheBoard: aBlock reversalMode: status [
 	self goToCheckpoint.
 	
-	[ (reversalMode ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
+	[ (status ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
 		aBlock value.
 	].
 ]
@@ -148,7 +137,6 @@ Board >> goToTheSquareOf: aPlayer [
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
-	reversalMode := false.
 ]
 
 { #category : #accessing }
@@ -157,8 +145,8 @@ Board >> lastEffectApplied [
 ]
 
 { #category : #'process actions' }
-Board >> move: aPlayer this: rollResult reversalMode: status [.
-	reversalMode := status.
+Board >> move: aPlayer this: rollResult listOf: reversalCards [
+	| status |
 
 	self goToTheSquareOf: aPlayer.
 	
@@ -168,7 +156,9 @@ Board >> move: aPlayer this: rollResult reversalMode: status [.
 		
 	lastEffect := self currentSquare effect.
 	
-	lastEffect applyTo: aPlayer in: self . 
+	status := self reversalStatusWithThis: reversalCards.
+	
+	lastEffect applyTo: aPlayer in: self reversalMode: status. 
 	
 	self goToCheckpoint.
 	
@@ -241,9 +231,9 @@ Board >> remainingSquaresFor: aPlayer [
 	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
 ]
 
-{ #category : #accessing }
-Board >> reversalMode [
-	^reversalMode.
+{ #category : #estimation }
+Board >> reversalStatusWithThis: reversalCards [
+	^ (reversalCards collect: [ :card | card assignedTo at: 1 ]) includes: self currentSquare.
 ]
 
 { #category : #private }
@@ -254,6 +244,15 @@ Board >> setPlayersInCheckPoint: players [
 	
 	self currentSquare putASet: players.
 	
+]
+
+{ #category : #private }
+Board >> squareAt: index [ 
+	self goToCheckpoint.
+	
+	(index - 1) timesRepeat: [ self nextSquare ].
+	
+	^self currentSquare.
 ]
 
 { #category : #accessing }
