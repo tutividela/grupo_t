@@ -86,7 +86,7 @@ Game >> currentPlayerActivatesThis: card to: aPlayer [.
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #game }
 Game >> extraMovesFor: aPlayer [
 	| extra |
 
@@ -157,7 +157,7 @@ Game >> removeThis: activePermanentCard [
 	activePermanentCards remove: activePermanentCard ifAbsent: [Error signal: 'Permanent card not active.'].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #game }
 Game >> reversalMode [
 	activePermanentCards detect: [:card | card extraMoves == 0 ] ifFound: [ ^true ] ifNone: [ ^false ].
 ]

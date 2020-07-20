@@ -5,7 +5,7 @@ Class {
 		'squares',
 		'positions',
 		'lastEffect',
-		'reversal'
+		'reversalMode'
 	],
 	#category : #'IS2-GameTP1'
 }
@@ -76,7 +76,7 @@ Board >> currentSquare [
 	^ squares current
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #estimation }
 Board >> estimatedFinalPositionFor: aPlayer moving: rollResult [
 	| position finalPosition |
 	 
@@ -96,7 +96,7 @@ Board >> estimatedFinalPositionFor: aPlayer moving: rollResult [
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #estimation }
 Board >> estimatedMoveBack: position this: rollResult [
 	| aPosition num |
 	aPosition := position copy.
@@ -111,7 +111,7 @@ Board >> estimatedMoveBack: position this: rollResult [
 	^aPosition.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #estimation }
 Board >> estimatedMoveFoward: position this: rollResult [ 
 	| aPosition num |
 	aPosition := position copy.
@@ -128,7 +128,7 @@ Board >> estimatedMoveFoward: position this: rollResult [
 Board >> goAllOverTheBoard: aBlock [
 	self goToCheckpoint.
 	
-	[ (reversal ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
+	[ (reversalMode ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
 		aBlock value.
 	].
 ]
@@ -148,7 +148,7 @@ Board >> goToTheSquareOf: aPlayer [
 { #category : #initialization }
 Board >> initializeWith: listOfSquares [
 	squares := CircularIterator cyclingOver: listOfSquares.
-	reversal := false.
+	reversalMode := false.
 ]
 
 { #category : #accessing }
@@ -158,7 +158,7 @@ Board >> lastEffectApplied [
 
 { #category : #'process actions' }
 Board >> move: aPlayer this: rollResult reversalMode: status [.
-	reversal := status.
+	reversalMode := status.
 
 	self goToTheSquareOf: aPlayer.
 	
@@ -236,14 +236,14 @@ Board >> previousSquare [
 	^squares previous.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'process actions' }
 Board >> remainingSquaresFor: aPlayer [
 	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
 ]
 
 { #category : #accessing }
-Board >> reversal [
-	^reversal.
+Board >> reversalMode [
+	^reversalMode.
 ]
 
 { #category : #private }

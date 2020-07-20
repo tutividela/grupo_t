@@ -37,7 +37,7 @@ Card >> assignedTo [
 		ifNotNil: [ ^assignedTo ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Card >> assignedToAnyPlayer [
 	assignedTo := OrderedCollection new.
 ]
@@ -69,7 +69,7 @@ Card >> represents: thisCard [
 	represents := thisCard.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Card >> representsAssignedToAnyPlayer [
 	| card |
 	card := self represents copy.
