@@ -5,13 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Overload >> applyEffectToThis: card inThe: game [
-	game addThis: card.
-]
-
-{ #category : #query }
-Overload >> applysToAllPlayers [
-	^false
+Overload >> applyEffect: selfCard toThis: playerOrCard inThe: game [.
+	game activePermanentCards addLast: selfCard .
 ]
 
 { #category : #effect }
@@ -22,9 +17,4 @@ Overload >> extraMoves [
 { #category : #query }
 Overload >> isPermanent [
 	^true
-]
-
-{ #category : #query }
-Overload >> isRedo [
-	^false
 ]

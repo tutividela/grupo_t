@@ -5,13 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Speed >> applyEffectToThis: card inThe: game [
-	game addThis: card.
-]
-
-{ #category : #query }
-Speed >> applysToAllPlayers [
-	^false
+Speed >> applyEffect: selfCard toThis: playerOrCard inThe: game [
+	game activePermanentCards addLast: selfCard .
 ]
 
 { #category : #effect }
@@ -22,9 +17,4 @@ Speed >> extraMoves [
 { #category : #query }
 Speed >> isPermanent [
 	^true
-]
-
-{ #category : #query }
-Speed >> isRedo [
-	^false
 ]

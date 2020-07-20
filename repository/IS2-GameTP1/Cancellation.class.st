@@ -5,16 +5,11 @@ Class {
 }
 
 { #category : #operation }
-Cancellation >> applyEffectToThis: card inThe: game [
-	game removeThis: card.
+Cancellation >> applyEffect: selfCard toThis: permanentCard inThe: game [.
+	game removeThis: permanentCard .
 ]
 
 { #category : #query }
 Cancellation >> isPermanent [
-	^false
-]
-
-{ #category : #query }
-Cancellation >> isRedo [
 	^false
 ]

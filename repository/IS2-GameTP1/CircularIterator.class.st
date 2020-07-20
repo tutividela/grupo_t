@@ -59,6 +59,11 @@ CircularIterator >> previous [
 	^self current.
 ]
 
+{ #category : #accessing }
+CircularIterator >> replaceAt: position this: option [
+	^options atWrap: position put: option
+]
+
 { #category : #iterating }
 CircularIterator >> reset [
 	currentIndex := 0

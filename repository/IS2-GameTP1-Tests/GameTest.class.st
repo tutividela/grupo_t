@@ -8,45 +8,10 @@ Class {
 	#category : #'IS2-GameTP1-Tests'
 }
 
-{ #category : #board }
-GameTest >> aBoard [
-	^Board with: { 	Square asCheckpoint.
-						Square with: SpeedUp new .
-						Square with: WormHole  new .
-						
-						Square with: (MoonWalk withRecoil: 5) .
-						Square with: AtomicBomb  new.
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new.
-						Square with: NoEffect new .
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new  				
-						}.
-]
-
-{ #category : #board }
-GameTest >> aBoard02 [
-	^Board with: { 	Square asCheckpoint.
-						Square with: SpeedUp new .					
-						Square with: (MoonWalk withRecoil: 5) .
-						
-						Square with: AtomicBomb  new.
-						Square with: NoEffect new .
-						Square with: NoEffect new.
-						
-						Square with: WormHole  new .
-						Square with: NoEffect new .
-						Square with: NoEffect new .
-						
-						Square with: NoEffect new  				
-						}.
-]
-
 { #category : #running }
 GameTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
+	super.
 	tomas := Player named: 'Tomas'.
 	exequiel := Player named: 'Exequiel'.
 
@@ -61,7 +26,7 @@ GameTest >> testBoardWithNegativeAmountOfSquares [
 	self 
 		should: [ Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: -10 during: 3 ] 
 		raise: Error 
-		description: 'A Board cannot have negative amount of squares'.
+		withMessageText: 'A Board cannot have negative amount of squares'.
 ]
 
 { #category : #tests }
@@ -73,7 +38,7 @@ GameTest >> testFinalScoreboard [
 	dice1:= Die of: 6 rolling: #(5 5 6).
 	dice2:= Die of: 6 rolling: #(5 4 1).
 	
-	game := Game playedBy: {tomas . exequiel . player3} throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: {tomas . exequiel . player3} throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 3.
 	
 	game playAllTurns.
 	
@@ -96,12 +61,11 @@ GameTest >> testGameIsOver [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard  during: 1.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 1.
 	
 	game playAllTurns.
 	
-	self deny: game isStillOn.  
+	self deny: game status.  
 ]
 
 { #category : #tests }
@@ -111,11 +75,11 @@ GameTest >> testGameIsStillOn [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 		
-	game := Game playedBy: {tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) onBoardOfLength: 10 during: 3.
 	
 	game playNextTurn ; playNextTurn.
 	
-	self assert: game isStillOn.  
+	self assert: game status.  
 ]
 
 { #category : #tests }
@@ -124,12 +88,12 @@ GameTest >> testNoWinnerYet [
 	
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 1.
 	
 	self 
 		should: [ game winner ] 
 		raise: Error 
-		description: 'No winner yet'.
+		withMessageText: 'No winner yet'.
 ]
 
 { #category : #tests }
@@ -143,7 +107,7 @@ GameTest >> testPlayerIsNotInTheBoard [
 	self 
 		should: [ game board whereIs: exequiel ] 
 		raise: Error 
-		description: 'This player is not in the board.'.
+		withMessageText: 'It does not exist.'.
 ]
 
 { #category : #tests }
@@ -152,7 +116,7 @@ GameTest >> testScoreboardUpdated [
 
 	dice1 := Die of: 6 rolling:#(5 6 1).
 	dice2 := Die of: 6 rolling:#(3 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 3.
 	
 	game playNextTurn.
 	
@@ -165,17 +129,18 @@ GameTest >> testScoreboardUpdated [
 
 { #category : #tests }
 GameTest >> testWinnerEndsInCheckPoint [
-	| dice game |
+	| dice game aBoard |
+	dice := Die of: 8 rolling: #(8). 
 	
-	dice := Die of: 6 rolling: #(5 2).
-	
-	game := Game playedBy: { tomas } throwing: dice on: self aBoard  during: 1.
-	
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 9.
+
+	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 1.
+
 	game playAllTurns .
 	
-	self
-		assert: game scoreboard first currentLap equals: 1;
-		assert: (game whereIs: tomas) equals: 0.
+	self 	assert: game scoreboard first currentLap equals: 1;
+			assert: ( game whereIs: tomas ) equals: 0.
 ]
 
 { #category : #tests }
@@ -185,7 +150,8 @@ GameTest >> testWinnerInFirstPlace [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 1.
+
 	
 	game playAllTurns.
 	
@@ -198,7 +164,7 @@ GameTest >> testWinnerOneDice [
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: (Board withNoEffectOfLength: 10) during: 3.
 	
 	game playAllTurns.
 
@@ -212,7 +178,7 @@ GameTest >> testWinnerTwoDices [
 	dice1 := Die of: 6 rolling: #(2 5).
 	dice2 := Die of: 6 rolling: #(2 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: (Board withNoEffectOfLength: 10) during: 2.
 	
 	game playAllTurns.
 
