@@ -156,11 +156,6 @@ Board >> lastEffectApplied [
 	^lastEffect
 ]
 
-{ #category : #'as yet unclassified' }
-Board >> leftSquaresFor: aPlayer [
-	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
-]
-
 { #category : #'process actions' }
 Board >> move: aPlayer this: rollResult reversalMode: status [.
 	reversal := status.
@@ -239,6 +234,11 @@ Board >> positions [
 { #category : #private }
 Board >> previousSquare [
 	^squares previous.
+]
+
+{ #category : #'as yet unclassified' }
+Board >> remainingSquaresFor: aPlayer [
+	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
 ]
 
 { #category : #accessing }

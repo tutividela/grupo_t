@@ -57,7 +57,7 @@ Game >> amountOfMovesFor: aPlayer withThis: rollResult [
 	afterRollingPosition := board estimatedFinalPositionFor: aPlayer moving: total.
 
 	(afterRollingPosition > (Position of: aPlayer  at: 0 with: laps))
-				ifTrue:  [ ^ board leftSquaresFor: aPlayer ] 
+				ifTrue:  [ ^ board remainingSquaresFor: aPlayer ] 
 				ifFalse: [ ^ total ].
 ]
 

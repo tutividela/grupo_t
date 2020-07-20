@@ -17,7 +17,7 @@ AtomicBomb >> applyTo: aPlayer in: board [
 
 	board currentSquare putASet: players.
 	
-	players do: [:player | (board positionOf: player ) registerSquare: 0. ]
+	board positions do: [:position | position registerSquare: 0 ]
 	
 		
 	
