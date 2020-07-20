@@ -67,7 +67,7 @@ Game >> applyTheLastEffectOverTheLastPlayer [
 	
 	board goToTheSquareOf: self whoPlays .
 	status := board reversalStatusWithThis: self reversalCards.
-	board lastEffectApplied applyTo: self whoPlays in: board reversalMode: status.
+	board lastEffectApplied applyTo: self whoPlays in: board with: status.
 	board goToCheckpoint.
 	
 	self switchTurn.

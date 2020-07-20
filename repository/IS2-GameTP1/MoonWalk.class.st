@@ -13,23 +13,23 @@ MoonWalk class >> withRecoil: nValue [
 ]
 
 { #category : #effect }
-MoonWalk >> applyTo: aPlayer in: board reversalMode: status [
+MoonWalk >> applyTo: aPlayer in: board with: reversalMode [
 	
 	board goAllOverTheBoard: [ 
 		board playersOfCurrentPosition do: [ :player |
 			player = aPlayer ifFalse: [
-					status  
+					reversalMode  
 						ifTrue: 	[ board moveForward: player this: recoilValue ]
 						ifFalse: 	[ board moveBack: player this: recoilValue ].
 			]
 		].
-	] reversalMode: status  . 
+	] with: reversalMode . 
 
 ]
 
 { #category : #effect }
-MoonWalk >> estimated: aPosition in: board reversalMode: status [
-	^aPosition copy
+MoonWalk >> estimated: position in: board with: reversalMode [
+	^position copy.
 ]
 
 { #category : #initialization }

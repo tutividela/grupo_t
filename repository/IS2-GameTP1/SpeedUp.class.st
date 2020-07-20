@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #effect }
-SpeedUp >> applyTo: aPlayer in: board reversalMode: status [
-	status 
+SpeedUp >> applyTo: aPlayer in: board with: reversalMode [
+	reversalMode 
 	ifTrue: 	[ board moveBack: aPlayer this: 4. ]
 	ifFalse: [ board moveForward: aPlayer this: 4. ].
 
@@ -14,9 +14,9 @@ SpeedUp >> applyTo: aPlayer in: board reversalMode: status [
 ]
 
 { #category : #effect }
-SpeedUp >> estimated: aPosition in: board reversalMode: status [
-	status
-	ifTrue: 	[ ^board estimatedMoveBack: aPosition this: 4 ]
-	ifFalse: [ ^board estimatedMoveFoward: aPosition this: 4 ].
+SpeedUp >> estimated: position in: board with: reversalMode [
+	reversalMode
+	ifTrue: 	[ ^board estimatedMoveBack: position this: 4 ]
+	ifFalse: [ ^board estimatedMoveFoward: position this: 4 ].
 
 ]

@@ -65,7 +65,7 @@ Board >> currentSquare [
 	^ squares current
 ]
 
-{ #category : #estimation }
+{ #category : #private }
 Board >> estimatedFinalPositionFor: aPlayer moving: rollResult listOf: reversalCards [
 	| position finalPosition status |
 	
@@ -78,14 +78,14 @@ Board >> estimatedFinalPositionFor: aPlayer moving: rollResult listOf: reversalC
 		
 	status := self reversalStatusWithThis: reversalCards.
 	
-	finalPosition := self currentSquare effect estimated: position in: self reversalMode: status.
+	finalPosition := self currentSquare effect estimated: position in: self with: status.
 	
 	self goToCheckpoint.
 	
 	^ finalPosition.
 ]
 
-{ #category : #estimation }
+{ #category : #private }
 Board >> estimatedMoveBack: position this: rollResult [
 	| aPosition num |
 	aPosition := position copy.
@@ -100,7 +100,7 @@ Board >> estimatedMoveBack: position this: rollResult [
 	^aPosition.
 ]
 
-{ #category : #estimation }
+{ #category : #private }
 Board >> estimatedMoveFoward: position this: rollResult [ 
 	| aPosition num |
 	aPosition := position copy.
@@ -114,7 +114,7 @@ Board >> estimatedMoveFoward: position this: rollResult [
 ]
 
 { #category : #private }
-Board >> goAllOverTheBoard: aBlock reversalMode: status [
+Board >> goAllOverTheBoard: aBlock with: status [
 	self goToCheckpoint.
 	
 	[ (status ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
@@ -158,7 +158,7 @@ Board >> move: aPlayer this: rollResult listOf: reversalCards [
 	
 	status := self reversalStatusWithThis: reversalCards.
 	
-	lastEffect applyTo: aPlayer in: self reversalMode: status. 
+	lastEffect applyTo: aPlayer in: self with: status. 
 	
 	self goToCheckpoint.
 	
@@ -232,8 +232,8 @@ Board >> remainingSquaresFor: aPlayer [
 ]
 
 { #category : #estimation }
-Board >> reversalStatusWithThis: reversalCards [
-	^ (reversalCards collect: [ :card | card assignedTo at: 1 ]) includes: self currentSquare.
+Board >> reversalStatusWithThis: cards [
+	^ (cards collect: [ :card | card assignedTo at: 1 ]) includes: self currentSquare.
 ]
 
 { #category : #private }

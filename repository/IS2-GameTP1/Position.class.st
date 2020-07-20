@@ -59,7 +59,7 @@ Position >> registerLap [
 
 { #category : #'process operations' }
 Position >> registerSquare: square [
-	currentSquare  := square.
+	currentSquare := square.
 ]
 
 { #category : #initialization }

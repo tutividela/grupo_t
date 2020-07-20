@@ -23,11 +23,11 @@ Card class >> type: card [
 ]
 
 { #category : #operation }
-Card >> applyTo: playerOrCard in: game [
+Card >> applyTo: object in: game [
 
-		assignedTo addLast: playerOrCard.
+		assignedTo addLast: object.
 
-		type applyEffect: self toThis: playerOrCard inThe: game.
+		type applyEffect: self toThis: object inThe: game.
 ]
 
 { #category : #accessing }

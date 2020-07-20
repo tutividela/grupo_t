@@ -5,12 +5,12 @@ Class {
 }
 
 { #category : #operation }
-Redo >> applyEffect: selfCard toThis: playerOrCard inThe: game [
+Redo >> applyEffect: selfCard toThis: object inThe: game [
 	game lastCardPlayed 
 		ifNotNil: [ 
 			(selfCard = selfCard represents) ifTrue: [ selfCard represents: game lastCardPlayed].
 			
-			selfCard representsAssignedToAnyPlayer applyTo: playerOrCard in: game.
+			selfCard representsAssignedToAnyPlayer applyTo: object in: game.
 		]
 ]
 

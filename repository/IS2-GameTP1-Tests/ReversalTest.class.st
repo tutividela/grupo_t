@@ -21,7 +21,7 @@ ReversalTest >> setUp [
 
 { #category : #tests }
 ReversalTest >> testCancelReversalCard [
-	| dice game aBoard reversalCard cancellationCard squareWithWormHoleEffect |
+	| dice game aBoard reversalCard cancellationCard square |
 	dice := Die of: 6 rolling: #(1). 
 
 	aBoard := Board withNoEffectOfLength: 10.
@@ -34,9 +34,9 @@ ReversalTest >> testCancelReversalCard [
 
 	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 2.
 	
-	squareWithWormHoleEffect := game board squareAt: 2.
+	square := game board squareAt: 2.
 	
-	game activateThis: reversalCard from: tomas to: squareWithWormHoleEffect.
+	game activateThis: reversalCard from: tomas to: square.
 	
 	game activateThis: cancellationCard from: tomas to: reversalCard.
 
@@ -47,7 +47,7 @@ ReversalTest >> testCancelReversalCard [
 
 { #category : #tests }
 ReversalTest >> testMoonWalkWithNestedReversalCard [
-	| dice game aBoard reversalCard reversalCard2  squareWithMoonWalkEffect |
+	| dice game aBoard reversalCard reversalCard2  moonWalkSquare |
 	
 	dice := Die of: 6 rolling: #(2 1 3).
 	
@@ -61,12 +61,12 @@ ReversalTest >> testMoonWalkWithNestedReversalCard [
 
 	game := Game playedBy: { marcos . tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
-	squareWithMoonWalkEffect := game board squareAt: 4.
+	moonWalkSquare := game board squareAt: 4.
 	
 	game playNextTurn.
 	
-	game activateThis: reversalCard from: tomas to: squareWithMoonWalkEffect .
-	game activateThis: reversalCard2 from: tomas to: squareWithMoonWalkEffect .
+	game activateThis: reversalCard from: tomas to: moonWalkSquare .
+	game activateThis: reversalCard2 from: tomas to: moonWalkSquare .
 		
 	game playNextTurn.
 	game playNextTurn.
@@ -79,7 +79,7 @@ ReversalTest >> testMoonWalkWithNestedReversalCard [
 
 { #category : #tests }
 ReversalTest >> testMoonWalkWithReversalCard [
-	| dice game aBoard reversalCard squareWithMoonWalkEffect |
+	| dice game aBoard reversalCard moonWalkSquare |
 	
 	dice := Die of: 6 rolling: #(2 1 3).
 	
@@ -92,11 +92,11 @@ ReversalTest >> testMoonWalkWithReversalCard [
 
 	game := Game playedBy: { marcos . tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
-	squareWithMoonWalkEffect := game board squareAt: 4.
+	moonWalkSquare := game board squareAt: 4.
 	
 	game playNextTurn.
 	
-	game activateThis: reversalCard from: tomas to: squareWithMoonWalkEffect .
+	game activateThis: reversalCard from: tomas to: moonWalkSquare .
 		
 	game playNextTurn.
 	game playNextTurn.
@@ -108,8 +108,63 @@ ReversalTest >> testMoonWalkWithReversalCard [
 ]
 
 { #category : #tests }
+ReversalTest >> testRedoAReversalCardOverADifferentSquare [
+	| dice game aBoard reversalCard redoCard square1 square2 |
+	dice := Die of: 6 rolling: #(4). 
+
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: WormHole new at: 2.
+	aBoard with: WormHole new at: 5.
+	
+	reversalCard := Card type: Reversal new.
+	redoCard := Card type: Redo new.
+	
+	tomas takes: { reversalCard . redoCard } .
+
+	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 2.
+	
+	square1 := game board squareAt: 2.
+	
+	square2 := game board squareAt: 5.
+	
+	game activateThis: reversalCard from: tomas to: square1.
+	
+	game activateThis: redoCard from: tomas to: square2.
+
+	game playNextTurn .
+	
+	self assert: ( game whereIs: tomas ) equals: 8.
+]
+
+{ #category : #tests }
+ReversalTest >> testRedoAReversalCardOverTheSameSquare [
+	| dice game aBoard reversalCard redoCard square |
+	dice := Die of: 6 rolling: #(1). 
+
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: WormHole new at: 2.
+	
+	reversalCard := Card type: Reversal new.
+	redoCard := Card type: Redo new.
+	
+	tomas takes: { reversalCard . redoCard } .
+
+	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 2.
+	
+	square := game board squareAt: 2.
+	
+	game activateThis: reversalCard from: tomas to: square.
+	
+	game activateThis: redoCard from: tomas to: square.
+
+	game playNextTurn .
+	
+	self assert: ( game whereIs: tomas ) equals: 0.
+]
+
+{ #category : #tests }
 ReversalTest >> testSpeedUpEffectWithNestedReversalCard [
-	| dice game aBoard reversalCard reversalCard2 squareWithSpeedUpEffect|
+	| dice game aBoard reversalCard reversalCard2 speedUpSquare |
 	dice := Die of: 6 rolling: #(1). 
 	
 	aBoard := Board withNoEffectOfLength: 10.
@@ -122,11 +177,11 @@ ReversalTest >> testSpeedUpEffectWithNestedReversalCard [
 
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
-	squareWithSpeedUpEffect := game board squareAt: 2.
+	speedUpSquare := game board squareAt: 2.
 	
-	game activateThis: reversalCard from: tomas to: squareWithSpeedUpEffect.
+	game activateThis: reversalCard from: tomas to: speedUpSquare.
 	
-	game activateThis: reversalCard2 from: tomas to: squareWithSpeedUpEffect.
+	game activateThis: reversalCard2 from: tomas to: speedUpSquare.
 
 	game playNextTurn .
 	
@@ -135,7 +190,7 @@ ReversalTest >> testSpeedUpEffectWithNestedReversalCard [
 
 { #category : #tests }
 ReversalTest >> testSpeedUpEffectWithReversalCard [
-	| dice game aBoard reversalCard squareWithSpeedUpEffect|
+	| dice game aBoard reversalCard speedUpSquare |
 	dice := Die of: 6 rolling: #(1). 
 	
 	aBoard := Board withNoEffectOfLength: 10.
@@ -147,9 +202,9 @@ ReversalTest >> testSpeedUpEffectWithReversalCard [
 
 	game := Game playedBy: { tomas . exequiel } throwing: dice on: aBoard during: 2.
 	
-	squareWithSpeedUpEffect := game board squareAt: 2.
+	speedUpSquare := game board squareAt: 2.
 	
-	game activateThis: reversalCard from: tomas to: squareWithSpeedUpEffect.
+	game activateThis: reversalCard from: tomas to: speedUpSquare.
 
 	game playNextTurn .
 	
@@ -158,7 +213,7 @@ ReversalTest >> testSpeedUpEffectWithReversalCard [
 
 { #category : #tests }
 ReversalTest >> testWormHoleWithNestedReversalCard [
-	| dice game aBoard reversalCard reversalCard2 squareWithWormHoleEffect |
+	| dice game aBoard reversalCard reversalCard2 wormHoleSquare |
 	dice := Die of: 6 rolling: #(1). 
 
 	aBoard := Board withNoEffectOfLength: 10.
@@ -171,10 +226,10 @@ ReversalTest >> testWormHoleWithNestedReversalCard [
 
 	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 2.
 	
-	squareWithWormHoleEffect := game board squareAt: 2.
+	wormHoleSquare := game board squareAt: 2.
 	
-	game activateThis: reversalCard from: tomas to: squareWithWormHoleEffect.
-	game activateThis: reversalCard2 from: tomas to: squareWithWormHoleEffect.
+	game activateThis: reversalCard from: tomas to: wormHoleSquare.
+	game activateThis: reversalCard2 from: tomas to: wormHoleSquare.
 	
 	game playNextTurn .
 	
@@ -183,7 +238,7 @@ ReversalTest >> testWormHoleWithNestedReversalCard [
 
 { #category : #tests }
 ReversalTest >> testWormHoleWithReversalCard [
-	| dice game aBoard reversalCard squareWithWormHoleEffect |
+	| dice game aBoard reversalCard wormHoleSquare |
 	dice := Die of: 6 rolling: #(1). 
 
 	aBoard := Board withNoEffectOfLength: 10.
@@ -195,9 +250,9 @@ ReversalTest >> testWormHoleWithReversalCard [
 
 	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 2.
 	
-	squareWithWormHoleEffect := game board squareAt: 2.
+	wormHoleSquare := game board squareAt: 2.
 	
-	game activateThis: reversalCard from: tomas to: squareWithWormHoleEffect.
+	game activateThis: reversalCard from: tomas to: wormHoleSquare.
 
 	game playNextTurn .
 	
