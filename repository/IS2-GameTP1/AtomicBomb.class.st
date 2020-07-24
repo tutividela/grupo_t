@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #effect }
-AtomicBomb >> applyTo: aPlayer in: board with: reversalMode [
+AtomicBomb >> applyTo: aPlayer in: board [
 	| players  |
 
 	players:= OrderedCollection new.
@@ -13,7 +13,7 @@ AtomicBomb >> applyTo: aPlayer in: board with: reversalMode [
 	board goAllOverTheBoard: [ 
 		players addAll: board playersOfCurrentPosition. 
 		board playersOfCurrentPosition removeAll.
-	] with: reversalMode .
+	] .
 
 	board currentSquare putASet: players.
 	
@@ -25,7 +25,7 @@ AtomicBomb >> applyTo: aPlayer in: board with: reversalMode [
 ]
 
 { #category : #effect }
-AtomicBomb >> estimated: position in: board with: reversalMode [
+AtomicBomb >> estimated: position in: board [ 
 	^(position registerSquare: 0) copy.
 	
 		

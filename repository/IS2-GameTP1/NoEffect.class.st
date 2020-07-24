@@ -5,11 +5,11 @@ Class {
 }
 
 { #category : #effect }
-NoEffect >> applyTo: aPlayer in: board with: reversalMode [
+NoEffect >> applyTo: aPlayer in: board [ 
 
 ]
 
 { #category : #effect }
-NoEffect >> estimated: position in: board with: reversalMode [
+NoEffect >> estimated: position in: board [
 	^position copy.
 ]

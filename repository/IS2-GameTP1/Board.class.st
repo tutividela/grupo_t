@@ -66,8 +66,8 @@ Board >> currentSquare [
 ]
 
 { #category : #private }
-Board >> estimatedFinalPositionFor: aPlayer moving: rollResult listOf: reversalCards [
-	| position finalPosition status |
+Board >> estimatedFinalPositionFor: aPlayer moving: rollResult [
+	| position finalPosition |
 	
 	position := (self positionOf: aPlayer) copy.
 	
@@ -75,10 +75,8 @@ Board >> estimatedFinalPositionFor: aPlayer moving: rollResult listOf: reversalC
 	position := rollResult > 0
 		ifTrue: [ self estimatedMoveFoward: position this: rollResult ]
 		ifFalse: [ self estimatedMoveBack: position this: rollResult * -1 ].
-		
-	status := self reversalStatusWithThis: reversalCards.
 	
-	finalPosition := self currentSquare effect estimated: position in: self with: status.
+	finalPosition := self currentSquare effect estimated: position in: self.
 	
 	self goToCheckpoint.
 	
@@ -114,10 +112,10 @@ Board >> estimatedMoveFoward: position this: rollResult [
 ]
 
 { #category : #private }
-Board >> goAllOverTheBoard: aBlock with: reversalMode [
+Board >> goAllOverTheBoard: aBlock [
 	self goToCheckpoint.
 	
-	[ (reversalMode ifTrue: [ self previousSquare ] ifFalse: [ self nextSquare  ]) isCheckpoint ] whileFalse: [ 
+	[  self nextSquare isCheckpoint ] whileFalse: [ 
 		aBlock value.
 	].
 ]
@@ -145,9 +143,7 @@ Board >> lastEffectApplied [
 ]
 
 { #category : #'process actions' }
-Board >> move: aPlayer this: rollResult listOf: reversalCards [
-	| status |
-
+Board >> move: aPlayer this: rollResult [
 	self goToTheSquareOf: aPlayer.
 	
 	rollResult >= 0 
@@ -156,9 +152,7 @@ Board >> move: aPlayer this: rollResult listOf: reversalCards [
 		
 	lastEffect := self currentSquare effect.
 	
-	status := self reversalStatusWithThis: reversalCards.
-	
-	lastEffect applyTo: aPlayer in: self with: status. 
+	lastEffect applyTo: aPlayer in: self. 
 	
 	self goToCheckpoint.
 	
@@ -229,11 +223,6 @@ Board >> previousSquare [
 { #category : #'process actions' }
 Board >> remainingSquaresFor: aPlayer [
 	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
-]
-
-{ #category : #estimation }
-Board >> reversalStatusWithThis: cards [
-	^ (cards collect: [ :card | card assignedTo at: 1 ]) includes: self currentSquare.
 ]
 
 { #category : #private }
