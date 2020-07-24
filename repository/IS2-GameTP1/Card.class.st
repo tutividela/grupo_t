@@ -10,17 +10,9 @@ Class {
 }
 
 { #category : #'instance creation' }
-Card class >> randomFromDeck [
-	| number card |
-	number := Random new nextInt: 120.
-	
-	(number between: 1 and: 20) 		ifTrue: [ card := Overload new ].
-	(number between: 21 and: 40) 		ifTrue: [ card := Speed new ].
-	(number between: 41 and: 60) 		ifTrue: [ card := Acceleration new ].
-			
-	(number between: 61 and: 80) 		ifTrue: [ card := Cancellation new ].
-	(number between: 81 and: 100) 		ifTrue: [ card := Redo new ].
-	(number between: 101 and: 120) 	ifTrue: [ card := Repeat new ].
+Card class >> source: aNumberProvider [
+	| card |
+	card := { Overload new . Speed new . Acceleration new . Cancellation new . Redo new . Repeat new } atRandom: aNumberProvider.
 		
 	^self type: card.
 ]
@@ -31,21 +23,21 @@ Card class >> type: card [
 ]
 
 { #category : #operation }
-Card >> applyTo: playerOrCard in: game [
+Card >> applyTo: object in: game [
 
-		assignedTo addLast: playerOrCard.
+		assignedTo addLast: object.
 
-		type applyEffect: self toThis: playerOrCard inThe: game.
+		type applyEffect: self toThis: object inThe: game.
 ]
 
 { #category : #accessing }
 Card >> assignedTo [
-	assignedTo 
+	assignedTo
 		ifNil: [ Error signal: 'This card has not been assigned to a player yet.' ] 
 		ifNotNil: [ ^assignedTo ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Card >> assignedToAnyPlayer [
 	assignedTo := OrderedCollection new.
 ]
@@ -77,7 +69,7 @@ Card >> represents: thisCard [
 	represents := thisCard.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #operation }
 Card >> representsAssignedToAnyPlayer [
 	| card |
 	card := self represents copy.

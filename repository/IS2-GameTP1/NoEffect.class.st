@@ -8,3 +8,8 @@ Class {
 NoEffect >> applyTo: aPlayer in: board [ 
 
 ]
+
+{ #category : #effect }
+NoEffect >> estimated: position in: board [
+	^position copy.
+]

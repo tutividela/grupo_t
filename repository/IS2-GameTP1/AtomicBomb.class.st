@@ -5,19 +5,28 @@ Class {
 }
 
 { #category : #effect }
-AtomicBomb >> applyTo: aPlayer in: board [ 
-	| players |
-	
+AtomicBomb >> applyTo: aPlayer in: board [
+	| players  |
+
 	players:= OrderedCollection new.
 	
 	board goAllOverTheBoard: [ 
 		players addAll: board playersOfCurrentPosition. 
 		board playersOfCurrentPosition removeAll.
-	].
+	] .
 
 	board currentSquare putASet: players.
 	
-	players do: [:player | (board positionOf: player ) registerSquare: 0. ]
+	board positions do: [:position | position registerSquare: 0 ]
+	
+		
+	
+	
+]
+
+{ #category : #effect }
+AtomicBomb >> estimated: position in: board [ 
+	^(position registerSquare: 0) copy.
 	
 		
 	

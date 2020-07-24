@@ -14,7 +14,7 @@ Take class >> cardOf: aType [
 
 { #category : #'instance creation' }
 Take class >> randomCard [ 
-	^self this: Card randomFromDeck .
+	^self this: (Card source: Random new) .
 ]
 
 { #category : #'instance creation' }
@@ -23,8 +23,13 @@ Take class >> this: newCard [
 ]
 
 { #category : #effect }
-Take >> applyTo: aPlayer in: board [ 
+Take >> applyTo: aPlayer in: board [
 	aPlayer takesA: card copy.
+]
+
+{ #category : #effect }
+Take >> estimated: position in: board [
+	^position copy
 ]
 
 { #category : #initialization }

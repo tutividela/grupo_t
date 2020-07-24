@@ -450,7 +450,7 @@ CardTest >> testPlayersAlwaysStartWithTwoCards [
 		
 	game := Game playedBy: { tomas . exequiel } throwing: dice onBoardOfLength: 10 during: 1.
 
-	game players options do: [:player | self assert: player cardsInHand equals: 2 ]
+	game players do: [:player | self assert: player cardsInHand equals: 2 ]
 ]
 
 { #category : #tests }

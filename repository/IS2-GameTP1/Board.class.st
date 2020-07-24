@@ -10,10 +10,16 @@ Class {
 }
 
 { #category : #'instance creation' }
+Board class >> assertAmountOf: squares [
+	squares < 0
+		ifTrue: [ Error signal: 'A Board cannot have negative amount of squares' ]
+]
+
+{ #category : #'instance creation' }
 Board class >> ofLength: nSquares [
 	| collection |
 	
-	nSquares < 0 ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ].
+	self assertAmountOf: nSquares .
 		
 	collection := OrderedCollection new.
 	
@@ -32,7 +38,7 @@ Board class >> with: listOfSquares [
 Board class >> withNoEffectOfLength: nSquares [
 	| collection |
 	
-	nSquares < 0 ifTrue:  [ Error signal: 'A Board cannot have negative amount of squares' ].
+	self assertAmountOf: nSquares .
 		
 	collection := OrderedCollection new.
 	
@@ -47,14 +53,11 @@ Board >> amountOfSquares [
 	^squares size .
 ]
 
-{ #category : #'process actions' }
-Board >> applyLastEffectUsedTo: aPlayer [
-	self goToTheSquareOf: aPlayer.
-	
-	lastEffect applyTo: aPlayer in: self . 
-	
-	self goToCheckpoint.
-	
+{ #category : #'instance creation' }
+Board >> assertExistenceOf: aSquare [
+	aSquare > self amountOfSquares
+		ifTrue: [ Error signal: 'It does not exist.' ]
+		ifFalse: [ ^aSquare ]
 ]
 
 { #category : #private }
@@ -63,9 +66,56 @@ Board >> currentSquare [
 ]
 
 { #category : #private }
+Board >> estimatedFinalPositionFor: aPlayer moving: rollResult [
+	| position finalPosition |
+	
+	position := (self positionOf: aPlayer) copy.
+	
+	self goToTheSquareOf: aPlayer.
+	position := rollResult > 0
+		ifTrue: [ self estimatedMoveFoward: position this: rollResult ]
+		ifFalse: [ self estimatedMoveBack: position this: rollResult * -1 ].
+	
+	finalPosition := self currentSquare effect estimated: position in: self.
+	
+	self goToCheckpoint.
+	
+	^ finalPosition.
+]
+
+{ #category : #private }
+Board >> estimatedMoveBack: position this: rollResult [
+	| aPosition num |
+	aPosition := position copy.
+	num := aPosition currentSquare.
+	
+	(aPosition currentLap  == 0 and: [ aPosition currentSquare < rollResult ])
+				ifTrue: 	[ aPosition reset. num := 0] 
+				ifFalse: [ rollResult timesRepeat:  [ num := num - 1. self previousSquare isCheckpoint ifTrue: [ aPosition decreaseALap. num := (self amountOfSquares) - 1 ] ] ].
+	
+	aPosition registerSquare: num.		
+	
+	^aPosition.
+]
+
+{ #category : #private }
+Board >> estimatedMoveFoward: position this: rollResult [ 
+	| aPosition num |
+	aPosition := position copy.
+	num := aPosition currentSquare.
+	rollResult timesRepeat: [ num := num + 1. self nextSquare isCheckpoint ifTrue: [ aPosition registerLap. num := 0 ] ].
+	
+	aPosition registerSquare: num.
+	
+	^aPosition.
+	
+]
+
+{ #category : #private }
 Board >> goAllOverTheBoard: aBlock [
 	self goToCheckpoint.
-	[ self nextSquare isCheckpoint ] whileFalse: [ 
+	
+	[  self nextSquare isCheckpoint ] whileFalse: [ 
 		aBlock value.
 	].
 ]
@@ -102,7 +152,7 @@ Board >> move: aPlayer this: rollResult [
 		
 	lastEffect := self currentSquare effect.
 	
-	lastEffect applyTo: aPlayer in: self . 
+	lastEffect applyTo: aPlayer in: self. 
 	
 	self goToCheckpoint.
 	
@@ -170,6 +220,11 @@ Board >> previousSquare [
 	^squares previous.
 ]
 
+{ #category : #'process actions' }
+Board >> remainingSquaresFor: aPlayer [
+	^self amountOfSquares  - (self positionOf: aPlayer) currentSquare.
+]
+
 { #category : #private }
 Board >> setPlayersInCheckPoint: players [
 	self goToCheckpoint.
@@ -178,6 +233,15 @@ Board >> setPlayersInCheckPoint: players [
 	
 	self currentSquare putASet: players.
 	
+]
+
+{ #category : #private }
+Board >> squareAt: index [ 
+	self goToCheckpoint.
+	
+	(index - 1) timesRepeat: [ self nextSquare ].
+	
+	^self currentSquare.
 ]
 
 { #category : #accessing }
@@ -196,14 +260,12 @@ Board >> whereIs: aPlayer [
 		position := position + 1.
 		].
 	
-	(position > self amountOfSquares)
-		ifTrue: [ ^Error signal: 'This player is not in the board.' ]
-		ifFalse: [ ^position ].
+	^self assertExistenceOf: position .
 	
 ]
 
 { #category : #'instance creation' }
-Board >> with: effect at: position [ 
-	position > self amountOfSquares ifTrue: [ Error signal: 'This square does not exist' ].
-	squares replaceAt: position this: (Square with: effect).
+Board >> with: effect at: position [
+	self assertExistenceOf: position.
+	squares replaceAt: position this: (Square with: effect)
 ]

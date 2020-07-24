@@ -13,15 +13,20 @@ MoonWalk class >> withRecoil: nValue [
 ]
 
 { #category : #effect }
-MoonWalk >> applyTo: aPlayer in: board [ 
+MoonWalk >> applyTo: aPlayer in: board [  
 	board goAllOverTheBoard: [ 
 		board playersOfCurrentPosition do: [ :player |
 			player = aPlayer ifFalse: [
-				board moveBack: player this: recoilValue.	
+				board moveBack: player this: recoilValue .
 			]
 		].
-	].
+	] . 
 
+]
+
+{ #category : #effect }
+MoonWalk >> estimated: position in: board [ 
+	^position copy.
 ]
 
 { #category : #initialization }

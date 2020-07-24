@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #operation }
-Cancellation >> applyEffect: selfCard toThis: card inThe: game [.
-	game removeThis: card.
+Cancellation >> applyEffect: selfCard toThis: permanentCard inThe: game [.
+	game removeThis: permanentCard .
 ]
 
 { #category : #query }

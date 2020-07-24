@@ -95,7 +95,7 @@ EffectTest >> testSpeedUpEffect [
 
 	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
-	game playNextTurn .
+	game playNextTurn.
 	
 	self assert: ( game whereIs: exequiel ) equals: 5.
 ]

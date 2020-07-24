@@ -65,7 +65,7 @@ GameTest >> testGameIsOver [
 	
 	game playAllTurns.
 	
-	self deny: game isStillOn.  
+	self deny: game status.  
 ]
 
 { #category : #tests }
@@ -79,7 +79,7 @@ GameTest >> testGameIsStillOn [
 	
 	game playNextTurn ; playNextTurn.
 	
-	self assert: game isStillOn.  
+	self assert: game status.  
 ]
 
 { #category : #tests }
@@ -107,7 +107,7 @@ GameTest >> testPlayerIsNotInTheBoard [
 	self 
 		should: [ game board whereIs: exequiel ] 
 		raise: Error 
-		withMessageText: 'This player is not in the board.'.
+		withMessageText: 'It does not exist.'.
 ]
 
 { #category : #tests }
@@ -129,17 +129,18 @@ GameTest >> testScoreboardUpdated [
 
 { #category : #tests }
 GameTest >> testWinnerEndsInCheckPoint [
-	| dice game |
+	| dice game aBoard |
+	dice := Die of: 8 rolling: #(8). 
 	
-	dice := Die of: 6 rolling: #(5 2).
-	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: (Board withNoEffectOfLength: 10) during: 1.
-	
+	aBoard := Board withNoEffectOfLength: 10.
+	aBoard with: SpeedUp new at: 9.
+
+	game := Game playedBy: { tomas } throwing: dice on: aBoard during: 1.
+
 	game playAllTurns .
 	
-	self
-		assert: game scoreboard first currentLap equals: 1;
-		assert: (game whereIs: tomas) equals: 0.
+	self 	assert: game scoreboard first currentLap equals: 1;
+			assert: ( game whereIs: tomas ) equals: 0.
 ]
 
 { #category : #tests }
