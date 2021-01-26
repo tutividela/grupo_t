@@ -53,6 +53,36 @@ CardTest >> setUp [
 ]
 
 { #category : #tests }
+CardTest >> test01ReverseCard [
+	"| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
+	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	tomas takesA: aReverseCard.
+	
+	self assert: aGame whoPlays equals: tomas.
+	
+	aGame currentPlayerActivatesThis:aReverseCard to: tomas.
+	
+	self assert: aGame whoPlays equals: pedro.
+	
+	aGame playNextTurn .
+	
+	self assert: aGame whoPlays equals: exequiel.
+"	
+	
+	
+
+]
+
+{ #category : #tests }
 CardTest >> testAccelerationAndOverloadTogether [
 	| game aBoard dice card card2 |
 
