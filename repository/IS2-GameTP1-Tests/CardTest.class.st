@@ -83,6 +83,82 @@ CardTest >> test01ReverseCard [
 ]
 
 { #category : #tests }
+CardTest >> test02RedoAndReverseCard [
+	"| aNoEffectBoard dice marcos pedro aReverseCard aRedoCard aGame |
+	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	aRedoCard := Card type: Redo new.
+	
+	tomas takesA: aReverseCard.
+	exequiel takesA: aRedoCard.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame currentPlayerActivatesThis: aReverseCard to: tomas.
+	self assert: aGame whoPlays equals: pedro.		 
+	aGame playNextTurn.
+
+	aGame currentPlayerActivatesThis: aRedoCard to: exequiel.
+	
+	aGame playNextTurn .
+	
+	self assert: aGame whoPlays equals: exequiel. 
+"
+]
+
+{ #category : #tests }
+CardTest >> test03NestedReverseCard [
+"	| aNoEffectBoard dice marcos pedro aReverseCard anotherReverseCard aGame |
+	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	anotherReverseCard:= Card type: Reverse new.
+	
+	tomas takesA: aReverseCard.
+	exequiel takesA: anotherReverseCard.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame playNextTurn ;playNextTurn .
+	
+	
+	self assert: aGame whoPlays equals: exequiel.
+	
+	aGame currentPlayerActivatesThis: anotherReverseCard to:exequiel.
+
+	self assert: aGame whoPlays equals: marcos.
+	
+	aGame playNextTurn.
+	
+	aGame currentPlayerActivatesThis: aReverseCard to:tomas.
+	
+	self assert: aGame whoPlays equals: pedro. "
+]
+
+{ #category : #tests }
+CardTest >> test04SkipCard [
+"	| aNoEffectBoard dice marcos pedro  aGame  |
+	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	"
+
+]
+
+{ #category : #tests }
 CardTest >> testAccelerationAndOverloadTogether [
 	| game aBoard dice card card2 |
 
