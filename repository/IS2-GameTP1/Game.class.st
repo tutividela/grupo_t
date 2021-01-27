@@ -160,6 +160,11 @@ Game >> removeThis: activePermanentCard [
 ]
 
 { #category : #accesing }
+Game >> reverseTurns [
+	players reverseOptionsOrder
+]
+
+{ #category : #accesing }
 Game >> scoreboard [
 	^ scoreboard copy .
 ]

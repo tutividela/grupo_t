@@ -64,6 +64,11 @@ CircularIterator >> reset [
 	currentIndex := 0
 ]
 
+{ #category : #accessing }
+CircularIterator >> reverseOptionsOrder [
+	options := options reversed .
+]
+
 { #category : #iterating }
 CircularIterator >> size [
 	^options size.

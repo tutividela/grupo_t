@@ -45,6 +45,7 @@ Card >> applyTo: playerOrCard in: game [
 { #category : #initialization }
 Card >> initializeAs: cardType [
 	type := cardType.
+	player := Player named: ''.
 ]
 
 { #category : #accessing }

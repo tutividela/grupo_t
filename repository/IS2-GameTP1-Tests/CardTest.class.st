@@ -44,6 +44,22 @@ CardTest >> aBoard02 [
 						}.
 ]
 
+{ #category : #'as yet unclassified' }
+CardTest >> aNoEffectBoard [
+	^Board with: { 
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new.
+		Square with: NoEffect new
+	} .
+]
+
 { #category : #running }
 CardTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
@@ -53,9 +69,34 @@ CardTest >> setUp [
 ]
 
 { #category : #tests }
+CardTest >> test011LastPlayerActivatesReveseAndPlaysAgain [
+	| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	pedro takesA: aReverseCard.
+	
+	self assert: aGame whoPlays equals: tomas.
+	
+	aGame playNextTurn ;playNextTurn;playNextTurn;playNextTurn .
+	
+	aGame activateThis: aReverseCard from: pedro to:pedro. 	
+	
+	self assert: aGame whoPlays equals: pedro.
+
+]
+
+{ #category : #tests }
 CardTest >> test01ReverseCard [
-	"| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
-	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
+	aNoEffectBoard := self aNoEffectBoard.
 	dice := Die of: 6 rolling:#(6).
 	
 	marcos := Player named: 'Marcos'.
@@ -76,16 +117,16 @@ CardTest >> test01ReverseCard [
 	aGame playNextTurn .
 	
 	self assert: aGame whoPlays equals: exequiel.
-"	
+	
 	
 	
 
 ]
 
 { #category : #tests }
-CardTest >> test02RedoAndReverseCard [
-	"| aNoEffectBoard dice marcos pedro aReverseCard aRedoCard aGame |
-	aNoEffectBoard := Board withNoEffectOfLength: 10.
+CardTest >> test02ReverseAndRedoCard [
+	| aNoEffectBoard dice marcos pedro aReverseCard aRedoCard aGame |
+	aNoEffectBoard := self aNoEffectBoard.
 	dice := Die of: 6 rolling:#(6).
 	
 	marcos := Player named: 'Marcos'.
@@ -108,13 +149,13 @@ CardTest >> test02RedoAndReverseCard [
 	aGame playNextTurn .
 	
 	self assert: aGame whoPlays equals: exequiel. 
-"
+
 ]
 
 { #category : #tests }
 CardTest >> test03NestedReverseCard [
-"	| aNoEffectBoard dice marcos pedro aReverseCard anotherReverseCard aGame |
-	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	| aNoEffectBoard dice marcos pedro aReverseCard anotherReverseCard aGame |
+	aNoEffectBoard :=self aNoEffectBoard.
 	dice := Die of: 6 rolling:#(6).
 	
 	marcos := Player named: 'Marcos'.
@@ -141,21 +182,101 @@ CardTest >> test03NestedReverseCard [
 	
 	aGame currentPlayerActivatesThis: aReverseCard to:tomas.
 	
-	self assert: aGame whoPlays equals: pedro. "
+	self assert: aGame whoPlays equals: pedro. 
 ]
 
 { #category : #tests }
 CardTest >> test04SkipCard [
-"	| aNoEffectBoard dice marcos pedro  aGame  |
-	aNoEffectBoard := Board withNoEffectOfLength: 10.
+	| aNoEffectBoard dice marcos pedro  aGame  aSkipCard |
+	aNoEffectBoard :=self aNoEffectBoard .
 	dice := Die of: 6 rolling:#(6).
 	
 	marcos := Player named: 'Marcos'.
 	pedro := Player named: 'Pedro'.
 	
 	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	"
+	
+	aSkipCard := Card type: Skip new.
+	exequiel takesA: aSkipCard.
+	
+	aGame playNextTurn  .
+	aGame activateThis: aSkipCard from:exequiel to:exequiel.
+	
+	self assert: aGame whoPlays equals: exequiel. 
+]
 
+{ #category : #tests }
+CardTest >> test05SkipAndRedoCards [
+	 | aNoEffectBoard dice marcos pedro  aGame  aSkipCard aRedoCard |
+	aNoEffectBoard :=self aNoEffectBoard .
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aSkipCard := Card type: Skip new.
+	aRedoCard:= Card type: Redo new.
+	exequiel takesA: aSkipCard.
+	tomas takesA: aRedoCard.
+	
+	aGame playNextTurn ; playNextTurn .
+	aGame currentPlayerActivatesThis: aSkipCard to:exequiel.
+	
+	aGame playNextTurn .
+	
+	aGame currentPlayerActivatesThis: aRedoCard  to:tomas.
+	
+	self assert: aGame whoPlays equals: marcos. 
+]
+
+{ #category : #tests }
+CardTest >> test06SkipAndSkipCards [
+	 | aNoEffectBoard dice marcos pedro  aGame  aSkipCard  anotherSkipCard |
+	aNoEffectBoard :=self aNoEffectBoard .
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aSkipCard := Card type: Skip new.
+	anotherSkipCard:= Card type: Redo new.
+	exequiel takesA: aSkipCard.
+	pedro takesA: anotherSkipCard.
+	
+	aGame playNextTurn ; playNextTurn .
+	aGame currentPlayerActivatesThis: aSkipCard to:exequiel.
+	aGame currentPlayerActivatesThis: anotherSkipCard to:pedro. 
+	
+	
+	self assert: aGame whoPlays equals: tomas. 
+]
+
+{ #category : #tests }
+CardTest >> test07DoubleCard [
+"	| aNoEffectBoard dice marcos pedro aReverseCard aGame  aDoubleCard |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6 4).
+	
+	aDoubleCard := Card type: Double new.
+	exequiel takesA: aDoubleCard.
+	
+	aGame := Game playedBy: {exequiel.tomas} throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame playNextTurn .
+	
+	self assert: (aGame whereIs: exequiel) equals: 6.
+	
+	aGame currentPlayerActivatesThis: aDoubleCard to: exequiel.
+	
+	aGame playNextTurn .
+	
+	self assert: (aGame whereIs: exequiel) equals: 10.
+	"
+	
 ]
 
 { #category : #tests }
@@ -163,18 +284,8 @@ CardTest >> testAccelerationAndOverloadTogether [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(6 1 1 4).	
-	aBoard := Board with: { 	Square asCheckpoint. 
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard. 
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard. 
+	
 	card := Card type: Acceleration new .
 	card2 := Card type: Overload new .
 	
@@ -206,18 +317,8 @@ CardTest >> testAccelerationAndSpeedTogether [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(6 2).	
-	aBoard := Board with: { 	Square asCheckpoint. 
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard. 
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard.
+	
 	card := Card type: Acceleration new .
 	card2 := Card type: Speed new .
 	
@@ -249,18 +350,8 @@ CardTest >> testAccelerationCard [
 	| game aBoard dice card |
 
 	dice := Die of: 6 rolling:#(6 6).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
+	
 	card := Card type: Acceleration new .
 	
 	tomas takes: { card . Card type: Speed new }.
@@ -364,18 +455,8 @@ CardTest >> testCumulativeAccelerationCard [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(6 6).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
+	
 	card := Card type: Acceleration new .
 	card2 := Card type: Acceleration new .
 	
@@ -405,18 +486,8 @@ CardTest >> testCumulativeOverloadCard [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(6 2 1 4).	
-	aBoard := Board with: { 	Square asCheckpoint. 
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard. 
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
+	
 	card := Card type: Overload new .
 	card2 := Card type: Overload new .
 	
@@ -449,18 +520,7 @@ CardTest >> testCumulativeSpeedCard [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(3 2).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
 	card := Card type: Speed new .
 	card2 := Card type: Speed new .
 	
@@ -492,7 +552,7 @@ CardTest >> testNestedRedoCard [
 	| game aBoard dice card redo redo2 redo3 |
 
 	dice := Die of: 6 rolling:#(5).	
-	aBoard := Board with: { 	Square asCheckpoint.
+	aBoard :=Board with: { 	Square asCheckpoint.
 									Square with: NoEffect new .
 									Square with: NoEffect new .				
 									Square with: NoEffect new .	
@@ -548,18 +608,7 @@ CardTest >> testOverloadCard [
 	| game aBoard dice card |
 
 	dice := Die of: 6 rolling:#(6 2 1 4 2 1).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
 	card := Card type: Overload new .
 	
 	tomas takes: { card . Card type: Speed new }.
@@ -614,7 +663,7 @@ CardTest >> testPlayerGetsANewCard [
 	| dice game aBoard |
 	dice := Die of: 6 rolling: #(6). 
 
-	aBoard := Board with: { 	Square asCheckpoint.
+	aBoard :=Board with: { 	Square asCheckpoint.
 									Square with: SpeedUp new .					
 									Square with: (MoonWalk withRecoil: 5) .
 						
@@ -629,7 +678,7 @@ CardTest >> testPlayerGetsANewCard [
 						
 									Square with: NoEffect new  				
 							}.
-	
+
 	game := Game playedBy: {exequiel . tomas} throwing: dice on: aBoard during: 2.
 
 	game playNextTurn .
@@ -666,37 +715,11 @@ CardTest >> testPlayerHasTwoRandomCardsAtTheBeginning [
 ]
 
 { #category : #tests }
-CardTest >> testPlayersAlwaysStartWithTwoCards [
-	| game dice card |
-
-	dice := Die of: 6 rolling:#(6 6).	
-
-	card := Card type: Speed new .
-	
-	tomas takesA: card.
-		
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
-
-	game players options do: [:player | self assert: player cardsInHand equals: 2 ]
-]
-
-{ #category : #tests }
 CardTest >> testRedoCard [
 	| game aBoard dice card redo |
 
 	dice := Die of: 6 rolling:#(5).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: NoEffect new  .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
 	card := Card type: Acceleration  new .
 	redo := Card type: Redo new .
 
@@ -762,7 +785,7 @@ CardTest >> testRedoCardAsRepeatCard [
 	| game aBoard dice  redo repeat |
 
 	dice := Die of: 6 rolling:#(1).	
-	aBoard := Board with: { 	Square asCheckpoint.
+	aBoard :=Board with: { 	Square asCheckpoint.
 									Square with: SpeedUp new .
 									Square with: NoEffect new .				
 									Square with: NoEffect new .
@@ -808,18 +831,7 @@ CardTest >> testRedoCardIfNoOneHasPlayedACardYet [
 	| game aBoard dice card redo |
 
 	dice := Die of: 6 rolling:#(5).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: NoEffect new  .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
 	card := Card type: Acceleration  new .
 	redo := Card type: Redo new .
 
@@ -843,7 +855,7 @@ CardTest >> testRepeatCard [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(3 6).	
-	aBoard := Board with: { 	Square asCheckpoint.
+	aBoard :=Board with: { 	Square asCheckpoint.
 									Square with: NoEffect new .
 									Square with: NoEffect new .				
 									Square with: SpeedUp  new.
@@ -910,17 +922,7 @@ CardTest >> testRepeatCardWithNoEffect [
 	| game aBoard dice card |
 
 	dice := Die of: 6 rolling:#(1).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: SpeedUp  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
+	aBoard := self aNoEffectBoard .
 							
 	card := Card type: Repeat new .
 	
@@ -945,18 +947,7 @@ CardTest >> testSpeedAndOverloadTogether [
 	| game aBoard dice card card2 |
 
 	dice := Die of: 6 rolling:#(6 2 1 4).	
-	aBoard := Board with: { 	Square asCheckpoint. 
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard. 
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
 	card := Card type: Speed new .
 	card2 := Card type: Overload new .
 	
@@ -988,18 +979,7 @@ CardTest >> testSpeedCard [
 	| game aBoard dice card |
 
 	dice := Die of: 6 rolling:#(6 6).	
-	aBoard := Board with: { 	Square asCheckpoint.
-									Square with: NoEffect new .
-									Square with: NoEffect new .				
-									Square with: AtomicBomb  new.
-									Square with: NoEffect new .
-									Square with: WormHole  new .
-									Square with: Take randomCard.
-									Square with: NoEffect new .
-									Square with: (MoonWalk withRecoil: 5) .
-									Square with: NoEffect new  				
-							}.
-							
+	aBoard := self aNoEffectBoard .
 	card := Card type: Speed new .
 	
 	tomas takes: { card . Card type: Speed new }.
