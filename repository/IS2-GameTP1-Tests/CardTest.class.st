@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #board }
-CardTest >> aBoard [
+CardTest >> aBoardWithAllEfectsAndNoEffectSquares [
 	^Board with: { 	Square asCheckpoint.
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
@@ -27,7 +27,7 @@ CardTest >> aBoard [
 ]
 
 { #category : #board }
-CardTest >> aBoard02 [
+CardTest >> aBoardWithSpeedUpMoonWalkAndAtomicBomb [
 	^Board with: { 	Square asCheckpoint.
 						Square with: SpeedUp new .					
 						Square with: (MoonWalk withRecoil: 5) .
@@ -153,7 +153,7 @@ CardTest >> test02ReverseAndRedoCard [
 ]
 
 { #category : #tests }
-CardTest >> test03NestedReverseCard [
+CardTest >> test03ReverseAndReverseCard [
 	| aNoEffectBoard dice marcos pedro aReverseCard anotherReverseCard aGame |
 	aNoEffectBoard :=self aNoEffectBoard.
 	dice := Die of: 6 rolling:#(6).
@@ -257,25 +257,141 @@ CardTest >> test06SkipAndSkipCards [
 
 { #category : #tests }
 CardTest >> test07DoubleCard [
-"	| aNoEffectBoard dice marcos pedro aReverseCard aGame  aDoubleCard |
+	| aNoEffectBoard dice aGame  aDoubleCard |
 	aNoEffectBoard := self aNoEffectBoard.
 	dice := Die of: 6 rolling:#(6 4).
 	
 	aDoubleCard := Card type: Double new.
 	exequiel takesA: aDoubleCard.
 	
-	aGame := Game playedBy: {exequiel.tomas} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
 	
 	aGame playNextTurn .
 	
-	self assert: (aGame whereIs: exequiel) equals: 6.
+	self assert: (aGame whereIs: tomas) equals: 6.
 	
 	aGame currentPlayerActivatesThis: aDoubleCard to: exequiel.
 	
+	self assert: (aGame whereIs: exequiel) equals: 0.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> test08DoubleAndRedoCard [
+	| aNoEffectBoard dice aGame  aDoubleCard aRedoCard |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	aRedoCard := Card type: Redo new.
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: aRedoCard.
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: aRedoCard to:exequiel  .
+	
+	self assert: (aGame whereIs: tomas) equals: 5.
+	self assert: (aGame whereIs: exequiel) equals: 3.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> test09DoubleAndDoubleCard [
+	| aNoEffectBoard dice aGame  aDoubleCard anotherDoubleCard  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	anotherDoubleCard := Card type: Double new.
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: anotherDoubleCard.
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: anotherDoubleCard  to:exequiel  .
+	
+	self assert: (aGame whereIs: tomas) equals: 5.
+	self assert: (aGame whereIs: exequiel) equals: 3.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> test10PlayerPlays4ConsecutiveTimesWithDoubleAndSkipCard [
+	| aNoEffectBoard dice aGame  aDoubleCard aSkipCard  anotherDoubleCard |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	anotherDoubleCard := Card type: Double new.
+	aSkipCard := Card type: Skip new.
+	
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: aSkipCard.
+	tomas takesA:anotherDoubleCard .
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: aSkipCard  to:exequiel  .
+	aGame currentPlayerActivatesThis: anotherDoubleCard to:tomas. 
+	
+	self assert: (aGame whereIs: tomas) equals: 8.
+	self assert: (aGame whereIs: exequiel) equals: 0.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> test11PlayerPlays4ConsecutiveTimesWithDoubleAndReverseCard [
+	| aNoEffectBoard dice aGame  aDoubleCard aReverseCard  anotherDoubleCard  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	anotherDoubleCard := Card type: Double new.
+	aReverseCard  := Card type: Skip new.
+	
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: aReverseCard .
+	tomas takesA:anotherDoubleCard .
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: aReverseCard  to:exequiel  .
+	aGame currentPlayerActivatesThis: anotherDoubleCard to:tomas. 
+	
+	self assert: (aGame whereIs: tomas) equals: 8.
+	self assert: (aGame whereIs: exequiel) equals: 0.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> test12PlayerPlays2ConsecutiveTimesWithReverseAndSkipCard [
+	| aNoEffectBoard dice aGame  aReverseCard aSkipCard  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aSkipCard := Card type: Reverse new.
+	aReverseCard  := Card type: Skip new.
+	
+	exequiel takesA: aSkipCard.
+	exequiel takesA: aReverseCard .
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame activateThis: aReverseCard   from:exequiel   to:tomas. 
+	aGame playNextTurn .
+	aGame activateThis: aSkipCard  from:exequiel   to:exequiel.
 	aGame playNextTurn .
 	
-	self assert: (aGame whereIs: exequiel) equals: 10.
-	"
+	self assert: (aGame whereIs: exequiel ) equals: 5.
+	self assert: (aGame whereIs: tomas ) equals: 0.
+	
 	
 ]
 
@@ -386,7 +502,7 @@ CardTest >> testCancellationCard [
 	tomas takes: { Card type: Acceleration new . card }.
 	exequiel  takes: { Card type: Speed new . cancellation2 }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 	
 	game currentPlayerActivatesThis: card to: tomas .
 	
@@ -410,7 +526,7 @@ CardTest >> testCancellationCardIfThereIsNoActivePermanentCard [
 	tomas takes: { Card type: Speed new . cancellation }.
 	exequiel  takes: { Card type: Speed new . card }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 	
 	self 	should: [ game activateThis: cancellation from: tomas to: card ]
 			raise:  Error
@@ -430,7 +546,7 @@ CardTest >> testCardsCannotBePlayedWhenTheGameIsOver [
 
 	tomas takes: {speed . redo}.
 
-	game := Game playedBy: { tomas } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 	
 	game playAllTurns.
 	
@@ -650,7 +766,7 @@ CardTest >> testPlayAPermanentCardOnAnotherPlayersTurn [
 	tomas takes: { card . Card type: Speed new }.
 	exequiel  takes: { card2 . Card type: Acceleration new }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 		
 	self 
 		should: [ game activateThis: card2 from: exequiel to: tomas ] 
@@ -696,7 +812,7 @@ CardTest >> testPlayerHasTwoCardsAtTheBeginning [
 	tomas takes: { Card type: Overload new . Card type: Speed new }.
 	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithSpeedUpMoonWalkAndAtomicBomb during: 3.
 	
 	self 	assert: game players current cardsInHand equals: 2; 
 			assert: game players next cardsInHand equals: 2.  
@@ -708,7 +824,7 @@ CardTest >> testPlayerHasTwoRandomCardsAtTheBeginning [
 
 	dice1 := Die of: 6 rolling:#(5 6 1).
 	dice2 := Die of: 6 rolling:#(3 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithSpeedUpMoonWalkAndAtomicBomb during: 3.
 	
 	self 	assert: game players current cardsInHand equals: 2; 
 			assert: game players next cardsInHand equals: 2.  
@@ -761,7 +877,7 @@ CardTest >> testRedoCardAsCancellationCard [
 	tomas takes: { speed . redo }.
 	exequiel takes: {speed2. cancel }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 	
 	
 	game currentPlayerActivatesThis: speed to: tomas .
@@ -907,7 +1023,7 @@ CardTest >> testRepeatCardWhenNoOneRolledTheDicesYet [
 	
 	tomas takes: { card . Card type: Speed new }.
 	
-	game := Game playedBy: { tomas } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 
 	self 	should:  [ game activateThis: card from: tomas to: tomas. ]
 			raise:  Error
@@ -1013,7 +1129,7 @@ CardTest >> testUseOneCardFromPlayersHand [
 	tomas takes: { card . Card type: Speed new }.
 	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 	
 	
 	game currentPlayerActivatesThis: card to: tomas .
@@ -1034,7 +1150,7 @@ CardTest >> testUseOneCardThatIsNotInPlayersHand [
 	tomas takes: { card . Card type: Speed new }.
 	exequiel  takes: { Card type: Overload new . Card type: Acceleration new }.
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 2.
 		
 	self 
 		should: [ game currentPlayerActivatesThis: card2 to: tomas . ] 

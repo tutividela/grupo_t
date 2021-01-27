@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #board }
-GameTest >> aBoard [
+GameTest >> aBoardWithAllEfectsAndNoEffectSquares [
 	^Board with: { 	Square asCheckpoint.
 						Square with: SpeedUp new .
 						Square with: WormHole  new .
@@ -27,7 +27,7 @@ GameTest >> aBoard [
 ]
 
 { #category : #board }
-GameTest >> aBoard02 [
+GameTest >> aBoardWithSpeedUpMoonWalkAndAtomicBomb [
 	^Board with: { 	Square asCheckpoint.
 						Square with: SpeedUp new .					
 						Square with: (MoonWalk withRecoil: 5) .
@@ -73,7 +73,7 @@ GameTest >> testFinalScoreboard [
 	dice1:= Die of: 6 rolling: #(5 5 6).
 	dice2:= Die of: 6 rolling: #(5 4 1).
 	
-	game := Game playedBy: {tomas . exequiel . player3} throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: {tomas . exequiel . player3} throwing: (dice1 + dice2) on: self aBoardWithSpeedUpMoonWalkAndAtomicBomb during: 3.
 	
 	game playAllTurns.
 	
@@ -97,7 +97,7 @@ GameTest >> testGameIsOver [
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
 
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard  during: 1.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithAllEfectsAndNoEffectSquares  during: 1.
 	
 	game playAllTurns.
 	
@@ -111,7 +111,7 @@ GameTest >> testGameIsStillOn [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 		
-	game := Game playedBy: {tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: {tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithSpeedUpMoonWalkAndAtomicBomb during: 3.
 	
 	game playNextTurn ; playNextTurn.
 	
@@ -152,7 +152,7 @@ GameTest >> testScoreboardUpdated [
 
 	dice1 := Die of: 6 rolling:#(5 6 1).
 	dice2 := Die of: 6 rolling:#(3 5 2).
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithSpeedUpMoonWalkAndAtomicBomb during: 3.
 	
 	game playNextTurn.
 	
@@ -169,7 +169,7 @@ GameTest >> testWinnerEndsInCheckPoint [
 	
 	dice := Die of: 6 rolling: #(5 2).
 	
-	game := Game playedBy: { tomas } throwing: dice on: self aBoard  during: 1.
+	game := Game playedBy: { tomas } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares  during: 1.
 	
 	game playAllTurns .
 	
@@ -185,7 +185,7 @@ GameTest >> testWinnerInFirstPlace [
 	dice1 := Die of: 6 rolling:#(3 4 1).
 	dice2 := Die of: 6 rolling:#(2 5 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithAllEfectsAndNoEffectSquares during: 3.
 	
 	game playAllTurns.
 	
@@ -198,7 +198,7 @@ GameTest >> testWinnerOneDice [
 
 	dice := Die of: 6 rolling: #(5 2 5 2 5).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoard during: 3.
+	game := Game playedBy: { tomas . exequiel } throwing: dice on: self aBoardWithAllEfectsAndNoEffectSquares during: 3.
 	
 	game playAllTurns.
 
@@ -212,7 +212,7 @@ GameTest >> testWinnerTwoDices [
 	dice1 := Die of: 6 rolling: #(2 5).
 	dice2 := Die of: 6 rolling: #(2 2).
 	
-	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoard02 during: 2.
+	game := Game playedBy: { tomas . exequiel } throwing: (dice1 + dice2) on: self aBoardWithSpeedUpMoonWalkAndAtomicBomb during: 2.
 	
 	game playAllTurns.
 

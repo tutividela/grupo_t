@@ -6,10 +6,17 @@ Class {
 
 { #category : #'as yet unclassified' }
 Double >> applyEffectToThis: aPlayer inThe: aGame [ 
-	self shouldBeImplemented.
+	aGame playNextTurn .
+	aGame reverseTurns .
+	aGame playNextTurn .
 ]
 
 { #category : #'as yet unclassified' }
 Double >> isPermanent [
+	^false.
+]
+
+{ #category : #'as yet unclassified' }
+Double >> isRedo [
 	^false.
 ]
