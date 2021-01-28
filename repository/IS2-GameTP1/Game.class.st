@@ -99,12 +99,17 @@ Game >> initialize: aBoard lapsToWin: numberOfLaps playersList: listOfPlayers di
 	scoreboard := board positions copy.
 	
 	activePermanentCards := OrderedCollection new.
-	lastCardPlayed := nil.
+	lastCardPlayed :=Card noValidCard .
 ]
 
 { #category : #game }
 Game >> isStillOn [
 	^scoreboard first currentLap < laps.
+]
+
+{ #category : #accessing }
+Game >> lastCardIsValid [
+	^lastCardPlayed validCard .
 ]
 
 { #category : #accesing }

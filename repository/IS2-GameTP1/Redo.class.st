@@ -11,9 +11,9 @@ Class {
 Redo >> applyEffectToThis: playerOrCard inThe: game [
 	| effect |
 	
-	game lastCardPlayed 
-		ifNil: [ Error signal: 'No one has played a card yet' ] 
-		ifNotNil: [ 
+	game lastCardIsValid
+		ifFalse:[ Error signal: 'No one has played a card yet' ] 
+		ifTrue:[ 
 		
 			represents := game lastCardPlayed type.
 			effect := represents.
