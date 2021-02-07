@@ -47,7 +47,7 @@ CardTest >> aBoardWithSpeedUpMoonWalkAndAtomicBomb [
 { #category : #'as yet unclassified' }
 CardTest >> aNoEffectBoard [
 	^Board with: { 
-		Square with: NoEffect new.
+		Square asCheckpoint .
 		Square with: NoEffect new.
 		Square with: NoEffect new.
 		Square with: NoEffect new.
@@ -66,333 +66,6 @@ CardTest >> setUp [
 	tomas := Player named: 'Tomas'.
 	exequiel := Player named: 'Exequiel'.
 
-]
-
-{ #category : #tests }
-CardTest >> test011LastPlayerActivatesReveseAndPlaysAgain [
-	| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aReverseCard := Card type: Reverse new.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	pedro takesA: aReverseCard.
-	
-	self assert: aGame whoPlays equals: tomas.
-	
-	aGame playNextTurn ;playNextTurn;playNextTurn;playNextTurn .
-	
-	aGame activateThis: aReverseCard from: pedro to:pedro. 	
-	
-	self assert: aGame whoPlays equals: pedro.
-
-]
-
-{ #category : #tests }
-CardTest >> test01ReverseCard [
-	| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aReverseCard := Card type: Reverse new.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	tomas takesA: aReverseCard.
-	
-	self assert: aGame whoPlays equals: tomas.
-	
-	aGame currentPlayerActivatesThis:aReverseCard to: tomas.
-	
-	self assert: aGame whoPlays equals: pedro.
-	
-	aGame playNextTurn .
-	
-	self assert: aGame whoPlays equals: exequiel.
-	
-	
-	
-
-]
-
-{ #category : #tests }
-CardTest >> test02ReverseAndRedoCard [
-	| aNoEffectBoard dice marcos pedro aReverseCard aRedoCard aGame |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aReverseCard := Card type: Reverse new.
-	aRedoCard := Card type: Redo new.
-	
-	tomas takesA: aReverseCard.
-	exequiel takesA: aRedoCard.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aGame currentPlayerActivatesThis: aReverseCard to: tomas.
-	self assert: aGame whoPlays equals: pedro.		 
-	aGame playNextTurn.
-
-	aGame currentPlayerActivatesThis: aRedoCard to: exequiel.
-	
-	aGame playNextTurn .
-	
-	self assert: aGame whoPlays equals: exequiel. 
-
-]
-
-{ #category : #tests }
-CardTest >> test03ReverseAndReverseCard [
-	| aNoEffectBoard dice marcos pedro aReverseCard anotherReverseCard aGame |
-	aNoEffectBoard :=self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aReverseCard := Card type: Reverse new.
-	anotherReverseCard:= Card type: Reverse new.
-	
-	tomas takesA: aReverseCard.
-	exequiel takesA: anotherReverseCard.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aGame playNextTurn ;playNextTurn .
-	
-	
-	self assert: aGame whoPlays equals: exequiel.
-	
-	aGame currentPlayerActivatesThis: anotherReverseCard to:exequiel.
-
-	self assert: aGame whoPlays equals: marcos.
-	
-	aGame playNextTurn.
-	
-	aGame currentPlayerActivatesThis: aReverseCard to:tomas.
-	
-	self assert: aGame whoPlays equals: pedro. 
-]
-
-{ #category : #tests }
-CardTest >> test04SkipCard [
-	| aNoEffectBoard dice marcos pedro  aGame  aSkipCard |
-	aNoEffectBoard :=self aNoEffectBoard .
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aSkipCard := Card type: Skip new.
-	exequiel takesA: aSkipCard.
-	
-	aGame playNextTurn  .
-	aGame activateThis: aSkipCard from:exequiel to:exequiel.
-	
-	self assert: aGame whoPlays equals: exequiel. 
-]
-
-{ #category : #tests }
-CardTest >> test05SkipAndRedoCards [
-	 | aNoEffectBoard dice marcos pedro  aGame  aSkipCard aRedoCard |
-	aNoEffectBoard :=self aNoEffectBoard .
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aSkipCard := Card type: Skip new.
-	aRedoCard:= Card type: Redo new.
-	exequiel takesA: aSkipCard.
-	tomas takesA: aRedoCard.
-	
-	aGame playNextTurn ; playNextTurn .
-	aGame currentPlayerActivatesThis: aSkipCard to:exequiel.
-	
-	aGame playNextTurn .
-	
-	aGame currentPlayerActivatesThis: aRedoCard  to:tomas.
-	
-	self assert: aGame whoPlays equals: marcos. 
-]
-
-{ #category : #tests }
-CardTest >> test06SkipAndSkipCards [
-	 | aNoEffectBoard dice marcos pedro  aGame  aSkipCard  anotherSkipCard |
-	aNoEffectBoard :=self aNoEffectBoard .
-	dice := Die of: 6 rolling:#(6).
-	
-	marcos := Player named: 'Marcos'.
-	pedro := Player named: 'Pedro'.
-	
-	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aSkipCard := Card type: Skip new.
-	anotherSkipCard:= Card type: Redo new.
-	exequiel takesA: aSkipCard.
-	pedro takesA: anotherSkipCard.
-	
-	aGame playNextTurn ; playNextTurn .
-	aGame currentPlayerActivatesThis: aSkipCard to:exequiel.
-	aGame currentPlayerActivatesThis: anotherSkipCard to:pedro. 
-	
-	
-	self assert: aGame whoPlays equals: tomas. 
-]
-
-{ #category : #tests }
-CardTest >> test07DoubleCard [
-	| aNoEffectBoard dice aGame  aDoubleCard |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(6 4).
-	
-	aDoubleCard := Card type: Double new.
-	exequiel takesA: aDoubleCard.
-	
-	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aGame playNextTurn .
-	
-	self assert: (aGame whereIs: tomas) equals: 6.
-	
-	aGame currentPlayerActivatesThis: aDoubleCard to: exequiel.
-	
-	self assert: (aGame whereIs: exequiel) equals: 0.
-	
-	
-]
-
-{ #category : #tests }
-CardTest >> test08DoubleAndRedoCard [
-	| aNoEffectBoard dice aGame  aDoubleCard aRedoCard |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(3 2 1 2).
-	
-	aDoubleCard := Card type: Double new.
-	aRedoCard := Card type: Redo new.
-	exequiel takesA: aDoubleCard.
-	exequiel takesA: aRedoCard.
-	
-	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
-	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
-	aGame currentPlayerActivatesThis: aRedoCard to:exequiel  .
-	
-	self assert: (aGame whereIs: tomas) equals: 5.
-	self assert: (aGame whereIs: exequiel) equals: 3.
-	
-	
-]
-
-{ #category : #tests }
-CardTest >> test09DoubleAndDoubleCard [
-	| aNoEffectBoard dice aGame  aDoubleCard anotherDoubleCard  |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(3 2 1 2).
-	
-	aDoubleCard := Card type: Double new.
-	anotherDoubleCard := Card type: Double new.
-	exequiel takesA: aDoubleCard.
-	exequiel takesA: anotherDoubleCard.
-	
-	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
-	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
-	aGame currentPlayerActivatesThis: anotherDoubleCard  to:exequiel  .
-	
-	self assert: (aGame whereIs: tomas) equals: 5.
-	self assert: (aGame whereIs: exequiel) equals: 3.
-	
-	
-]
-
-{ #category : #tests }
-CardTest >> test10PlayerPlays4ConsecutiveTimesWithDoubleAndSkipCard [
-	| aNoEffectBoard dice aGame  aDoubleCard aSkipCard  anotherDoubleCard |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(3 2 1 2).
-	
-	aDoubleCard := Card type: Double new.
-	anotherDoubleCard := Card type: Double new.
-	aSkipCard := Card type: Skip new.
-	
-	exequiel takesA: aDoubleCard.
-	exequiel takesA: aSkipCard.
-	tomas takesA:anotherDoubleCard .
-	
-	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
-	aGame currentPlayerActivatesThis: aSkipCard  to:exequiel  .
-	aGame currentPlayerActivatesThis: anotherDoubleCard to:tomas. 
-	
-	self assert: (aGame whereIs: tomas) equals: 8.
-	self assert: (aGame whereIs: exequiel) equals: 0.
-	
-	
-]
-
-{ #category : #tests }
-CardTest >> test11PlayerPlays4ConsecutiveTimesWithDoubleAndReverseCard [
-	| aNoEffectBoard dice aGame  aDoubleCard aReverseCard  anotherDoubleCard  |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(3 2 1 2).
-	
-	aDoubleCard := Card type: Double new.
-	anotherDoubleCard := Card type: Double new.
-	aReverseCard  := Card type: Skip new.
-	
-	exequiel takesA: aDoubleCard.
-	exequiel takesA: aReverseCard .
-	tomas takesA:anotherDoubleCard .
-	
-	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
-	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
-	aGame currentPlayerActivatesThis: aReverseCard  to:exequiel  .
-	aGame currentPlayerActivatesThis: anotherDoubleCard to:tomas. 
-	
-	self assert: (aGame whereIs: tomas) equals: 8.
-	self assert: (aGame whereIs: exequiel) equals: 0.
-	
-	
-]
-
-{ #category : #tests }
-CardTest >> test12PlayerPlays2ConsecutiveTimesWithReverseAndSkipCard [
-	| aNoEffectBoard dice aGame  aReverseCard aSkipCard  |
-	aNoEffectBoard := self aNoEffectBoard.
-	dice := Die of: 6 rolling:#(3 2 1 2).
-	
-	aSkipCard := Card type: Reverse new.
-	aReverseCard  := Card type: Skip new.
-	
-	exequiel takesA: aSkipCard.
-	exequiel takesA: aReverseCard .
-	
-	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
-	
-	aGame activateThis: aReverseCard   from:exequiel   to:tomas. 
-	aGame playNextTurn .
-	aGame activateThis: aSkipCard  from:exequiel   to:exequiel.
-	aGame playNextTurn .
-	
-	self assert: (aGame whereIs: exequiel ) equals: 5.
-	self assert: (aGame whereIs: tomas ) equals: 0.
-	
-	
 ]
 
 { #category : #tests }
@@ -664,6 +337,95 @@ CardTest >> testCumulativeSpeedCard [
 ]
 
 { #category : #tests }
+CardTest >> testDoubleAndDoubleCard [
+	| aNoEffectBoard dice aGame  aDoubleCard anotherDoubleCard  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	anotherDoubleCard := Card type: Double new.
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: anotherDoubleCard.
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: anotherDoubleCard  to:exequiel  .
+	
+	self assert: (aGame whereIs: tomas) equals: 5.
+	self assert: (aGame whereIs: exequiel) equals: 3.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> testDoubleAndRedoCard [
+	| aNoEffectBoard dice aGame  aDoubleCard aRedoCard |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	aRedoCard := Card type: Redo new.
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: aRedoCard.
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: aRedoCard to:exequiel  .
+	
+	self assert: (aGame whereIs: tomas) equals: 5.
+	self assert: (aGame whereIs: exequiel) equals: 3.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> testDoubleCard [
+	| aNoEffectBoard dice aGame  aDoubleCard |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6 4).
+	
+	aDoubleCard := Card type: Double new.
+	exequiel takesA: aDoubleCard.
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame playNextTurn .
+	
+	self assert: (aGame whereIs: tomas) equals: 6.
+	
+	aGame currentPlayerActivatesThis: aDoubleCard to: exequiel.
+	
+	self assert: (aGame whereIs: exequiel) equals: 0.
+	self assert: ((aGame board positionOf: exequiel) currentLap) equals:1.
+	
+]
+
+{ #category : #tests }
+CardTest >> testLastPlayerActivatesReveseAndPlaysAgain [
+	| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	pedro takesA: aReverseCard.
+	
+	self assert: aGame whoPlays equals: tomas.
+	
+	aGame playNextTurn ;playNextTurn;playNextTurn;playNextTurn .
+	
+	aGame activateThis: aReverseCard from: pedro to:pedro. 	
+	
+	self assert: aGame whoPlays equals: pedro.
+
+]
+
+{ #category : #tests }
 CardTest >> testNestedRedoCard [
 	| game aBoard dice card redo redo2 redo3 |
 
@@ -828,6 +590,82 @@ CardTest >> testPlayerHasTwoRandomCardsAtTheBeginning [
 	
 	self 	assert: game players current cardsInHand equals: 2; 
 			assert: game players next cardsInHand equals: 2.  
+]
+
+{ #category : #tests }
+CardTest >> testPlayerPlays2ConsecutiveTimesWithReverseAndSkipCard [
+	| aNoEffectBoard dice aGame  aReverseCard aSkipCard  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aSkipCard := Card type: Reverse new.
+	aReverseCard  := Card type: Skip new.
+	
+	exequiel takesA: aSkipCard.
+	exequiel takesA: aReverseCard .
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame activateThis: aReverseCard   from:exequiel   to:tomas. 
+	aGame playNextTurn .
+	aGame activateThis: aSkipCard  from:exequiel   to:exequiel.
+	aGame playNextTurn .
+	
+	self assert: (aGame whereIs: exequiel ) equals: 5.
+	self assert: (aGame whereIs: tomas ) equals: 0.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> testPlayerPlays4ConsecutiveTimesWithDoubleAndReverseCard [
+	| aNoEffectBoard dice aGame  aDoubleCard aReverseCard  anotherDoubleCard  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	anotherDoubleCard := Card type: Double new.
+	aReverseCard  := Card type: Skip new.
+	
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: aReverseCard .
+	tomas takesA:anotherDoubleCard .
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: aReverseCard  to:exequiel  .
+	aGame currentPlayerActivatesThis: anotherDoubleCard to:tomas. 
+	
+	self assert: (aGame whereIs: tomas) equals: 8.
+	self assert: (aGame whereIs: exequiel) equals: 0.
+	
+	
+]
+
+{ #category : #tests }
+CardTest >> testPlayerPlays4ConsecutiveTimesWithDoubleAndSkipCard [
+	| aNoEffectBoard dice aGame  aDoubleCard aSkipCard  anotherDoubleCard |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(3 2 1 2).
+	
+	aDoubleCard := Card type: Double new.
+	anotherDoubleCard := Card type: Double new.
+	aSkipCard := Card type: Skip new.
+	
+	exequiel takesA: aDoubleCard.
+	exequiel takesA: aSkipCard.
+	tomas takesA:anotherDoubleCard .
+	
+	aGame := Game playedBy: {tomas.exequiel} throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame activateThis: aDoubleCard  from:exequiel   to:tomas. 
+	aGame currentPlayerActivatesThis: aSkipCard  to:exequiel  .
+	aGame currentPlayerActivatesThis: anotherDoubleCard to:tomas. 
+	
+	self assert: (aGame whereIs: tomas) equals: 8.
+	self assert: (aGame whereIs: exequiel) equals: 0.
+	
+	
 ]
 
 { #category : #tests }
@@ -1056,6 +894,168 @@ CardTest >> testRepeatCardWithNoEffect [
 	
 
 
+]
+
+{ #category : #tests }
+CardTest >> testReverseAndRedoCard [
+	| aNoEffectBoard dice marcos pedro aReverseCard aRedoCard aGame |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	aRedoCard := Card type: Redo new.
+	
+	tomas takesA: aReverseCard.
+	exequiel takesA: aRedoCard.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame currentPlayerActivatesThis: aReverseCard to: tomas.
+	self assert: aGame whoPlays equals: pedro.		 
+	aGame playNextTurn.
+
+	aGame currentPlayerActivatesThis: aRedoCard to: exequiel.
+	
+	aGame playNextTurn .
+	
+	self assert: aGame whoPlays equals: exequiel. 
+
+]
+
+{ #category : #tests }
+CardTest >> testReverseAndReverseCard [
+	| aNoEffectBoard dice marcos pedro aReverseCard anotherReverseCard aGame |
+	aNoEffectBoard :=self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	anotherReverseCard:= Card type: Reverse new.
+	
+	tomas takesA: aReverseCard.
+	exequiel takesA: anotherReverseCard.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aGame playNextTurn ;playNextTurn .
+	
+	
+	self assert: aGame whoPlays equals: exequiel.
+	
+	aGame currentPlayerActivatesThis: anotherReverseCard to:exequiel.
+
+	self assert: aGame whoPlays equals: marcos.
+	
+	aGame playNextTurn.
+	
+	aGame currentPlayerActivatesThis: aReverseCard to:tomas.
+	
+	self assert: aGame whoPlays equals: pedro. 
+]
+
+{ #category : #tests }
+CardTest >> testReverseCard [
+	| aNoEffectBoard dice marcos pedro aReverseCard aGame  |
+	aNoEffectBoard := self aNoEffectBoard.
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aReverseCard := Card type: Reverse new.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	tomas takesA: aReverseCard.
+	
+	self assert: aGame whoPlays equals: tomas.
+	
+	aGame currentPlayerActivatesThis:aReverseCard to: tomas.
+	
+	self assert: aGame whoPlays equals: pedro.
+	
+	aGame playNextTurn .
+	
+	self assert: aGame whoPlays equals: exequiel.
+	
+	
+	
+
+]
+
+{ #category : #tests }
+CardTest >> testSkipAndRedoCards [
+	 | aNoEffectBoard dice marcos pedro  aGame  aSkipCard aRedoCard |
+	aNoEffectBoard :=self aNoEffectBoard .
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aSkipCard := Card type: Skip new.
+	aRedoCard:= Card type: Redo new.
+	exequiel takesA: aSkipCard.
+	tomas takesA: aRedoCard.
+	
+	aGame playNextTurn ; playNextTurn .
+	aGame currentPlayerActivatesThis: aSkipCard to:exequiel.
+	
+	aGame playNextTurn .
+	
+	aGame currentPlayerActivatesThis: aRedoCard  to:tomas.
+	
+	self assert: aGame whoPlays equals: marcos. 
+]
+
+{ #category : #tests }
+CardTest >> testSkipAndSkipCards [
+	 | aNoEffectBoard dice marcos pedro  aGame  aSkipCard  anotherSkipCard |
+	aNoEffectBoard :=self aNoEffectBoard .
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aSkipCard := Card type: Skip new.
+	anotherSkipCard:= Card type: Redo new.
+	exequiel takesA: aSkipCard.
+	pedro takesA: anotherSkipCard.
+	
+	aGame playNextTurn ; playNextTurn .
+	aGame currentPlayerActivatesThis: aSkipCard to:exequiel.
+	aGame currentPlayerActivatesThis: anotherSkipCard to:pedro. 
+	
+	
+	self assert: aGame whoPlays equals: tomas. 
+]
+
+{ #category : #tests }
+CardTest >> testSkipCard [
+	| aNoEffectBoard dice marcos pedro  aGame  aSkipCard |
+	aNoEffectBoard :=self aNoEffectBoard .
+	dice := Die of: 6 rolling:#(6).
+	
+	marcos := Player named: 'Marcos'.
+	pedro := Player named: 'Pedro'.
+	
+	aGame := Game playedBy: {tomas.marcos.exequiel.pedro } throwing:dice  on:aNoEffectBoard  during: 3.
+	
+	aSkipCard := Card type: Skip new.
+	exequiel takesA: aSkipCard.
+	
+	aGame playNextTurn  .
+	aGame activateThis: aSkipCard from:exequiel to:exequiel.
+	
+	self assert: aGame whoPlays equals: exequiel. 
 ]
 
 { #category : #tests }

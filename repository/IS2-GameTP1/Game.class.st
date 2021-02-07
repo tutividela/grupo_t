@@ -37,16 +37,9 @@ Game class >> playedBy: aSetOfPlayer throwing: dices onBoardOfLength: aNumberOfS
 
 { #category : #cards }
 Game >> activateThis: card from: player to: aPlayerOrCard [.
-	self isStillOn ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
-	
-	(player ~= self whoPlays) & card type isPermanent
-	
-		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ]
-		ifFalse: [ 
-			card applyTo: aPlayerOrCard in: self .
-			player playsA: card.
-			lastCardPlayed := card.
-		]
+	self assertGameIsOver .
+	self assertThat: player playsInHisTurnPermanentCard:card.
+	self triggerCard: card from:player  to:aPlayerOrCard . 
 		
 	
 ]
@@ -73,6 +66,18 @@ Game >> applyTheLastEffectOverTheLastPlayer [
 	self switchTurn.
 ]
 
+{ #category : #asserting }
+Game >> assertGameIsOver [
+	self isStillOn ifFalse: [ Error signal: 'Cards cannot be played when the game is over.' ].
+]
+
+{ #category : #asserting }
+Game >> assertThat:aPlayer playsInHisTurnPermanentCard:aCard [
+	(aPlayer ~= self whoPlays) & aCard type isPermanent
+		ifTrue: [ Error signal: 'A player wants to play a permanent card on another turn.' ] 
+		
+]
+
 { #category : #accesing }
 Game >> board [
 	^board.
@@ -82,6 +87,12 @@ Game >> board [
 Game >> currentPlayerActivatesThis: card to: aPlayer [.
 	self activateThis: card from: self whoPlays to: aPlayer  
 		
+	
+]
+
+{ #category : #'as yet unclassified' }
+Game >> examineAmountOfMoves: aRollResultAndExtra inPosition:aPosition [
+	^laps - aPosition currentLap  == 1 & (aRollResultAndExtra > (board amountOfSquares  - aPosition currentSquare) )
 	
 ]
 
@@ -151,10 +162,9 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 	
 	position := board positionOf: aPlayer.
 	
-	extra := 0.
-	activePermanentCards do: [:card | card player = aPlayer | card type applysToAllPlayers   ifTrue: [extra := extra + card type extraMoves] ].
-
-	laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )
+	extra := self sumExtraMovesForPlayer: aPlayer.
+	(self examineAmountOfMoves: rollResult +extra inPosition:position )
+	"laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )"
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ rollResult + extra ].
 ]
@@ -174,9 +184,25 @@ Game >> scoreboard [
 	^ scoreboard copy .
 ]
 
+{ #category : #'as yet unclassified' }
+Game >> sumExtraMovesForPlayer:aPlayer [
+	| cardsToSum |
+	cardsToSum:= activePermanentCards select: [ :card | card player = aPlayer | card type applysToAllPlayers ].
+	cardsToSum isEmpty 
+		ifTrue: [ ^0 ]
+		ifFalse: [ ^cardsToSum sum: [ :card | card type extraMoves . ]. ]
+]
+
 { #category : #private }
 Game >> switchTurn [
 	^players next.
+]
+
+{ #category : #'as yet unclassified' }
+Game >> triggerCard:aCard from:aPlayer to:aPlayerOrCard [
+	aCard applyTo: aPlayerOrCard in: self .
+	aPlayer playsA: aCard.
+	lastCardPlayed := aCard.
 ]
 
 { #category : #sorting }
