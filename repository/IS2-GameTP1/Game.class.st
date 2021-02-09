@@ -164,7 +164,6 @@ Game >> possibleMovesFor: aPlayer withThis: rollResult [
 	
 	extra := self sumExtraMovesForPlayer: aPlayer.
 	(self examineAmountOfMoves: rollResult +extra inPosition:position )
-	"laps - position currentLap  == 1 & (rollResult + extra > (board amountOfSquares  - position currentSquare) )"
 				ifTrue:  [ ^ board amountOfSquares  - position currentSquare ] 
 				ifFalse: [ ^ rollResult + extra ].
 ]
